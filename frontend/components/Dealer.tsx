@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { Cards } from "./Cards"
 
 const Dealer = ({
   turn,
@@ -10,8 +11,23 @@ const Dealer = ({
   coin,
   addCard,
 }) => {
-  const [dealerCard, setDealerCard] = useState<string[]>(["", "", ""])
-  return <div>dealer</div>
+  const [dealerCards, setDealerCards] = useState<string[]>(["", "", ""])
+  return (
+    <div>
+      {addCard ? (
+        <div>
+          <div>Card1</div>
+          <div>Card2</div>
+          <div>Card3</div>
+        </div>
+      ) : (
+        <div>
+          <div>Card1</div>
+          <div>Card2</div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export { Dealer }
