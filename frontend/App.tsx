@@ -1,11 +1,15 @@
-import React from "react"
+import React, { useState } from "react"
 import logo from "./assets/dfinity.svg"
 /*
  * Connect2ic provides essential utilities for IC app development
  */
 import { createClient } from "@connect2ic/core"
 import { defaultProviders } from "@connect2ic/core/providers"
-import { ConnectButton, ConnectDialog, Connect2ICProvider } from "@connect2ic/react"
+import {
+  ConnectButton,
+  ConnectDialog,
+  Connect2ICProvider,
+} from "@connect2ic/react"
 import "@connect2ic/core/style.css"
 /*
  * Import canister definitions like this:
@@ -18,7 +22,12 @@ import { Counter } from "./components/Counter"
 import { Transfer } from "./components/Transfer"
 import { Profile } from "./components/Profile"
 
+import { useWallet } from "@connect2ic/react"
+import { MainPage } from "./components/MainPage"
+import { ConnectWallet } from "./components/ConnectWallet"
+
 function App() {
+  const [wallet] = useWallet()
   return (
     <div className="App">
       <div className="auth-section">
@@ -26,22 +35,22 @@ function App() {
       </div>
       <ConnectDialog />
 
+      {wallet ? <MainPage /> : <ConnectWallet />}
+
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p className="slogan">
-          React+TypeScript Template
+        <p className="slogan">React+TypeScript Template</p>
+        <p className="twitter">
+          by <a href="https://twitter.com/miamaruq">@miamaruq</a>
         </p>
-        <p className="twitter">by <a href="https://twitter.com/miamaruq">@miamaruq</a></p>
       </header>
 
-      <p className="examples-title">
-        Examples
-      </p>
+      {/* <p className="examples-title">Examples</p>
       <div className="examples">
         <Counter />
         <Profile />
         <Transfer />
-      </div>
+  </div>*/}
     </div>
   )
 }
