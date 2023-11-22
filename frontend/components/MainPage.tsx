@@ -4,13 +4,36 @@ import { Dealer } from "./Dealer"
 import { Player } from "./Player"
 
 const MainPage = () => {
-  const [getCard, setGetCard] = useState<boolean>(false)
+  const [dealerCoin, setDealerCoin] = useState<Number>(0)
+  const [coin, setCoin] = useState<Number>(0)
+  const [addCard, setAddCard] = useState<Boolean>(false)
+  const [turn, setTurn] = useState<Turn>("INITIAL")
+  const [choice, setChoice] = useState<Choice>("NONE")
 
   return (
     <div>
-      <Dealer />
+      <Dealer
+        turn={turn}
+        setTurn={setTurn}
+        choice={choice}
+        setChoice={setChoice}
+        dealerCoin={dealerCoin}
+        setDealerCoin={setDealerCoin}
+        coin={coin}
+        addCard={addCard}
+      />
       <Table />
-      <Player />
+      <Player
+        turn={turn}
+        setTurn={setTurn}
+        choice={choice}
+        setChoice={setChoice}
+        dealerCoin={dealerCoin}
+        coin={coin}
+        setCoin={setCoin}
+        addCard={addCard}
+        setAddCard={setAddCard}
+      />
     </div>
   )
 }
