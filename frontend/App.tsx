@@ -37,14 +37,6 @@ function App() {
 
       {wallet ? <MainPage /> : <ConnectWallet />}
 
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p className="slogan">React+TypeScript Template</p>
-        <p className="twitter">
-          by <a href="https://twitter.com/miamaruq">@miamaruq</a>
-        </p>
-      </header>
-
       {/* <p className="examples-title">Examples</p>
       <div className="examples">
         <Counter />
