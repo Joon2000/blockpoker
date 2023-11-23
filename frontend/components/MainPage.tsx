@@ -5,14 +5,15 @@ import { Player } from "./Player"
 import { getRandomNumber } from "../temp/randomNumber"
 
 const MainPage = () => {
-  const [dealerCoin, setDealerCoin] = useState<Number>(100)
-  const [coin, setCoin] = useState<Number>(100)
-  const [playerBet, setPlayerBet] = useState<Number>(0)
-  const [dealerBet, setDealerBet] = useState<Number>(0)
+  const [dealerCoin, setDealerCoin] = useState<number>(100)
+  const [playerCoin, setPlayerCoin] = useState<number>(100)
+  const [playerBet, setPlayerBet] = useState<number>(0)
+  const [dealerBet, setDealerBet] = useState<number>(0)
   const [addCard, setAddCard] = useState<Boolean>(false)
   const [turn, setTurn] = useState<Turn>("ENTERING")
-  const [choice, setChoice] = useState<Choice>("NONE")
-  const [cards, setCards] = useState<string[]>(["", "", ""])
+  const [playerChoice, setPlayerChoice] = useState<Choice>("NONE")
+  const [dealerChoice, setDealerChoice] = useState<Choice>("NONE")
+  const [playerCards, setPlayerCards] = useState<string[]>(["", "", ""])
   const [dealerCards, setDealerCards] = useState<string[]>(["", "", ""])
   const [round, setRound] = useState<Round>("ROUND1")
   const [callState, setCallState] = useState<CallState[]>([
@@ -20,16 +21,38 @@ const MainPage = () => {
     "NOTCALL",
   ])
   const [endGame, setEndGame] = useState<boolean>(false)
-
+  const [totlalBet, setTotalBet] = useState<number>(0)
   if (turn === "STARTING") {
     const card1 = getRandomNumber().toString()
     const card2 = getRandomNumber().toString()
-    setCards([card1, card2, ""])
+    setPlayerCards([card1, card2, ""])
     const dealerCard1 = getRandomNumber().toString()
     const dealerCard2 = getRandomNumber().toString()
     setDealerCards([dealerCard1, dealerCard2, ""])
     setTurn("DEALER")
   }
+
+  if (
+    callState[0] === "CALL" &&
+    callState[1] === "CALL" &&
+    round === "ROUND1"
+  ) {
+    const newCard1 = getRandomNumber().toString()
+    setPlayerCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard1])
+    const newCard2 = getRandomNumber().toString()
+    setDealerCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard2])
+    setAddCard(true)
+    setRound("ROUND2")
+    setCallState(["NOTCALL", "NOTCALL"])
+  }
+
+  useEffect(() => {
+    setTotalBet((prevTotalBet) => prevTotalBet + playerBet)
+  }, [playerBet])
+
+  useEffect(() => {
+    setTotalBet((prevTotalBet) => prevTotalBet + dealerBet)
+  }, [dealerBet])
 
   // useEffect((),[endGame])
 
@@ -40,14 +63,15 @@ const MainPage = () => {
         setDealerCards={setDealerCards}
         turn={turn}
         setTurn={setTurn}
-        choice={choice}
-        setChoice={setChoice}
+        dealerChoice={dealerChoice}
+        setDealerChoice={setDealerChoice}
+        playerChoice={playerChoice}
         dealerCoin={dealerCoin}
         setDealerCoin={setDealerCoin}
         dealerBet={dealerBet}
         setDealerBet={setDealerBet}
         playerBet={playerBet}
-        coin={coin}
+        playerCoin={playerCoin}
         addCard={addCard}
         callState={callState}
         setCallState={setCallState}
@@ -55,17 +79,18 @@ const MainPage = () => {
         setRound={setRound}
         setEndGame={setEndGame}
       />
-      <Table />
+      <Table totalBet={totlalBet} />
       <Player
-        cards={cards}
-        setCards={setCards}
+        playerCards={playerCards}
+        setPlayerCards={setPlayerCards}
         turn={turn}
         setTurn={setTurn}
-        choice={choice}
-        setChoice={setChoice}
+        playerChoice={playerChoice}
+        setPlayerChoice={setPlayerChoice}
+        dealerChoice={dealerChoice}
         dealerCoin={dealerCoin}
-        coin={coin}
-        setCoin={setCoin}
+        playerCoin={playerCoin}
+        setPlayerCoin={setPlayerCoin}
         playerBet={playerBet}
         setPlayerBet={setPlayerBet}
         dealerBet={dealerBet}
