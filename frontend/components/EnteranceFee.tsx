@@ -1,10 +1,10 @@
 import React from "react"
 
-const EnteranceFee = ({ setPayEnteranceFee }) => {
+const EnteranceFee = ({ setTurn }) => {
   function sendFee(e: { preventDefault: () => void }) {
     e.preventDefault()
     console.log("fee send")
-    setPayEnteranceFee(true)
+    setTurn("STARTING")
   }
   return (
     <div>

@@ -5,6 +5,8 @@ import { Cards } from "./Cards"
 import { Choice } from "./Choice"
 
 const Player = ({
+  cards,
+  setCards,
   turn,
   setTurn,
   dealerCoin,
@@ -15,13 +17,11 @@ const Player = ({
   choice,
   setChoice,
 }) => {
-  const [payEnteranceFee, setPayEnteranceFee] = useState<boolean>(false)
-  const [cards, setCards] = useState<string[]>(["", "", ""])
   return (
     <div>
       <Coin coin={coin} />
-      {!payEnteranceFee ? (
-        <EnteranceFee setPayEnteranceFee={setPayEnteranceFee} />
+      {turn === "ENTERING" ? (
+        <EnteranceFee setTurn={setTurn} />
       ) : (
         <div>
           <Cards cards={cards} addCard={addCard} />
