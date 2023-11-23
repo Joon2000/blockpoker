@@ -1,4 +1,4 @@
-type Choice = "FOLD" | "CHECK" | "RAISE" | "NONE"
+type Choice = "FOLD" | "CHECK" | "RAISE" | "CALL" | "NONE"
 
 type Turn = "DEALER" | "PLAYER" | "ENTERING" | "STARTING"
 

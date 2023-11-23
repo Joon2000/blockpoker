@@ -5,21 +5,28 @@ const Choice = ({
   setTurn,
   dealerCoin,
   coin,
+  playerBet,
+  setPlayerBet,
+  dealerBet,
   choice,
   setCoin,
   setCards,
   setChoice,
   setAddCard,
+  callState,
+  setCallState,
+  round,
+  setRound,
 }) => {
   function clickCall(e: { preventDefault: () => void }) {
     e.preventDefault()
     setChoice("CALL")
     const newCard = "7"
-    setCards((prev: string[]) => [prev[0], prev[1], newCard])
+    setCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard])
     setAddCard(true)
     const payCoin = dealerCoin - coin
     //돈을 canister로 옮기는 함수
-    setCoin(dealerCoin)
+    setCoin((prevCoin: number) => prevCoin - bet)
     setTurn("DEALER")
   }
 
@@ -32,9 +39,10 @@ const Choice = ({
   function clickRaise(e: { preventDefault: () => void }) {
     e.preventDefault()
     setChoice("RAiSE")
-    setCoin(dealerCoin * 2)
-    const payCoin = dealerCoin - coin
+    const paycoin = bet
     //돈을 canister로 옮기는 함수
+    setBet((prevBet: number) => prevBet * 2)
+    setCoin((prevCoin: number) => prevCoin - bet)
     setTurn("DEALER")
   }
 

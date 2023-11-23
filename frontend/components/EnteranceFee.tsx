@@ -1,12 +1,11 @@
 import React from "react"
 
-const EnteranceFee = ({ setTurn, setCoin, setBet, setPayed }) => {
+const EnteranceFee = ({ setTurn, setCoin, setPlayerBet }) => {
   function sendFee(e: { preventDefault: () => void }) {
     e.preventDefault()
     console.log("fee send")
     setCoin((prevCoin: number): number => prevCoin - 1)
-    setBet(1)
-    setPayed(1)
+    setPlayerBet(1)
     //function seding fee to canister
     setTurn("STARTING")
   }

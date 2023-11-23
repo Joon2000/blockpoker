@@ -12,16 +12,28 @@ const Player = ({
   dealerCoin,
   coin,
   setCoin,
+  playerBet,
+  setPlayerBet,
+  dealerBet,
   addCard,
   setAddCard,
   choice,
   setChoice,
+  callState,
+  setCallState,
+  round,
+  setRound,
+  setEndGame,
 }) => {
   return (
     <div>
-      <Coin coin={coin} />
+      <Coin coin={coin} playerBet={playerBet} />
       {turn === "ENTERING" ? (
-        <EnteranceFee setTurn={setTurn} />
+        <EnteranceFee
+          setTurn={setTurn}
+          setCoin={setCoin}
+          setPlayerBet={setPlayerBet}
+        />
       ) : (
         <div>
           <Cards cards={cards} addCard={addCard} />
@@ -30,11 +42,18 @@ const Player = ({
             setTurn={setTurn}
             dealerCoin={dealerCoin}
             coin={coin}
+            playerBet={playerBet}
+            setPlayerBet={setPlayerBet}
+            dealerBet={dealerBet}
             choice={choice}
             setCoin={setCoin}
             setCards={setCards}
             setChoice={setChoice}
             setAddCard={setAddCard}
+            callState={callState}
+            setCallState={setCallState}
+            round={round}
+            setRound={setRound}
           />
         </div>
       )}
