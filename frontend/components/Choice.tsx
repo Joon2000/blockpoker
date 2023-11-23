@@ -4,45 +4,57 @@ const Choice = ({
   turn,
   setTurn,
   dealerCoin,
-  coin,
+  playerCoin,
   playerBet,
   setPlayerBet,
   dealerBet,
-  choice,
-  setCoin,
-  setCards,
-  setChoice,
+  dealerChoice,
+  setPlayerCoin,
+  setPlayerCards,
+  setPlayerChoice,
   setAddCard,
   callState,
   setCallState,
   round,
   setRound,
+  setEndGame,
 }) => {
+  function clickFold(e: { preventDefault: () => void }) {
+    e.preventDefault()
+    setPlayerChoice("FOLD")
+    setEndGame(true)
+  }
+
   function clickCall(e: { preventDefault: () => void }) {
     e.preventDefault()
-    setChoice("CALL")
-    const newCard = "7"
-    setCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard])
-    setAddCard(true)
-    const payCoin = dealerCoin - coin
+    setPlayerChoice("CALL")
+    setCallState((prevCallState: CallState) => ["CALL", prevCallState[1]])
+    const betCoin = dealerBet - playerBet
     //돈을 canister로 옮기는 함수
-    setCoin((prevCoin: number) => prevCoin - bet)
+    setPlayerCoin((prevCoin: number) => prevCoin - (dealerBet - playerBet))
+    setPlayerBet(betCoin)
     setTurn("DEALER")
   }
 
-  function clickCheck(e: { preventDefault: () => void }) {
-    e.preventDefault()
-    setChoice("CHECK")
-    setTurn("DEALER")
-  }
+  // function clickCheck(e: { preventDefault: () => void }) {
+  //   e.preventDefault()
+  //   setPlayerChoice("CHECK")
+  //   setTurn("DEALER")
+  // }
 
   function clickRaise(e: { preventDefault: () => void }) {
     e.preventDefault()
-    setChoice("RAiSE")
-    const paycoin = bet
+    setPlayerChoice("RAiSE")
+    let betCoin: number
+    if (dealerChoice === "RAISE") {
+      betCoin = (dealerBet - playerBet) * 3
+      setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
+    } else if (dealerChoice === "CALL") {
+      betCoin = playerBet
+      setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
+    }
     //돈을 canister로 옮기는 함수
-    setBet((prevBet: number) => prevBet * 2)
-    setCoin((prevCoin: number) => prevCoin - bet)
+    setPlayerBet(betCoin)
     setTurn("DEALER")
   }
 
@@ -51,15 +63,19 @@ const Choice = ({
       {turn === "PLAYER" ? (
         <div>
           <div>
-            <button onClick={clickCall}>Call</button>
+            <button onClick={clickFold}>Fold</button>
           </div>
           <div>
-            {choice === "CHECK" || choice === "NONE" ? (
+            <button onClick={clickCall}>Call</button>
+          </div>
+          {/* <div>
+            {dealerChoice === "CHECK" || dealerChoice === "NONE" ? (
               <button onClick={clickCheck}>Check</button>
             ) : (
               <button onClick={null}>Check</button>
             )}
-          </div>
+          </div> */}
+
           <div>
             <button onClick={clickRaise}>Raise</button>
           </div>
