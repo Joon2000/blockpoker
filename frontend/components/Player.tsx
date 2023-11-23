@@ -5,20 +5,21 @@ import { Cards } from "./Cards"
 import { Choice } from "./Choice"
 
 const Player = ({
-  cards,
-  setCards,
+  playerCards,
+  setPlayerCards,
   turn,
   setTurn,
   dealerCoin,
-  coin,
-  setCoin,
+  playerCoin,
+  setPlayerCoin,
   playerBet,
   setPlayerBet,
   dealerBet,
   addCard,
   setAddCard,
-  choice,
-  setChoice,
+  playerChoice,
+  setPlayerChoice,
+  dealerChoice,
   callState,
   setCallState,
   round,
@@ -27,33 +28,34 @@ const Player = ({
 }) => {
   return (
     <div>
-      <Coin coin={coin} playerBet={playerBet} />
+      <Coin playerCoin={playerCoin} playerBet={playerBet} />
       {turn === "ENTERING" ? (
         <EnteranceFee
           setTurn={setTurn}
-          setCoin={setCoin}
+          setCoin={setPlayerCoin}
           setPlayerBet={setPlayerBet}
         />
       ) : (
         <div>
-          <Cards cards={cards} addCard={addCard} />
+          <Cards playerCards={playerCards} addCard={addCard} />
           <Choice
             turn={turn}
             setTurn={setTurn}
             dealerCoin={dealerCoin}
-            coin={coin}
+            playerCoin={playerCoin}
             playerBet={playerBet}
             setPlayerBet={setPlayerBet}
             dealerBet={dealerBet}
-            choice={choice}
-            setCoin={setCoin}
-            setCards={setCards}
-            setChoice={setChoice}
+            dealerChoice={dealerChoice}
+            setPlayerCoin={setPlayerCoin}
+            setPlayerCards={setPlayerCards}
+            setPlayerChoice={setPlayerChoice}
             setAddCard={setAddCard}
             callState={callState}
             setCallState={setCallState}
             round={round}
             setRound={setRound}
+            setEndGame={setEndGame}
           />
         </div>
       )}
