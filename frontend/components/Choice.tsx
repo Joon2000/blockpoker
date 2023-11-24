@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 const Choice = ({
   turn,
@@ -18,6 +18,9 @@ const Choice = ({
   round,
   setRound,
   setEndGame,
+  playerTotalBet,
+  dealerTotalBet,
+  setPlayerTotalBet,
 }) => {
   function clickFold(e: { preventDefault: () => void }) {
     e.preventDefault()
@@ -28,11 +31,16 @@ const Choice = ({
   function clickCall(e: { preventDefault: () => void }) {
     e.preventDefault()
     setPlayerChoice("CALL")
-    setCallState((prevCallState: CallState) => ["CALL", prevCallState[1]])
-    const betCoin = dealerBet - playerBet
+    if (dealerChoice === "CALL") {
+      setCallState(true)
+    }
+    const betCoin = dealerTotalBet - playerTotalBet
     //돈을 canister로 옮기는 함수
-    setPlayerCoin((prevCoin: number) => prevCoin - (dealerBet - playerBet))
+    setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
     setPlayerBet(betCoin)
+    setPlayerTotalBet(
+      (prevTotalPlayerBet: number) => prevTotalPlayerBet + betCoin,
+    )
     setTurn("DEALER")
   }
 
@@ -47,14 +55,20 @@ const Choice = ({
     setPlayerChoice("RAiSE")
     let betCoin: number
     if (dealerChoice === "RAISE") {
-      betCoin = (dealerBet - playerBet) * 3
-      setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
+      betCoin = dealerBet * 2 + dealerBet - playerBet
     } else if (dealerChoice === "CALL") {
-      betCoin = playerBet
-      setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
+      if (playerBet === 1) {
+        betCoin = 2
+      } else {
+        betCoin = playerBet * 2 + dealerBet - playerBet
+      }
     }
     //돈을 canister로 옮기는 함수
+    setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
     setPlayerBet(betCoin)
+    setPlayerTotalBet(
+      (prevTotalPlayerBet: number) => prevTotalPlayerBet + betCoin,
+    )
     setTurn("DEALER")
   }
 
