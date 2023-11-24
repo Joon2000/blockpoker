@@ -5,8 +5,8 @@ import { Player } from "./Player"
 import { getRandomNumber } from "../temp/randomNumber"
 
 const MainPage = () => {
-  const [dealerCoin, setDealerCoin] = useState<number>(100)
-  const [playerCoin, setPlayerCoin] = useState<number>(100)
+  const [dealerCoin, setDealerCoin] = useState<number>(10000)
+  const [playerCoin, setPlayerCoin] = useState<number>(10000)
   const [playerBet, setPlayerBet] = useState<number>(0)
   const [dealerBet, setDealerBet] = useState<number>(0)
   const [addCard, setAddCard] = useState<Boolean>(false)
@@ -21,6 +21,7 @@ const MainPage = () => {
   const [totlalBet, setTotalBet] = useState<number>(0)
   const [playerTotalBet, setPlayerTotalBet] = useState<number>(0)
   const [dealerTotalBet, setDealerTotalBet] = useState<number>(0)
+  const [winner, setWinner] = useState<string>("")
 
   if (turn === "STARTING") {
     const card1 = getRandomNumber().toString()
@@ -50,7 +51,30 @@ const MainPage = () => {
     setTotalBet((prevTotalBet) => prevTotalBet + dealerBet)
   }, [dealerBet])
 
-  // useEffect((),[endGame])
+  useEffect(() => {
+    if (winner === "DEALER") {
+      setDealerCoin((prevDealerCoin: number) => prevDealerCoin + totlalBet)
+    }
+    if (winner === "PLAYER") {
+      setPlayerCoin((prevPlayerCoin: number) => prevPlayerCoin + totlalBet)
+    }
+    setPlayerBet(0)
+    setDealerBet(0)
+    setAddCard(false)
+
+    setPlayerChoice("NONE")
+    setDealerChoice("NONE")
+    setPlayerCards(["", "", ""])
+    setDealerCards(["", "", ""])
+    setRound("ROUND1")
+    setCallState(false)
+    setTotalBet(0)
+    setPlayerTotalBet(0)
+    setDealerTotalBet(0)
+    setWinner("")
+    setEndGame(false)
+    setTurn("ENTERING")
+  }, [endGame])
 
   return (
     <div>
@@ -77,6 +101,7 @@ const MainPage = () => {
         dealerTotalBet={dealerTotalBet}
         playerTotalBet={playerTotalBet}
         setDealerTotalBet={setDealerTotalBet}
+        setWinner={setWinner}
       />
       <Table totalBet={totlalBet} />
       <Player
@@ -103,6 +128,7 @@ const MainPage = () => {
         playerTotalBet={playerTotalBet}
         dealerTotalBet={dealerTotalBet}
         setPlayerTotalBet={setPlayerTotalBet}
+        setWinner={setWinner}
       />
     </div>
   )
