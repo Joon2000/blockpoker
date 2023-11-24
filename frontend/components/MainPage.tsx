@@ -23,25 +23,73 @@ const MainPage = () => {
   const [dealerTotalBet, setDealerTotalBet] = useState<number>(0)
   const [winner, setWinner] = useState<string>("")
 
-  if (turn === "STARTING") {
-    const card1 = getRandomNumber().toString()
-    const card2 = getRandomNumber().toString()
-    setPlayerCards([card1, card2, ""])
-    const dealerCard1 = getRandomNumber().toString()
-    const dealerCard2 = getRandomNumber().toString()
-    setDealerCards([dealerCard1, dealerCard2, ""])
-    setTurn("DEALER")
-  }
+  useEffect(() => {
+    if (turn === "STARTING" && addCard === false) {
+      const card1 = getRandomNumber().toString()
+      const card2 = getRandomNumber().toString()
+      setPlayerCards([card1, card2, ""])
+      const dealerCard1 = getRandomNumber().toString()
+      const dealerCard2 = getRandomNumber().toString()
+      setDealerCards([dealerCard1, dealerCard2, ""])
+      setTurn("DEALER")
+    }
+  }, [turn])
 
-  if (callState === true && round === "ROUND1") {
-    const newCard1 = getRandomNumber().toString()
-    setPlayerCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard1])
-    const newCard2 = getRandomNumber().toString()
-    setDealerCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard2])
-    setAddCard(true)
-    setRound("ROUND2")
-    setCallState(false)
-  }
+  useEffect(() => {
+    if (callState === true && round === "ROUND1") {
+      const newCard1 = getRandomNumber().toString()
+      setPlayerCards((prevCard: string[]) => [
+        prevCard[0],
+        prevCard[1],
+        newCard1,
+      ])
+      const newCard2 = getRandomNumber().toString()
+      setDealerCards((prevCard: string[]) => [
+        prevCard[0],
+        prevCard[1],
+        newCard2,
+      ])
+      setAddCard(true)
+      setRound("ROUND2")
+      setPlayerChoice("NONE")
+      setDealerChoice("NONE")
+      if (turn === "DEALER") {
+        setTurn("PLAYER")
+      } else if (turn === "PLAYER") {
+        setTurn("DEALER")
+      }
+      setCallState(false)
+    }
+  }, [callState])
+
+  useEffect(() => {
+    if (callState === true && round === "ROUND2") {
+      let maxDealerSum = 0
+      let maxPlayerSum = 0
+      for (let i = 0; i < 3; i++) {
+        maxDealerSum += Number(dealerCards[i])
+        maxPlayerSum += Number(dealerCards[i])
+      }
+      maxDealerSum -= Math.min(
+        Number(dealerCards[0]),
+        Number(dealerCards[1]),
+        Number(dealerCards[2]),
+      )
+      maxPlayerSum -= Math.min(
+        Number(playerCards[0]),
+        Number(playerCards[1]),
+        Number(playerCards[2]),
+      )
+
+      if (maxDealerSum > maxPlayerSum) {
+        setWinner("DEALER")
+      } else {
+        setWinner("PLAYER")
+      }
+      setCallState(false)
+      setEndGame(true)
+    }
+  }, [callState])
 
   useEffect(() => {
     setTotalBet((prevTotalBet) => prevTotalBet + playerBet)
@@ -61,7 +109,6 @@ const MainPage = () => {
     setPlayerBet(0)
     setDealerBet(0)
     setAddCard(false)
-
     setPlayerChoice("NONE")
     setDealerChoice("NONE")
     setPlayerCards(["", "", ""])
