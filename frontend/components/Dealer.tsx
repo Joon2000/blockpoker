@@ -33,7 +33,7 @@ const Dealer = ({
     )
   }, [dealerBet])
   useEffect(() => {
-    if (turn === "DEALER" && round === "ROUND1") {
+    if (turn === "DEALER") {
       const choice = getDealerChoice(playerChoice)
       if (choice === "CALL") {
         setDealerCoin(
