@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Cards } from "./Cards"
 import { getDealerChoice } from "../temp/getDealerChoice"
 
@@ -7,51 +7,68 @@ const Dealer = ({
   setDealerCards,
   turn,
   setTurn,
-  choice,
-  setChoice,
+  dealerChoice,
+  setDealerChoice,
+  playerChoice,
   dealerCoin,
   setDealerCoin,
   dealerBet,
   setDealerBet,
   playerBet,
-  coin,
+  playerCoin,
   addCard,
   callState,
   setCallState,
   round,
   setRound,
   setEndGame,
+  dealerTotalBet,
+  playerTotalBet,
+  setDealerTotalBet,
 }) => {
-  if (turn === "DEALER") {
-    if (round === "ROUND1") {
-      if (choice === "NONE") {
-        console.log("here")
-        setChoice(getDealerChoice(choice))
-      } else if (true) {
-      } else {
-      }
-
-      //after choice
+  useEffect(() => {
+    setDealerTotalBet(
+      (prevTotalDealerBet: number) => prevTotalDealerBet + dealerBet,
+    )
+  }, [dealerBet])
+  useEffect(() => {
+    if (turn === "DEALER" && round === "ROUND1") {
+      const choice = getDealerChoice(playerChoice)
       if (choice === "CALL") {
-        setDealerBet(playerBet)
-        setDealerCoin((prevCoin: number) => prevCoin - dealerBet)
-        setCallState((prevCallState: CallState[]) => [prevCallState[0], "CALL"])
-      } else if (choice === "Raise") {
         setDealerCoin(
-          (prevCoin: number) => prevCoin - (playerBet * 2 - dealerBet),
+          (prevCoin: number) => prevCoin - (playerTotalBet - dealerTotalBet),
         )
-        setDealerBet(playerBet * 2)
+        setDealerBet(playerTotalBet - dealerTotalBet)
+        if (dealerChoice === "CALL") {
+          setCallState(true)
+        }
+      } else if (choice === "RAISE") {
+        let betCoin: number
+        if (playerChoice === "RAISE") {
+          betCoin = playerBet * 2 + playerBet - dealerBet
+        } else if (playerChoice === "CALL") {
+          betCoin = dealerBet * 2 + playerBet - dealerBet
+        } else {
+          betCoin = playerBet * 2 + playerBet - dealerBet
+        }
+        //돈을 canister로 옮기는 함수
+        setDealerCoin((prevCoin: number) => prevCoin - betCoin)
+        setDealerBet(betCoin)
+        setTurn("PLAYER")
       } else if (choice === "FOLD") {
         setEndGame(true)
       }
-      console.log(`dealer: ${choice} `)
+      console.log(choice)
+      setDealerChoice(choice)
       setTurn("PLAYER")
     }
-  }
+  }, [turn])
+
   return (
     <div>
       <div>
-        dealer coin: {dealerCoin} dealer bet: {dealerBet}
+        dealer coin: {dealerCoin} dealer total bet: {dealerTotalBet} dealer bet:
+        {dealerBet}
       </div>
       {addCard ? (
         <div>
