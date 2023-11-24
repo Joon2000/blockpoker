@@ -28,6 +28,7 @@ const Player = ({
   playerTotalBet,
   dealerTotalBet,
   setPlayerTotalBet,
+  setWinner,
 }) => {
   return (
     <div>
@@ -67,6 +68,7 @@ const Player = ({
             playerTotalBet={playerTotalBet}
             dealerTotalBet={dealerTotalBet}
             setPlayerTotalBet={setPlayerTotalBet}
+            setWinner={setWinner}
           />
         </div>
       )}

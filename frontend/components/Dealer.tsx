@@ -25,6 +25,7 @@ const Dealer = ({
   dealerTotalBet,
   playerTotalBet,
   setDealerTotalBet,
+  setWinner,
 }) => {
   useEffect(() => {
     setDealerTotalBet(
@@ -39,7 +40,7 @@ const Dealer = ({
           (prevCoin: number) => prevCoin - (playerTotalBet - dealerTotalBet),
         )
         setDealerBet(playerTotalBet - dealerTotalBet)
-        if (dealerChoice === "CALL") {
+        if (playerChoice === "CALL") {
           setCallState(true)
         }
       } else if (choice === "RAISE") {
@@ -56,6 +57,7 @@ const Dealer = ({
         setDealerBet(betCoin)
         setTurn("PLAYER")
       } else if (choice === "FOLD") {
+        setWinner("PLAYER")
         setEndGame(true)
       }
       console.log(choice)
@@ -70,6 +72,7 @@ const Dealer = ({
         dealer coin: {dealerCoin} dealer total bet: {dealerTotalBet} dealer bet:
         {dealerBet}
       </div>
+      <h3>dealer choice: {dealerChoice}</h3>
       {addCard ? (
         <div>
           <div>Card1</div>
