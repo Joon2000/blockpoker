@@ -21,10 +21,12 @@ const Choice = ({
   playerTotalBet,
   dealerTotalBet,
   setPlayerTotalBet,
+  setWinner,
 }) => {
   function clickFold(e: { preventDefault: () => void }) {
     e.preventDefault()
     setPlayerChoice("FOLD")
+    setWinner("DEALER")
     setEndGame(true)
   }
 
