@@ -33,9 +33,6 @@ const Choice = ({
   function clickCall(e: { preventDefault: () => void }) {
     e.preventDefault()
     setPlayerChoice("CALL")
-    if (dealerChoice === "CALL") {
-      setCallState(true)
-    }
     const betCoin = dealerTotalBet - playerTotalBet
     //돈을 canister로 옮기는 함수
     setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
@@ -43,6 +40,9 @@ const Choice = ({
     setPlayerTotalBet(
       (prevTotalPlayerBet: number) => prevTotalPlayerBet + betCoin,
     )
+    if (dealerChoice === "CALL") {
+      setCallState(true)
+    }
     setTurn("DEALER")
   }
 
@@ -58,7 +58,7 @@ const Choice = ({
     let betCoin: number
     if (dealerChoice === "RAISE") {
       betCoin = dealerBet * 2 + dealerBet - playerBet
-    } else if (dealerChoice === "CALL") {
+    } else if (dealerChoice === "CALL" || dealerChoice === "NONE") {
       if (playerBet === 1) {
         betCoin = 2
       } else {
