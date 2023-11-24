@@ -16,12 +16,12 @@ const MainPage = () => {
   const [playerCards, setPlayerCards] = useState<string[]>(["", "", ""])
   const [dealerCards, setDealerCards] = useState<string[]>(["", "", ""])
   const [round, setRound] = useState<Round>("ROUND1")
-  const [callState, setCallState] = useState<CallState[]>([
-    "NOTCALL",
-    "NOTCALL",
-  ])
+  const [callState, setCallState] = useState<boolean>(false)
   const [endGame, setEndGame] = useState<boolean>(false)
   const [totlalBet, setTotalBet] = useState<number>(0)
+  const [playerTotalBet, setPlayerTotalBet] = useState<number>(0)
+  const [dealerTotalBet, setDealerTotalBet] = useState<number>(0)
+
   if (turn === "STARTING") {
     const card1 = getRandomNumber().toString()
     const card2 = getRandomNumber().toString()
@@ -32,18 +32,14 @@ const MainPage = () => {
     setTurn("DEALER")
   }
 
-  if (
-    callState[0] === "CALL" &&
-    callState[1] === "CALL" &&
-    round === "ROUND1"
-  ) {
+  if (callState === true && round === "ROUND1") {
     const newCard1 = getRandomNumber().toString()
     setPlayerCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard1])
     const newCard2 = getRandomNumber().toString()
     setDealerCards((prevCard: string[]) => [prevCard[0], prevCard[1], newCard2])
     setAddCard(true)
     setRound("ROUND2")
-    setCallState(["NOTCALL", "NOTCALL"])
+    setCallState(false)
   }
 
   useEffect(() => {
@@ -78,6 +74,9 @@ const MainPage = () => {
         round={round}
         setRound={setRound}
         setEndGame={setEndGame}
+        dealerTotalBet={dealerTotalBet}
+        playerTotalBet={playerTotalBet}
+        setDealerTotalBet={setDealerTotalBet}
       />
       <Table totalBet={totlalBet} />
       <Player
@@ -101,6 +100,9 @@ const MainPage = () => {
         round={round}
         setRound={setRound}
         setEndGame={setEndGame}
+        playerTotalBet={playerTotalBet}
+        dealerTotalBet={dealerTotalBet}
+        setPlayerTotalBet={setPlayerTotalBet}
       />
     </div>
   )
