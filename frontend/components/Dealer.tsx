@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Cards } from "./Cards"
 import { getDealerChoice } from "../temp/getDealerChoice"
+import { Choice } from "frontend/Type"
 
 const Dealer = ({
   dealerCards,

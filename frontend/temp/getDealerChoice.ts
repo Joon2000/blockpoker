@@ -1,4 +1,5 @@
 import { getRandomNumber } from "./randomNumber"
+import { Choice } from "frontend/Type"
 
 export function getDealerChoice(choice: Choice): Choice {
   const randomNumber = getRandomNumber()

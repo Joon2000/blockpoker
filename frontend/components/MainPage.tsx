@@ -3,6 +3,7 @@ import { Table } from "./Table"
 import { Dealer } from "./Dealer"
 import { Player } from "./Player"
 import { getRandomNumber } from "../temp/randomNumber"
+import { Choice, Round, Turn } from "../Type"
 
 const MainPage = () => {
   const [dealerCoin, setDealerCoin] = useState<number>(10000)

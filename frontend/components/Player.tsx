@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Coin } from "./Coin"
 import { EnteranceFee } from "./EnteranceFee"
 import { Cards } from "./Cards"
-import { Choice } from "./Choice"
+import { Select } from "./Select"
 
 const Player = ({
   playerCards,
@@ -47,7 +47,7 @@ const Player = ({
       ) : (
         <div>
           <Cards playerCards={playerCards} addCard={addCard} />
-          <Choice
+          <Select
             turn={turn}
             setTurn={setTurn}
             dealerCoin={dealerCoin}
