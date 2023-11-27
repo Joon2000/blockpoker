@@ -34,7 +34,10 @@ const Select = ({
   function clickCall(e: { preventDefault: () => void }) {
     e.preventDefault()
     setPlayerChoice("CALL")
-    const betCoin = dealerTotalBet - playerTotalBet
+    let betCoin = dealerTotalBet - playerTotalBet
+    if (betCoin === 0) {
+      betCoin = playerTotalBet
+    }
     //돈을 canister로 옮기는 함수
     setPlayerCoin((prevCoin: number) => prevCoin - betCoin)
     setPlayerBet(betCoin)
