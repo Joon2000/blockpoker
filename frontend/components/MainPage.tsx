@@ -69,18 +69,18 @@ const MainPage = () => {
           newCard2,
         ])
       }
-      addCard()
-      setAddCard(true)
-      setRound("ROUND2")
-      setPlayerChoice("NONE")
-      setDealerChoice("NONE")
-      if (turn === "DEALER") {
-        setTurn("PLAYER")
-      } else if (turn === "PLAYER") {
-        setTurn("DEALER")
-      }
-      setCallState(false)
     }
+    addCard()
+    setAddCard(true)
+    setRound("ROUND2")
+    setPlayerChoice("NONE")
+    setDealerChoice("NONE")
+    if (turn === "DEALER") {
+      setTurn("PLAYER")
+    } else if (turn === "PLAYER") {
+      setTurn("DEALER")
+    }
+    setCallState(false)
   }, [callState])
 
   useEffect(() => {
