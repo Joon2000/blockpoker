@@ -4,6 +4,7 @@ import { Dealer } from "./Dealer"
 import { Player } from "./Player"
 import { getRandomNumber } from "../temp/randomNumber"
 import { Choice, Round, Turn } from "../Type"
+import { randomNumber } from "../../src/declarations/randomNumber"
 
 const MainPage = () => {
   const [dealerCoin, setDealerCoin] = useState<number>(10000)
@@ -24,32 +25,51 @@ const MainPage = () => {
   const [dealerTotalBet, setDealerTotalBet] = useState<number>(0)
   const [winner, setWinner] = useState<string>("")
 
-  useEffect(() => {
-    if (turn === "STARTING" && addCard === false) {
-      const card1 = getRandomNumber().toString()
-      const card2 = getRandomNumber().toString()
-      setPlayerCards([card1, card2, ""])
-      const dealerCard1 = getRandomNumber().toString()
-      const dealerCard2 = getRandomNumber().toString()
-      setDealerCards([dealerCard1, dealerCard2, ""])
-      setTurn("DEALER")
-    }
-  }, [turn])
+  async function getCard() {
+    const randomNum = await randomNumber.generateRandomNumber()
+    return (parseInt(randomNum.toString()) % 10).toString()
+  }
 
   useEffect(() => {
-    if (callState === true && round === "ROUND1") {
-      const newCard1 = getRandomNumber().toString()
-      setPlayerCards((prevCard: string[]) => [
-        prevCard[0],
-        prevCard[1],
-        newCard1,
-      ])
-      const newCard2 = getRandomNumber().toString()
-      setDealerCards((prevCard: string[]) => [
-        prevCard[0],
-        prevCard[1],
-        newCard2,
-      ])
+    const initializeCard = async () => {
+      if (turn === "STARTING" && addCard === false) {
+        try {
+          const card1 = await getCard()
+          const card2 = await getCard()
+          setPlayerCards([card1, card2, ""])
+
+          const dealerCard1 = await getCard()
+          const dealerCard2 = await getCard()
+          setDealerCards([dealerCard1, dealerCard2, ""])
+
+          setTurn("DEALER")
+        } catch (error) {
+          // Handle errors if any
+          console.error("Error initializing game:", error)
+        }
+      }
+    }
+
+    initializeCard()
+  }, [turn, addCard])
+
+  useEffect(() => {
+    const addCard = async () => {
+      if (callState === true && round === "ROUND1") {
+        const newCard1 = await getCard()
+        setPlayerCards((prevCard: string[]) => [
+          prevCard[0],
+          prevCard[1],
+          newCard1,
+        ])
+        const newCard2 = await getCard()
+        setDealerCards((prevCard: string[]) => [
+          prevCard[0],
+          prevCard[1],
+          newCard2,
+        ])
+      }
+      addCard()
       setAddCard(true)
       setRound("ROUND2")
       setPlayerChoice("NONE")
