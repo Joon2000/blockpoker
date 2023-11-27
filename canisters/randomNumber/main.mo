@@ -10,5 +10,4 @@ actor  {
             return ?result;
         };
     };
-
 };
