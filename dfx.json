@@ -1,11 +1,17 @@
 {
   "canisters": {
+    "backend": {
+      "main": "canisters/backend/main.mo"
+    },
     "randomNumber": {
       "main": "canisters/randomNumber/main.mo",
       "type": "motoko"
     },
     "assets": {
-      "dependencies": ["randomNumber"],
+      "dependencies": [
+        "randomNumber",
+        "backend"
+      ],
       "frontend": {
         "entrypoint": "dist/index.html"
       },
