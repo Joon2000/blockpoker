@@ -25,25 +25,22 @@ import { Profile } from "./components/Profile"
 import { useWallet } from "@connect2ic/react"
 import { MainPage } from "./components/MainPage"
 import { ConnectWallet } from "./components/ConnectWallet"
+import { PlayerPage } from "./components/PlayerPage"
+import { Container } from "@mui/material"
 
 function App() {
   const [wallet] = useWallet()
   return (
-    <div className="App">
-      <div className="auth-section">
-        <ConnectButton />
+    <Container maxWidth={"lg"}>
+      <div className="button--container">
+        <div className="connect--button">
+          <ConnectButton />
+        </div>
       </div>
       <ConnectDialog />
 
-      {wallet ? <MainPage /> : <ConnectWallet />}
-
-      {/* <p className="examples-title">Examples</p>
-      <div className="examples">
-        <Counter />
-        <Profile />
-        <Transfer />
-  </div>*/}
-    </div>
+      {wallet ? <PlayerPage /> : <ConnectWallet />}
+    </Container>
   )
 }
 
