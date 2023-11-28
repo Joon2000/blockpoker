@@ -1,10 +1,10 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { PokerTable } from "./PokerTable"
 import { PlayerButton } from "./PlayerButton"
 import { Box } from "@mui/material"
-import { brown, indigo } from "@mui/material/colors"
+import { brown } from "@mui/material/colors"
 
-const PlayerPage = () => {
+const PlayerPage = ({ wallet }) => {
   return (
     <div style={{ marginTop: "40px" }}>
       <Box
@@ -17,7 +17,7 @@ const PlayerPage = () => {
         }}
       >
         <PokerTable />
-        <PlayerButton />
+        <PlayerButton wallet={wallet} />
       </Box>
     </div>
   )

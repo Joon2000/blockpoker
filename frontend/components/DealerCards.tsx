@@ -4,7 +4,7 @@ import { Grid } from "@mui/material"
 
 const DealerCards = () => {
   return (
-    <div style={{ position: "absolute", left: "40%", top: "10px" }}>
+    <div style={{ position: "absolute", left: "37%", top: "10px" }}>
       <Grid container spacing={2}>
         <Grid item xs={6} md={8}>
           <CardBack />

@@ -1,8 +1,7 @@
 import { Button } from "@mui/material"
-import { red } from "@mui/material/colors"
 import React from "react"
 
-const PlayerButton = () => {
+const PlayerButton = ({ wallet }) => {
   function clickStart() {
     console.log("start")
   }
@@ -10,7 +9,7 @@ const PlayerButton = () => {
     <div
       style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
     >
-      <Button variant="contained" onClick={clickStart}>
+      <Button variant="contained" onClick={clickStart} size="large">
         START
       </Button>
     </div>

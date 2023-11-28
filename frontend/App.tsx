@@ -39,7 +39,7 @@ function App() {
       </div>
       <ConnectDialog />
 
-      {wallet ? <PlayerPage /> : <ConnectWallet />}
+      {wallet ? <PlayerPage wallet={wallet} /> : <ConnectWallet />}
     </Container>
   )
 }
