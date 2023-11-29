@@ -7,11 +7,12 @@
       "main": "canisters/randomNumber/main.mo",
       "type": "motoko"
     },
+    "Turn": {
+      "main": "canisters/Turn/main.mo",
+      "type": "motoko"
+    },
     "assets": {
-      "dependencies": [
-        "randomNumber",
-        "backend"
-      ],
+      "dependencies": ["randomNumber", "Turn"],
       "frontend": {
         "entrypoint": "dist/index.html"
       },
