@@ -6,7 +6,7 @@ actor  {
         let entropy = await Random.blob(); // get initial entropy
         var f = Random.Finite(entropy);
         do ? {
-            var result =f.range(5)!;
+            var result =f.range(5)!%10+1;
             return ?result;
         };
     };
