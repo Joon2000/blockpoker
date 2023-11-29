@@ -1,9 +1,15 @@
 import { Button } from "@mui/material"
 import React from "react"
+import { Turn } from "../../src/declarations/Turn"
 
 const PlayerButton = ({ wallet }) => {
-  function clickStart() {
-    console.log("start")
+  async function clickStart(e: { preventDefault: () => void }) {
+    e.preventDefault()
+    console.log(wallet.principal)
+    const player = await Turn.playerReady(wallet.principal)
+    console.log(player)
+    // const cards = await Turn.getPlayer1Cards(wallet.principal)
+    // console.log(cards)
   }
   return (
     <div
