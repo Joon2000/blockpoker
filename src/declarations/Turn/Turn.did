@@ -1,0 +1,8 @@
+service : {
+  getPlayer1Cards: (text) -> (opt record {
+                                    opt nat;
+                                    opt nat;
+                                  }) query;
+  initializeCards: () -> (opt null);
+  playerReady: (text) -> (text);
+}
