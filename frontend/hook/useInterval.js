@@ -18,3 +18,4 @@ function useInterval(callback, delay) {
     }
   }, [delay]) // delay가 바뀔 때마다 새로 실행된다.
 }
+export { useInterval }

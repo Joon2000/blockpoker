@@ -8,6 +8,9 @@ import Principal "mo:base/Principal";
 import Debug "mo:base/Debug";
 
 actor {
+    type Choice = { #FOLD; #CHECK; #RAISE; #CALL; #NONE };
+    type Turn = { #PLAYER1; #PLAYER2; #NEITHER; };
+
 
     // type Player = {
     //     address : ?Principal;
@@ -43,11 +46,17 @@ actor {
         public var totalBettingAmount = _totalBettingAmount;
         public var currentBettingAmount = _currentBettingAmount;
         public var bettingChoice = _bettingChoice;
-
     }; 
+
+    class GameStatus(_isBothPlayerReady:Bool, _totalBettingAmount:Nat, _gameTurn:Text){
+        public var isBothPlayerReady = _isBothPlayerReady;
+        public var totalBettingAmount = _totalBettingAmount;
+        public var gameTurn = _gameTurn;
+    };
 
     let player1 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE");
     let player2 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE");
+    let gameStatus = GameStatus(false, 0, "NEITHER");
 
 
 
@@ -65,8 +74,10 @@ actor {
         do ? {
         player1.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player1.cards);
         player1.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player1.cards);
+        // player1.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player1.cards);
         player2.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player2.cards);
         player2.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player2.cards);
+        // player2.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player2.cards);
         };
     };
 
@@ -74,21 +85,55 @@ actor {
         var address = Principal.fromText(principal);
         if(player1.address==null){
             player1.address:=?address;
+            player1.cards := List.push<?Nat>(null, player1.cards);
             return "PLAYER1";
         } else {
             player2.address:=?address;
+            player2.cards := List.push<?Nat>(null, player2.cards);
             let result = await initializeCards();
+            gameStatus.isBothPlayerReady:=true;
             return "PLAYER2";
         };
     } ;
 
-    public query func getPlayer1Cards(principal: Text): async ?(?Nat,?Nat){
+    //Retun 값이 JSON 형태면 좋겠음
+    public func getGameData(principal: Text): async (Nat, Nat, Text, Bool, Nat, Nat, Nat, Text, Text){
+        var address = Principal.fromText(principal);
+        if(?address==player1.address){
+            return (
+                player1.totalBettingAmount, 
+                player1.currentBettingAmount, 
+                player1.bettingChoice, 
+                gameStatus.isBothPlayerReady, 
+                gameStatus.totalBettingAmount, 
+                player2.totalBettingAmount, 
+                player2.currentBettingAmount, 
+                player2.bettingChoice, 
+                gameStatus.gameTurn
+            )
+        } else {
+            return (
+                player2.totalBettingAmount, 
+                player2.currentBettingAmount, 
+                player2.bettingChoice, 
+                gameStatus.isBothPlayerReady, 
+                gameStatus.totalBettingAmount, 
+                player1.totalBettingAmount, 
+                player1.currentBettingAmount, 
+                player1.bettingChoice, 
+                gameStatus.gameTurn
+            )
+        }
+
+    };
+
+    public query func getPlayer1Cards(principal: Text): async ?(?Nat,?Nat,?Nat){
         do?{
             var address = Principal.fromText(principal);
             if(?address==player1.address){
-                return ?(List.get<?Nat>(player1.cards,0)!,List.get<?Nat>(player1.cards,1)!)
+                return ?(List.get<?Nat>(player1.cards,0)!,List.get<?Nat>(player1.cards,1)!,List.get<?Nat>(player1.cards,2)!)
             } else {
-                return ?(List.get<?Nat>(player2.cards,0)!,List.get<?Nat>(player1.cards,1)!)
+                return ?(List.get<?Nat>(player2.cards,0)!,List.get<?Nat>(player1.cards,1)!,List.get<?Nat>(player2.cards,2)!)
             }
         }
     } 
