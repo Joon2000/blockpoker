@@ -1,13 +1,24 @@
-import { Box, Grid } from "@mui/material"
+import { Box } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import React from "react"
 import { StateBox } from "./StateBox"
 import { MoneyBox } from "./MoneyBox"
 import { DealerCards } from "./DealerCards"
-import { PLayerCards } from "./PlayerCards"
+import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
+import { Message } from "./Message"
 
-const PokerTable = () => {
+const PokerTable = ({
+  playerTotalBettingAmount,
+  playerCurrentBettingAmount,
+  playerBettingChoice,
+  totalAmountBetting,
+  counterpartTotalBettingAmount,
+  counterpartCurrentBettingAmount,
+  counterpartBettingChoice,
+  gameTurn,
+  playerCards,
+}) => {
   return (
     <div
       style={{
@@ -26,12 +37,25 @@ const PokerTable = () => {
           bgcolor: brown[200],
         }}
       >
-        <StateBox position={"OPPONENT"} />
+        <Message />
+        <StateBox
+          position={"OPPONENT"}
+          playerTotalBettingAmount={playerTotalBettingAmount}
+          playerCurrentBettingAmount={playerCurrentBettingAmount}
+          counterpartTotalBettingAmount={counterpartTotalBettingAmount}
+          counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
+        />
         <DealerCards />
         <CardDeck />
-        <MoneyBox />
-        <PLayerCards />
-        <StateBox position={"PLAYER"} />
+        <MoneyBox totalBettingAmount={totalAmountBetting} />
+        <PlayerCards playerCards={playerCards} />
+        <StateBox
+          position={"PLAYER"}
+          playerTotalBettingAmount={playerTotalBettingAmount}
+          playerCurrentBettingAmount={playerCurrentBettingAmount}
+          counterpartTotalBettingAmount={counterpartTotalBettingAmount}
+          counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
+        />
       </Box>
     </div>
   )
