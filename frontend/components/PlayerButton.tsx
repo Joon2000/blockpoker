@@ -10,10 +10,8 @@ const PlayerButton = ({ wallet, setPlayer }) => {
     const player = await Turn.playerReady(wallet.principal)
     console.log(player)
     setPlayer(player)
-
-    // const cards = await Turn.getPlayer1Cards(wallet.principal)
-    // console.log(cards)
   }
+
   return (
     <div
       style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}

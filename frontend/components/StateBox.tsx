@@ -2,7 +2,13 @@ import { Box } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React from "react"
 
-const StateBox = ({ position }) => {
+const StateBox = ({
+  position,
+  playerTotalBettingAmount,
+  playerCurrentBettingAmount,
+  counterpartTotalBettingAmount,
+  counterpartCurrentBettingAmount,
+}) => {
   return (
     <div
       style={
@@ -18,7 +24,21 @@ const StateBox = ({ position }) => {
           borderRadius: 1,
           bgcolor: grey[400],
         }}
-      ></Box>
+      >
+        <div style={{ textAlign: "center" }}>
+          {position === "OPPONENT" ? (
+            <div style={{}}>
+              <p>{`Current Betting: ${counterpartCurrentBettingAmount}`}</p>
+              <p>{`Total Betting: ${counterpartTotalBettingAmount}`}</p>
+            </div>
+          ) : (
+            <div style={{}}>
+              <p>{`Current Betting: ${playerCurrentBettingAmount}`}</p>
+              <p>{`Total Betting: ${playerTotalBettingAmount}`}</p>
+            </div>
+          )}
+        </div>
+      </Box>
     </div>
   )
 }
