@@ -38,7 +38,8 @@ actor {
         _cards : List.List<?Nat>, 
         _totalBettingAmount : Nat, 
         _currentBettingAmount: Nat, 
-        _bettingChoice: Text
+        _bettingChoice: Text,
+        _totalChips: Nat
         ) {
         public var address = _address;
         public var isReady = _isReady;
@@ -46,6 +47,7 @@ actor {
         public var totalBettingAmount = _totalBettingAmount;
         public var currentBettingAmount = _currentBettingAmount;
         public var bettingChoice = _bettingChoice;
+        public var totalChips = _totalChips;
     }; 
 
     class GameStatus(_isBothPlayerReady:Bool, _totalBettingAmount:Nat, _gameTurn:Text){
@@ -54,8 +56,8 @@ actor {
         public var gameTurn = _gameTurn;
     };
 
-    let player1 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE");
-    let player2 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE");
+    let player1 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE", 100);
+    let player2 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE", 100);
     let gameStatus = GameStatus(false, 0, "NEITHER");
 
 
@@ -97,19 +99,21 @@ actor {
     } ;
 
     //Retun 값이 JSON 형태면 좋겠음
-    public func getGameData(principal: Text): async (Nat, Nat, Text, Bool, Nat, Nat, Nat, Text, Text){
+    public func getGameData(principal: Text): async (Nat, Nat, Text, Bool, Nat, Nat, Nat, Text, Text, Nat, Nat){
         var address = Principal.fromText(principal);
         if(?address==player1.address){
             return (
                 player1.totalBettingAmount, 
                 player1.currentBettingAmount, 
-                player1.bettingChoice, 
+                player1.bettingChoice,
                 gameStatus.isBothPlayerReady, 
                 gameStatus.totalBettingAmount, 
                 player2.totalBettingAmount, 
                 player2.currentBettingAmount, 
                 player2.bettingChoice, 
-                gameStatus.gameTurn
+                gameStatus.gameTurn,
+                player1.totalChips,
+                player2.totalChips
             )
         } else {
             return (
@@ -121,13 +125,15 @@ actor {
                 player1.totalBettingAmount, 
                 player1.currentBettingAmount, 
                 player1.bettingChoice, 
-                gameStatus.gameTurn
+                gameStatus.gameTurn,
+                player2.totalChips,
+                player1.totalChips
             )
         }
 
     };
 
-    public query func getPlayer1Cards(principal: Text): async ?(?Nat,?Nat,?Nat){
+    public query func getPlayerCards(principal: Text): async ?(?Nat,?Nat,?Nat){
         do?{
             var address = Principal.fromText(principal);
             if(?address==player1.address){
@@ -136,6 +142,14 @@ actor {
                 return ?(List.get<?Nat>(player2.cards,0)!,List.get<?Nat>(player1.cards,1)!,List.get<?Nat>(player2.cards,2)!)
             }
         }
+    };
+
+    public func Fold(principal: Text): async (){
+        var address = Principal.fromText(principal);
+        if (?address==player1.address){
+            
+        }
     } 
+
 
 }
