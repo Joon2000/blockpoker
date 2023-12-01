@@ -79,7 +79,12 @@ const PlayerPage = ({ wallet }) => {
           gameTurn={gameTurn}
           playerCards={playerCards}
         />
-        <PlayerButton wallet={wallet} setPlayer={setPlayer} />
+        <PlayerButton
+          wallet={wallet}
+          setPlayer={setPlayer}
+          isBothPlayerReady={isBothPlayerReady}
+          gameTurn={gameTurn}
+        />
       </Box>
     </div>
   )
