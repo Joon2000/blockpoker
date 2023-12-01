@@ -147,8 +147,19 @@ actor {
     public func Fold(principal: Text): async (){
         var address = Principal.fromText(principal);
         if (?address==player1.address){
-            
-        }
+            player1.totalChips+=gameStatus.totalBettingAmount;
+        } else {
+            player2.totalChips+=gameStatus.totalBettingAmount;
+        };
+        gameStatus.totalBettingAmount:=0;
+        player1.totalBettingAmount:=0;
+        player1.currentBettingAmount:=0;
+        player2.totalBettingAmount:=0;
+        player2.currentBettingAmount:=0;
+        player1.bettingChoice:="NONE";
+        player2.bettingChoice:="NONE";
+        player1.cards:=List.nil<?Nat>();
+        player2.cards:=List.nil<?Nat>();
     } 
 
 
