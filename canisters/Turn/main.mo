@@ -50,15 +50,16 @@ actor {
         public var totalChips = _totalChips;
     }; 
 
-    class GameStatus(_isBothPlayerReady:Bool, _totalBettingAmount:Nat, _gameTurn:Text){
+    class GameStatus(_isBothPlayerReady:Bool, _totalBettingAmount:Nat, _gameTurn:Text, _callState:Bool){
         public var isBothPlayerReady = _isBothPlayerReady;
         public var totalBettingAmount = _totalBettingAmount;
         public var gameTurn = _gameTurn;
+        public var callState = _callState
     };
 
     let player1 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE", 100);
     let player2 = Player(null, false, List.nil<?Nat>(), 0, 0, "NONE", 100);
-    let gameStatus = GameStatus(false, 0, "NEITHER");
+    let gameStatus = GameStatus(false, 0, "NEITHER", false);
 
 
 
@@ -70,16 +71,30 @@ actor {
     //     currentBettingAmount = 0;
     //     bettingChoice = "NONE";
     // };
+
+    public func getCard(): async (Nat){
+        var card = null;
+        do ?{
+            while (card!=null)
+            {var card = await randomNumber.generateRandomNumber();}
+        }
+    };
     
     public func initializeCards(): async ?(){
         //immutable variables?
         do ? {
         player1.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player1.cards);
         player1.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player1.cards);
-        // player1.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player1.cards);
         player2.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player2.cards);
         player2.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player2.cards);
-        // player2.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player2.cards);
+        };
+    };
+
+    public func addCard(): async ?(){
+        //immutable variables?
+        do ? {
+        player1.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player1.cards);
+        player2.cards := List.push<?Nat>(await randomNumber.generateRandomNumber(), player2.cards);
         };
     };
 
@@ -94,6 +109,7 @@ actor {
             player2.cards := List.push<?Nat>(null, player2.cards);
             let result = await initializeCards();
             gameStatus.isBothPlayerReady:=true;
+            gameStatus.gameTurn:="PLAYER1";
             return "PLAYER2";
         };
     } ;
@@ -160,7 +176,52 @@ actor {
         player2.bettingChoice:="NONE";
         player1.cards:=List.nil<?Nat>();
         player2.cards:=List.nil<?Nat>();
-    } 
+        gameStatus.gameTurn:="NEITHER"
+    };
 
+    public func handleCall(): async (){
+        if(gameStatus.callState==false){
+            gameStatus.callState:=true;
+            player1.bettingChoice:="NONE";
+            player2.bettingChoice:="NONE";
+            player1.currentBettingAmount:=0;
+            player2.currentBettingAmount:=0;
+            let result = await addCard();
+        } else{
+            do?{
+                let player1
+                var player1CardSum=List.get<?Nat>(player1.cards,0)!+List.get<?Nat>(player1.cards,1)!+List.get<?Nat>(player1.cards,2)!;
+                var player2CardSum=List.get<?Nat>(player2.cards,0)!+List.get<?Nat>(player1.cards,1)!+List.get<?Nat>(player2.cards,2)!;
+            }
+        };
+    };
 
+    public func Call(principal: Text): async (){
+       var address = Principal.fromText(principal);
+       if(?address==player1.address){
+        player1.currentBettingAmount+=player2.totalBettingAmount-player1.totalBettingAmount;
+        if(player1.currentBettingAmount==0){
+            player1.currentBettingAmount+=1;
+        };
+        player1.totalBettingAmount+=player1.currentBettingAmount;
+        gameStatus.totalBettingAmount+=player1.currentBettingAmount;
+        if(player2.bettingChoice=="CALL"){
+            let result = handleCall();
+        };
+        player1.bettingChoice:="CALL";
+        gameStatus.gameTurn:="PLAYER2"
+       } else {
+        player2.currentBettingAmount+=player1.totalBettingAmount-player2.totalBettingAmount;
+        if(player2.currentBettingAmount==0){
+            player2.currentBettingAmount+=1;
+        };
+        player2.totalBettingAmount+=player2.currentBettingAmount;
+        gameStatus.totalBettingAmount+=player2.currentBettingAmount;
+        if(player1.bettingChoice=="CALL"){
+            let result = handleCall();
+        };
+        player2.bettingChoice:="CALL";
+        gameStatus.gameTurn:="PLAYER1"
+       }
+    }; 
 }
