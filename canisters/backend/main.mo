@@ -115,34 +115,13 @@ actor {
         players.get(player)
     };
 
-    // VARIABLES
-    stable var player1 : Player = {
-        address = null;
-        isReady = false;
-        cards = List.nil<Card>();
-        totalBettingAmount = 0;
-        currentBettingAmount = 0;
-        bettingChoice = 0;
-    };
-
-    stable var player2 : Player = {
-        address = null;
-        isReady = false;
-        cards = List.nil<Card>();
-        totalBettingAmount = 0;
-        currentBettingAmount = 0;
-        bettingChoice = 0;
-    };
-
-    // FUNCTIONS
-    public func readyGame() : async() {
-        if (player1.address == null and player2.address == null) {
-            await readyForPlayer1();
-        } else if (player1.address != null and player2.address == null) {
-            await readyForPlayer2();
-        } else {
-            //
+    public query func getPlayerInfoList() : async List.List<Player> {
+        var playerInfoList : List.List<Player> = List.nil<Player>();
+        for (val in players.vals()) {
+            playerInfoList := List.push<Player>(val, playerInfoList);
         };
+        
+        playerInfoList
     };
 
     func readyForPlayer1() : async() {
