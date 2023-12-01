@@ -18,6 +18,8 @@ const PokerTable = ({
   counterpartBettingChoice,
   gameTurn,
   playerCards,
+  playerTotalChips,
+  counterpartTotalChips,
 }) => {
   return (
     <div
@@ -44,6 +46,8 @@ const PokerTable = ({
           playerCurrentBettingAmount={playerCurrentBettingAmount}
           counterpartTotalBettingAmount={counterpartTotalBettingAmount}
           counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
+          playerTotalChips={playerTotalChips}
+          counterpartTotalChips={counterpartTotalChips}
         />
         <DealerCards />
         <CardDeck />
@@ -55,6 +59,8 @@ const PokerTable = ({
           playerCurrentBettingAmount={playerCurrentBettingAmount}
           counterpartTotalBettingAmount={counterpartTotalBettingAmount}
           counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
+          playerTotalChips={playerTotalChips}
+          counterpartTotalChips={counterpartTotalChips}
         />
       </Box>
     </div>
