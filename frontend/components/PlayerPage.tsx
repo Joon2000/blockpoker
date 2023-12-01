@@ -6,6 +6,8 @@ import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"
 import { Turn } from "../../src/declarations/Turn"
 import { Choice } from "frontend/Type"
+import { BiCommentDots } from "react-icons/bi"
+import { BiMehBlank } from "react-icons/bi"
 
 const PlayerPage = ({ wallet }) => {
   const [player, setPlayer] = useState<string>("NONE")
@@ -66,12 +68,15 @@ const PlayerPage = ({ wallet }) => {
       <Box
         sx={{
           width: 1000,
-          height: 650,
+          height: 700,
           borderRadius: 1,
           bgcolor: brown[100],
-          pt: 6,
         }}
       >
+        <div style={{ marginLeft: "465px" }}>
+          <BiMehBlank size="70" />
+          {player !== gameTurn && <BiCommentDots size="70" />}
+        </div>
         <PokerTable
           playerTotalBettingAmount={playerTotalBettingAmount}
           playerCurrentBettingAmount={playerCurrentBettingAmount}
