@@ -72,13 +72,15 @@ actor {
     //     bettingChoice = "NONE";
     // };
 
-    public func getCard(): async (Nat){
-        var card = null;
-        do ?{
-            while (card!=null)
-            {var card = await randomNumber.generateRandomNumber();}
-        }
-    };
+    // public func getCard(): async (Nat){
+    //     var card = null;
+    //     do ?{
+    //         while (card!=null){
+    //             var card = await randomNumber.generateRandomNumber();
+    //         };
+    //     };
+    //     return card
+    // };
     
     public func initializeCards(): async ?(){
         //immutable variables?
