@@ -18,12 +18,11 @@ import "@connect2ic/core/style.css"
 /*
  * Some examples to get you started
  */
-import { Counter } from "./components/Counter"
+
 import { Transfer } from "./components/Transfer"
 import { Profile } from "./components/Profile"
 
 import { useWallet } from "@connect2ic/react"
-import { MainPage } from "./components/MainPage"
 import { ConnectWallet } from "./components/ConnectWallet"
 import { PlayerPage } from "./components/PlayerPage"
 import { Container } from "@mui/material"
