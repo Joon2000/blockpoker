@@ -1,2 +1,60 @@
+type Player = 
+ record {
+   address: principal;
+   bettingChoice: Choice;
+   cards: List_2;
+   currentBettingAmount: nat;
+   isReady: bool;
+   totalBettingAmount: nat;
+ };
+type PlayStatus = 
+ variant {
+   ALL_READY;
+   GAME_END;
+   NOT_READY;
+   PLAYING;
+ };
+type List_2 = 
+ opt record {
+       Card;
+       List_2;
+     };
+type List_1 = 
+ opt record {
+       Player;
+       List_1;
+     };
+type List = 
+ opt record {
+       principal;
+       List;
+     };
+type GameStatus = 
+ record {
+   masterPlayer: opt principal;
+   playStatus: PlayStatus;
+   totalBettingAmount: nat;
+   whoseTurn: opt principal;
+ };
+type Choice = 
+ variant {
+   CALL;
+   CHECK;
+   FOLD;
+   NONE;
+   RAISE;
+ };
+type Card = 
+ record {
+   cardNumber: nat;
+   order: nat;
+ };
 service : {
+  exitGame: (principal) -> () oneway;
+  getGameStatus: () -> (GameStatus) query;
+  getPlayerInfo: (principal) -> (opt Player) query;
+  getPlayerInfoList: () -> (List_1) query;
+  getPlayerList: () -> (List) query;
+  readyGame: (principal) -> () oneway;
+  startGame: (principal) -> () oneway;
 }
