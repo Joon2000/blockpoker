@@ -2,11 +2,24 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export interface _SERVICE {
+  'Fold' : ActorMethod<[string], undefined>,
   'getGameData' : ActorMethod<
     [string],
-    [bigint, bigint, string, boolean, bigint, bigint, bigint, string, string]
+    [
+      bigint,
+      bigint,
+      string,
+      boolean,
+      bigint,
+      bigint,
+      bigint,
+      string,
+      string,
+      bigint,
+      bigint,
+    ]
   >,
-  'getPlayer1Cards' : ActorMethod<
+  'getPlayerCards' : ActorMethod<
     [string],
     [] | [[[] | [bigint], [] | [bigint], [] | [bigint]]]
   >,

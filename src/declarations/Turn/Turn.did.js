@@ -1,5 +1,6 @@
 export const idlFactory = ({ IDL }) => {
   return IDL.Service({
+    'Fold' : IDL.Func([IDL.Text], [], []),
     'getGameData' : IDL.Func(
         [IDL.Text],
         [
@@ -12,10 +13,12 @@ export const idlFactory = ({ IDL }) => {
           IDL.Nat,
           IDL.Text,
           IDL.Text,
+          IDL.Nat,
+          IDL.Nat,
         ],
         [],
       ),
-    'getPlayer1Cards' : IDL.Func(
+    'getPlayerCards' : IDL.Func(
         [IDL.Text],
         [
           IDL.Opt(
