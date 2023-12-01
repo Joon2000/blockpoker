@@ -24,10 +24,12 @@ const PlayerPage = ({ wallet }) => {
     useState<string>("NONE")
   const [gameTurn, setGameTurn] = useState<string>("NEITHER")
   const [playerCards, setPlayerCards] = useState<number[]>([null, null, null])
+  const [playerTotalChips, setPlayerTotalChips] = useState<number>(0)
+  const [counterpartTotalChips, setcounterTotalChips] = useState<number>(0)
 
   const fetchUserData = async () => {
     const data = await Turn.getGameData(wallet.principal)
-    const cards = await Turn.getPlayer1Cards(wallet.principal)
+    const cards = await Turn.getPlayerCards(wallet.principal)
     return [data, cards]
   }
 
@@ -43,6 +45,8 @@ const PlayerPage = ({ wallet }) => {
       setCounterpartCurrentBettingAmount(Number(data[6]))
       setCounterPartBettingChoice(data[7])
       setGameTurn(data[8])
+      setPlayerTotalChips(Number(data[9]))
+      setcounterTotalChips(Number(data[10]))
       // console.log("card1", cards[0][0][0])
       // console.log("card2", cards[0][1][0])
       // console.log("card3", cards[0][2][0])
@@ -78,6 +82,8 @@ const PlayerPage = ({ wallet }) => {
           counterpartBettingChoice={counterpartBettingChoice}
           gameTurn={gameTurn}
           playerCards={playerCards}
+          playerTotalChips={playerTotalChips}
+          counterpartTotalChips={counterpartTotalChips}
         />
         <PlayerButton
           wallet={wallet}
