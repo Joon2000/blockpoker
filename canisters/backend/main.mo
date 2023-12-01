@@ -124,16 +124,108 @@ actor {
         playerInfoList
     };
 
-    func readyForPlayer1() : async() {
+    // 게임 준비
+    public func readyGame(player : Principal) {
+        // 참여한 player 수가 최대 player 넘어가면 에러 발생하고 player 추가 하지 않음
+        assert(players.size() < MAX_PLAYER);
+
+        // 첫 번째 player면 방장 시켜 줌
+        if (players.size() == 0) {
+            setMasterPlayer(?player);
+        };
+        
+        let newPlayerInfo : Player = {
+            address = player;
+            isReady = true;
+            cards = List.nil<Card>();
+            totalBettingAmount = 0;
+            currentBettingAmount = 0;
+            bettingChoice = #NONE;
+        };
+        players.put(player, newPlayerInfo);
+
+        updatePlayingStatus();
+    };
+
+    func updatePlayingStatus() {
+        // 혼자 레디인 상태면 ALL_READY가 아님
+        if (players.size() == 1) {
+            gameStatus.playStatus := #NOT_READY;
+            return
+        };
+
+        for (val in players.vals()) {
+            if (val.isReady == false){
+                gameStatus.playStatus := #NOT_READY;
+                return
+            }
+        };
+        gameStatus.playStatus := #ALL_READY;
+    };
+
+    func setMasterPlayer(player : ?Principal) {
+        gameStatus.masterPlayer := player;
+    };
+
+    // 게임 시작
+    public func startGame(player : Principal) {
+        // masterPlayer만 startGame 가능
+        assert(gameStatus.masterPlayer == ?player);
+        fillCardDeck(cardDeck, NUMBER_OF_CARDS_IN_CARD_DECK);
+        drawCard(cardDeck);
+
+        gameStatus.playStatus := #PLAYING;
+    };
+
+    func fillCardDeck(cardDeck : MutableCardDeck, numberOfCards : Nat) {
+        for (i in Iter.range(0, numberOfCards)) {
+            // let card : Card = await getEncryptedCard(i);
+            // 임시
+            let card : Card = {
+                cardNumber = i;
+                order = i;
+            };
+
+            cardDeck.cards := List.push<Card>(card, cardDeck.cards);
+        }
+    };
+
+    func getEncryptedCard(order : Nat) : async Card {
+        // cardNumber = await randomNumber.generateRandomNumber();
+        // encryptedCardNumber = getEncryptedCardNumber(cardNumber);
+        let card : Card = {
+                cardNumber = order;
+                // cardNumber = encryptedCardNumber;
+                order = order;
+        };
+        card
+    };
+
+    func getEncryptedCardNumber(cardNumber : Nat) : async Hash.Hash {
+        // 암호화해야한다.
+        // 임시용
+        Hash.hash(cardNumber)
+    };
+
+    func drawCard(cardDeck : MutableCardDeck) {
+        // 플레이어들에게 카드를 2 장씩 나눠준다.
 
     };
 
-    func readyForPlayer2() : async() {
+    // func
 
+
+    // 게임 나가기
+    public func exitGame(player : Principal) {
+        if (players.size() > 1 and ?player == gameStatus.masterPlayer) {
+            // 다음 사람 줘야 함
+        };
+        removePlayer(player);
+        updatePlayingStatus();
     };
 
-
-    public query func getGameStatus() : async() {
-
+    func removePlayer(player : Principal) {
+        players.delete(player);
     };
+
 }
