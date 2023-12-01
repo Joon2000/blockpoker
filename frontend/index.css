@@ -1,1 +1,18 @@
+.button--container {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  align-items: flex-start; /* 위쪽 정렬 */
+}
 
+/* .connect--button {
+} */
+
+.playerpage--container {
+  background-color: #f0f8ff;
+}
+
+.card--image {
+  width: 90px;
+  height: 140px;
+  box-shadow: 5px 5px 5px #000;
+}
