@@ -12,7 +12,7 @@
       "type": "motoko"
     },
     "assets": {
-      "dependencies": ["randomNumber", "Turn"],
+      "dependencies": ["backend", "randomNumber", "Turn"],
       "frontend": {
         "entrypoint": "dist/index.html"
       },
