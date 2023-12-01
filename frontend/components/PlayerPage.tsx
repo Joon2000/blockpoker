@@ -95,6 +95,7 @@ const PlayerPage = ({ wallet }) => {
           setPlayer={setPlayer}
           isBothPlayerReady={isBothPlayerReady}
           gameTurn={gameTurn}
+          player={player}
         />
       </Box>
     </div>

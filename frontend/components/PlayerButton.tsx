@@ -3,7 +3,13 @@ import React, { useState } from "react"
 import { Turn } from "../../src/declarations/Turn"
 import { useInterval } from "../hook/useInterval"
 
-const PlayerButton = ({ wallet, setPlayer, isBothPlayerReady, gameTurn }) => {
+const PlayerButton = ({
+  wallet,
+  setPlayer,
+  isBothPlayerReady,
+  gameTurn,
+  player,
+}) => {
   async function clickStart(e: { preventDefault: () => void }) {
     e.preventDefault()
     console.log(wallet.principal)
@@ -34,12 +40,18 @@ const PlayerButton = ({ wallet, setPlayer, isBothPlayerReady, gameTurn }) => {
                 onClick={clickFold}
                 size="large"
                 color="error"
+                disabled={player !== gameTurn}
               >
                 Fold
               </Button>
             </Grid>
             <Grid item xs={6} md={4}>
-              <Button variant="contained" onClick={clickCall} size="large">
+              <Button
+                variant="contained"
+                onClick={clickCall}
+                size="large"
+                disabled={player !== gameTurn}
+              >
                 Call
               </Button>
             </Grid>
@@ -49,6 +61,7 @@ const PlayerButton = ({ wallet, setPlayer, isBothPlayerReady, gameTurn }) => {
                 onClick={clickRaise}
                 size="large"
                 color="success"
+                disabled={player !== gameTurn}
               >
                 Raise
               </Button>
