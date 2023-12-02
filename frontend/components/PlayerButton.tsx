@@ -1,7 +1,6 @@
 import { Button, Grid } from "@mui/material"
 import React, { useState } from "react"
 import { Turn } from "../../src/declarations/Turn"
-import { useInterval } from "../hook/useInterval"
 
 const PlayerButton = ({
   wallet,
@@ -19,12 +18,19 @@ const PlayerButton = ({
   }
   async function clickFold(e: { preventDefault: () => void }) {
     e.preventDefault()
+    Turn.Fold(wallet.principal)
   }
   async function clickCall(e: { preventDefault: () => void }) {
     e.preventDefault()
+    Turn.Call(wallet.principal)
   }
   async function clickRaise(e: { preventDefault: () => void }) {
     e.preventDefault()
+    Turn.Raise(wallet.principal)
+  }
+  async function clickContinue(e: { preventDefault: () => void }) {
+    e.preventDefault()
+    Turn.initializeGame()
   }
 
   return (
@@ -32,42 +38,55 @@ const PlayerButton = ({
       style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
     >
       {isBothPlayerReady ? (
-        <div>
-          <Grid container spacing={4}>
-            <Grid item xs={6} md={4}>
-              <Button
-                variant="contained"
-                onClick={clickFold}
-                size="large"
-                color="error"
-                disabled={player !== gameTurn}
-              >
-                Fold
-              </Button>
+        gameTurn === "END" ? (
+          <div>
+            <Button
+              variant="contained"
+              onClick={clickContinue}
+              size="large"
+              disabled={player !== "PLAYER1"}
+            >
+              Continue
+            </Button>
+          </div>
+        ) : (
+          <div>
+            <Grid container spacing={4}>
+              <Grid item xs={6} md={4}>
+                <Button
+                  variant="contained"
+                  onClick={clickFold}
+                  size="large"
+                  color="error"
+                  disabled={player !== gameTurn}
+                >
+                  Fold
+                </Button>
+              </Grid>
+              <Grid item xs={6} md={4}>
+                <Button
+                  variant="contained"
+                  onClick={clickCall}
+                  size="large"
+                  disabled={player !== gameTurn}
+                >
+                  Call
+                </Button>
+              </Grid>
+              <Grid item xs={6} md={4}>
+                <Button
+                  variant="contained"
+                  onClick={clickRaise}
+                  size="large"
+                  color="success"
+                  disabled={player !== gameTurn}
+                >
+                  Raise
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6} md={4}>
-              <Button
-                variant="contained"
-                onClick={clickCall}
-                size="large"
-                disabled={player !== gameTurn}
-              >
-                Call
-              </Button>
-            </Grid>
-            <Grid item xs={6} md={4}>
-              <Button
-                variant="contained"
-                onClick={clickRaise}
-                size="large"
-                color="success"
-                disabled={player !== gameTurn}
-              >
-                Raise
-              </Button>
-            </Grid>
-          </Grid>
-        </div>
+          </div>
+        )
       ) : (
         <Button variant="contained" onClick={clickStart} size="large">
           START
