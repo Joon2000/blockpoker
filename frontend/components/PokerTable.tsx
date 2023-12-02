@@ -3,7 +3,7 @@ import { brown } from "@mui/material/colors"
 import React from "react"
 import { StateBox } from "./StateBox"
 import { MoneyBox } from "./MoneyBox"
-import { DealerCards } from "./DealerCards"
+import { CounterpartCards } from "./CounterpartCards"
 import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
 import { Message } from "./Message"
@@ -20,6 +20,7 @@ const PokerTable = ({
   playerCards,
   playerTotalChips,
   counterpartTotalChips,
+  wallet,
 }) => {
   return (
     <div
@@ -49,7 +50,7 @@ const PokerTable = ({
           playerTotalChips={playerTotalChips}
           counterpartTotalChips={counterpartTotalChips}
         />
-        <DealerCards />
+        <CounterpartCards gameTurn={gameTurn} wallet={wallet} />
         <CardDeck />
         <MoneyBox totalBettingAmount={totalAmountBetting} />
         <PlayerCards playerCards={playerCards} />
