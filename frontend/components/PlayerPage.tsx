@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { PokerTable } from "./PokerTable"
 import { PlayerButton } from "./PlayerButton"
-import { Box } from "@mui/material"
+import { Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"
 import { Turn } from "../../src/declarations/Turn"
@@ -40,28 +40,27 @@ const PlayerPage = ({ wallet }) => {
       const [data, cards] = await fetchUserData()
       setPlayerTotalBettingAmount(Number(data[0]))
       setPlayerCurrentBettingAmount(Number(data[1]))
-      setPlayerBettingChoice(data[2])
-      setIsBothPlayerReady(data[3])
+      setPlayerBettingChoice(String(data[2]))
+      setIsBothPlayerReady(Boolean(data[3]))
       setTotalAmountBetting(Number(data[4]))
       setCounterpartTotalBettingAmount(Number(data[5]))
       setCounterpartCurrentBettingAmount(Number(data[6]))
-      setCounterPartBettingChoice(data[7])
-      setGameTurn(data[8])
+      setCounterPartBettingChoice(String(data[7]))
+      setGameTurn(String(data[8]))
       setPlayerTotalChips(Number(data[9]))
       setcounterTotalChips(Number(data[10]))
-      // console.log("card1", cards[0][0][0])
-      // console.log("card2", cards[0][1][0])
-      // console.log("card3", cards[0][2][0])
-      setPlayerCards([
-        Number(cards[0][0][0]),
-        Number(cards[0][1][0]),
-        Number(cards[0][2][0]),
-      ])
+      setPlayerCards([Number(cards[0]), Number(cards[1]), Number(cards[2])])
       return
     } else {
       return
     }
   }, 2000)
+
+  async function clickInitializeGame(e: { preventDefault: any }) {
+    e.preventDefault
+    await Turn.ToalInitialization()
+    console.log("Game Initialized")
+  }
 
   return (
     <div style={{ marginTop: "40px" }}>
@@ -89,6 +88,7 @@ const PlayerPage = ({ wallet }) => {
           playerCards={playerCards}
           playerTotalChips={playerTotalChips}
           counterpartTotalChips={counterpartTotalChips}
+          wallet={wallet}
         />
         <PlayerButton
           wallet={wallet}
@@ -98,6 +98,14 @@ const PlayerPage = ({ wallet }) => {
           player={player}
         />
       </Box>
+      <Button
+        variant="contained"
+        onClick={clickInitializeGame}
+        size="large"
+        color="error"
+      >
+        Initialize Game
+      </Button>
     </div>
   )
 }
