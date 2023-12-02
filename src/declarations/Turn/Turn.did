@@ -1,12 +1,17 @@
 service : {
+  Call: (text) -> ();
   Fold: (text) -> ();
+  Raise: (text) -> ();
+  ToalInitialization: () -> ();
+  addCard: () -> ();
+  findBiggestCardSum: (vec nat) -> (nat);
+  getCard: () -> (nat);
+  getCounterpartCards: (text) -> (vec nat) query;
   getGameData: (text) -> (nat, nat, text, bool, nat, nat, nat, text, 
    text, nat, nat);
-  getPlayerCards: (text) -> (opt record {
-                                   opt nat;
-                                   opt nat;
-                                   opt nat;
-                                 }) query;
-  initializeCards: () -> (opt null);
+  getPlayerCards: (text) -> (vec nat) query;
+  handleCall: () -> ();
+  initializeCards: () -> ();
+  initializeGame: () -> ();
   playerReady: (text) -> (text);
 }
