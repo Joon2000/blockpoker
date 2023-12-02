@@ -6,75 +6,30 @@ import Iter "mo:base/Iter";
 import Prelude "mo:base/Prelude";
 import Hash "mo:base/Hash";
 import randomNumber "canister:randomNumber";
+import Types "types";
 
 
 actor {
-    type Choice = { #FOLD; #CHECK; #RAISE; #CALL; #NONE;};
-    type Player = {
-        address : Principal;
-        isReady : Bool;
-        cards : List.List<Card>;
-        totalBettingAmount : Nat;
-        currentBettingAmount : Nat;
-        bettingChoice : Choice;
-    };
-
-    type Card = {
-        cardNumber : Nat;
-        order : Nat;
-    };
-
-    type CardDeck = {
-        cards : List.List<Card>;
-        currentNumberOfCards : Nat;
-        numberOfUsedCards : Nat;
-    };
-
-    type MutableCardDeck = {
-        var cards : List.List<Card>;
-        var currentNumberOfCards : Nat;
-        var numberOfUsedCards : Nat;
-    };
-
-    type PlayStatus = { #NOT_READY; #ALL_READY; #PLAYING; #GAME_END };
-
-    // query용 immutable type
-    type GameStatus = {
-        playStatus : PlayStatus;
-        totalBettingAmount : Nat;
-        whoseTurn : ?Principal;
-        masterPlayer : ?Principal;
-        cardDeck : CardDeck;
-    };
-
-    type MutableGameStatus = {
-        var playStatus : PlayStatus;
-        var totalBettingAmount : Nat;
-        var whoseTurn : ?Principal;
-        var masterPlayer : ?Principal;
-        var cardDeck : MutableCardDeck;
-    };
-
     // 게임 참여 최대 인원 수 4명
     let MAX_PLAYER = 4;
-    let players = HashMap.HashMap<Principal, Player>(MAX_PLAYER, Principal.equal , Principal.hash);
+    let players = HashMap.HashMap<Principal, Types.Player>(MAX_PLAYER, Principal.equal , Principal.hash);
 
     // let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 52;
     let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 10;
 
-    var cardDeck : MutableCardDeck = {
-        var cards = List.nil<Card>();
+    var cardDeck : Types.MutableCardDeck = {
+        var cards = List.nil<Types.Card>();
         var currentNumberOfCards = 0;
         var numberOfUsedCards = 0;
     };
 
-    var usedCardDeck : MutableCardDeck = {
-        var cards = List.nil<Card>();
+    var usedCardDeck : Types.MutableCardDeck = {
+        var cards = List.nil<Types.Card>();
         var currentNumberOfCards = 0;
         var numberOfUsedCards = 0;
     };
 
-    var gameStatus : MutableGameStatus = {
+    var gameStatus : Types.MutableGameStatus = {
         var playStatus = #NOT_READY;
         var totalBettingAmount = 0;
         var whoseTurn = null;
@@ -83,14 +38,14 @@ actor {
     };
 
     // 필요한 query 함수들
-    public query func getGameStatus() : async GameStatus {
-        let immuCardDeck : CardDeck = {
+    public query func getGameStatus() : async Types.GameStatus {
+        let immuCardDeck : Types.CardDeck = {
             cards = cardDeck.cards;
             currentNumberOfCards = cardDeck.currentNumberOfCards;
             numberOfUsedCards = cardDeck.numberOfUsedCards;  
         };
 
-        let _gameStatus : GameStatus = {
+        let _gameStatus : Types.GameStatus = {
             playStatus = gameStatus.playStatus;
             totalBettingAmount = gameStatus.totalBettingAmount;
             whoseTurn = gameStatus.whoseTurn;
@@ -111,14 +66,14 @@ actor {
         playerList
     };
 
-    public query func getPlayerInfo(player : Principal) : async ?Player {
+    public query func getPlayerInfo(player : Principal) : async ?Types.Player {
         players.get(player)
     };
 
-    public query func getPlayerInfoList() : async List.List<Player> {
-        var playerInfoList : List.List<Player> = List.nil<Player>();
+    public query func getPlayerInfoList() : async List.List<Types.Player> {
+        var playerInfoList : List.List<Types.Player> = List.nil<Types.Player>();
         for (val in players.vals()) {
-            playerInfoList := List.push<Player>(val, playerInfoList);
+            playerInfoList := List.push<Types.Player>(val, playerInfoList);
         };
         
         playerInfoList
@@ -134,10 +89,11 @@ actor {
             setMasterPlayer(?player);
         };
         
-        let newPlayerInfo : Player = {
+        let newPlayerInfo : Types.Player = {
             address = player;
             isReady = true;
-            cards = List.nil<Card>();
+            cards = List.nil<Types.Card>();
+            totalCardNumber = 0;
             totalBettingAmount = 0;
             currentBettingAmount = 0;
             bettingChoice = #NONE;
@@ -177,23 +133,23 @@ actor {
         gameStatus.playStatus := #PLAYING;
     };
 
-    func fillCardDeck(cardDeck : MutableCardDeck, numberOfCards : Nat) {
+    func fillCardDeck(cardDeck : Types.MutableCardDeck, numberOfCards : Nat) {
         for (i in Iter.range(0, numberOfCards)) {
             // let card : Card = await getEncryptedCard(i);
             // 임시
-            let card : Card = {
+            let card : Types.Card = {
                 cardNumber = i;
                 order = i;
             };
 
-            cardDeck.cards := List.push<Card>(card, cardDeck.cards);
+            cardDeck.cards := List.push<Types.Card>(card, cardDeck.cards);
         }
     };
 
-    func getEncryptedCard(order : Nat) : async Card {
+    func getEncryptedCard(order : Nat) : async Types.Card {
         // cardNumber = await randomNumber.generateRandomNumber();
         // encryptedCardNumber = getEncryptedCardNumber(cardNumber);
-        let card : Card = {
+        let card : Types.Card = {
                 cardNumber = order;
                 // cardNumber = encryptedCardNumber;
                 order = order;
@@ -207,7 +163,7 @@ actor {
         Hash.hash(cardNumber)
     };
 
-    func drawCard(cardDeck : MutableCardDeck) {
+    func drawCard(cardDeck : Types.MutableCardDeck) {
         // 플레이어들에게 카드를 2 장씩 나눠준다.
 
     };
