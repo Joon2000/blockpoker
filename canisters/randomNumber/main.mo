@@ -24,10 +24,10 @@ actor  {
         var cardDeck = List.nil<Nat>(); // => null
         for (n in Iter.range(0, 10)){
             number := await getNumber();
-            while(isEmpty[number]==false){
-                Debug.print (Nat.toText number);
-                number:=(number+1)%10
-            };
+            // while(isEmpty[number]==false){
+            //     Debug.print (Nat.toText number);
+            //     number:=(number+1)%10
+            // };
             Debug.print "Final number";
             Debug.print (Nat.toText number);
 
