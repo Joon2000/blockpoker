@@ -1,7 +1,8 @@
 import List "mo:base/List";
+import Stack "mo:base/Stack";
 
 module Types {
-    public type PlayStatus = { #NOT_READY; #ALL_READY; #PLAYING; #GAME_END };
+    public type PlayingStatus = { #NOT_ALL_READY; #ALL_READY; #PLAYING; #GAME_END };
     public type Choice = { #FOLD; #CHECK; #RAISE; #CALL; #NONE;};
     public type Player = {
         address : Principal;
@@ -13,7 +14,6 @@ module Types {
         totalBettingChips : Nat;
         currentBettingChips : Nat;
         bettingChoice : Choice;
-        // var totalChips: Nat;
     };
 
      public type MutablePlayer = {
@@ -26,43 +26,33 @@ module Types {
         var totalBettingChips : Nat;
         var currentBettingChips : Nat;
         var bettingChoice : Choice;
-        // var totalChips: Nat;
     };
-
 
     public type Card = {
         cardNumber : Nat;
         order : Nat;
     };
 
-    public type CardDeck = {
-        cards : List.List<Card>;
-        currentNumberOfCards : Nat;
-        numberOfUsedCards : Nat;
-    };
+    public type CardDeck = List.List<Card>;
 
-    public type MutableCardDeck = {
-        var cards : List.List<Card>;
-        var currentNumberOfCards : Nat;
-        var numberOfUsedCards : Nat;
-    };
+    
+    public type MoneyBox = Nat;
 
-    // query용 immutable type
     public type GameStatus = {
-        playStatus : PlayStatus;
-        totalBettingAmount : Nat;
-        whoseTurn : ?Principal;
+        playingStatus : PlayingStatus;
         masterPlayer : ?Principal;
+        whoseTurn : ?Principal;
         cardDeck : CardDeck;
+        moneyBox : MoneyBox;
         isAllCall : Bool;
     };
 
     public type MutableGameStatus = {
-        var playStatus : PlayStatus;
-        var totalBettingAmount : Nat;
-        var whoseTurn : ?Principal;
+        var playingStatus : PlayingStatus;
         var masterPlayer : ?Principal;
-        var cardDeck : MutableCardDeck;
+        var whoseTurn : ?Principal;
+        var cardDeck : CardDeck;
+        var moneyBox : MoneyBox;
         var isAllCall : Bool;
     };
 };
