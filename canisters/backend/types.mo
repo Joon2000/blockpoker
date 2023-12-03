@@ -40,6 +40,7 @@ module Types {
         whoseTurn : ?Principal;
         masterPlayer : ?Principal;
         cardDeck : CardDeck;
+        isAllCall : Bool;
     };
 
     public type MutableGameStatus = {
@@ -48,5 +49,6 @@ module Types {
         var whoseTurn : ?Principal;
         var masterPlayer : ?Principal;
         var cardDeck : MutableCardDeck;
+        var isAllCall : Bool;
     };
 };
