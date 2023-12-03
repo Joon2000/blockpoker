@@ -79,11 +79,10 @@ actor {
                 isReady = val.isReady;
                 cards = val.cards;
                 totalCardNumber = val.totalCardNumber;
-                // currentChips = pokerChips;
                 currentChips = val.currentChips;
                 totalBettingChips = val.totalBettingChips;
                 currentBettingChips = val.currentBettingChips;
-                bettingChoice = val.bettingChoice;
+                bettingAction = val.bettingAction;
                 // totalChips = 0;
             };
 
@@ -135,7 +134,7 @@ actor {
             var currentChips = 0;
             var totalBettingChips = 0;
             var currentBettingChips = 0;
-            var bettingChoice = #NONE;
+            var bettingAction = #NONE;
             // totalChips = 0;
         };
 
