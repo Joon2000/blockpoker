@@ -18,19 +18,5 @@ module Utils {
 
     // };
 
-    public func updatePlayingStatus(players : HashMap.HashMap<Principal,  MutablePlayer>, gameStatus : MutableGameStatus) {
-        // 혼자 레디인 상태면 ALL_READY가 아님
-        if (players.size() == 1) {
-            gameStatus.playStatus := #NOT_READY;
-            return
-        };
-
-        for (val in players.vals()) {
-            if (val.isReady == false){
-                gameStatus.playStatus := #NOT_READY;
-                return
-            }
-        };
-        gameStatus.playStatus := #ALL_READY;
-    };
+    
 }
