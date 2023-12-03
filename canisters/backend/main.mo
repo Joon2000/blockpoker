@@ -107,7 +107,7 @@ actor {
     };
 
     // ------------------------------------------------------------ Exchange Chips
-    public func exchangePockerChips(playerAddress : Principal, amount : Nat) {
+    public func exchangePokerChips(playerAddress : Principal, amount : Nat) {
         // ICP -> Chip으로 변경하는 로직
         let player = players.get(playerAddress);
         switch (player) {
@@ -153,7 +153,7 @@ actor {
         };
 
         // 일단 무조건 100개 주는 걸로 -> 나중에 시간이 되면 poker 토큰 만들기
-        exchangePockerChips(playerAddress, 100);
+        exchangePokerChips(playerAddress, 100);
 
         players.put(playerAddress, newPlayerInfo);
         setAnte(playerAddress);
@@ -209,7 +209,7 @@ actor {
             // masterPlayer가 나가면 다음 사람 master 줘야 함
         };
         removePlayer(playerAddress);
-        Utils.updatePlayingStatus(players, gameStatus);
+        updatePlayingStatus();
     };
 
     func removePlayer(playerAddress : Principal) {
