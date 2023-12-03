@@ -9,10 +9,14 @@ import Option "mo:base/Option";
 import Debug "mo:base/Debug";
 
 actor {
+    //DONE
     type Choice = { #FOLD; #CHECK; #RAISE; #CALL; #NONE };
+    // whoseTurn 으로 대체함
+    // DONE
     type Turn = { #PLAYER1; #PLAYER2; #NEITHER; };
 
     // VARIABLES
+    // DONE
      class Player(
         _address : ?Principal, 
         _isReady : Bool, 
@@ -38,6 +42,7 @@ actor {
         public var callState = _callState
     };
 
+    // DONE
     let player1 = Player(null, false, Array.init<Nat>(3,0), 0, 0, "NONE", 100);
     let player2 = Player(null, false, Array.init<Nat>(3,0), 0, 0, "NONE", 100);
     let gameStatus = GameStatus(false, 0, "NEITHER", false);
@@ -48,6 +53,7 @@ actor {
 
     };
     
+    // PROCESSING -> fillCardDeck
     public func initializeCards(): async (){
         //immutable variables?
         player1.cards[0] := await getCard();
@@ -62,6 +68,7 @@ actor {
         player2.cards[2] := await getCard();
     };
 
+    // DONE
     public func playerReady(principal: Text): async (Text){
         var address = Principal.fromText(principal);
         if(player1.address==null){
@@ -77,6 +84,7 @@ actor {
     } ;
 
     //Retun 값이 JSON 형태면 좋겠음
+    // DONE
     public func getGameData(principal: Text): async (Nat, Nat, Text, Bool, Nat, Nat, Nat, Text, Text, Nat, Nat){
         var address = Principal.fromText(principal);
         if(?address==player1.address){
@@ -111,6 +119,8 @@ actor {
 
     };
 
+    // getPlayerList에서 얻을 수 있음
+    // DONE
     public query func getPlayerCards(principal: Text): async [Nat]{
         var address = Principal.fromText(principal);
         if(?address==player1.address){
@@ -120,6 +130,8 @@ actor {
         }
     };
 
+    // getPlayersInfoList에서 얻을 수 있음
+    // DONE
     public query func getCounterpartCards(principal: Text): async [Nat]{
         var address = Principal.fromText(principal);
         if(?address==player2.address){
@@ -130,6 +142,7 @@ actor {
     };
 
 
+    // endGame에 필요함
     public func initializeGame(): async (){
         gameStatus.totalBettingAmount:=0;
         player1.totalBettingAmount:=0;
@@ -144,6 +157,7 @@ actor {
         gameStatus.gameTurn:="PLAYER1";
     };
 
+    // 필요함
     public func Fold(principal: Text): async (){
         var address = Principal.fromText(principal);
         if (?address==player1.address){

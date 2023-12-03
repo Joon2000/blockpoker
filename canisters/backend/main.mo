@@ -7,10 +7,14 @@ import Prelude "mo:base/Prelude";
 import Hash "mo:base/Hash";
 import randomNumber "canister:randomNumber";
 import Types "types";
+import Option "mo:base/Option";
+import Array "mo:base/Array";
+import Test "test";
 
 
 actor {
     type Player = Types.Player;
+    type MutablePlayer = Types.MutablePlayer;
     type Card = Types.Card;
     type CardDeck = Types.CardDeck;
     type MutableCardDeck = Types.MutableCardDeck;
@@ -19,7 +23,7 @@ actor {
 
     // 게임 참여 최대 인원 수 4명
     let MAX_PLAYER = 4;
-    let players = HashMap.HashMap<Principal, Player>(MAX_PLAYER, Principal.equal , Principal.hash);
+    let players = HashMap.HashMap<Principal, MutablePlayer>(MAX_PLAYER, Principal.equal , Principal.hash);
 
     // let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 52;
     let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 10;
@@ -79,37 +83,91 @@ actor {
     //     players.get(player)
     // };
 
-    public query func getPlayerInfoList() : async List.List<Player> {
+    public shared query func getPlayerInfoList() : async List.List<Player> {
         var playerInfoList : List.List<Player> = List.nil<Player>();
         for (val in players.vals()) {
-            playerInfoList := List.push<Player>(val, playerInfoList);
+            let playerInfo : Player = {
+                address = val.address;
+                isReady = val.isReady;
+                cards = val.cards;
+                totalCardNumber = val.totalCardNumber;
+                // currentChips = pokerChips;
+                currentChips = val.currentChips;
+                totalBettingChips = val.totalBettingChips;
+                currentBettingChips = val.currentBettingChips;
+                bettingChoice = val.bettingChoice;
+                // totalChips = 0;
+            };
+
+            playerInfoList := List.push<Player>(playerInfo, playerInfoList);
         };
         
         playerInfoList
     };
 
+
+    public func exchangePockerChips(amount : Nat) {
+        // ICP -> Chip으로 변경하는 로직
+    };
+
     // 게임 준비
-    public func readyGame(player : Principal) {
+    // player가 실행
+    // FE에서 playerReady -> readyGame으로 변경해줘야 함
+    public func readyGame(playerAddress : Principal) {
         // 참여한 player 수가 최대 player 넘어가면 에러 발생하고 player 추가 하지 않음
         assert(players.size() < MAX_PLAYER);
 
+        // Chip이 몇 개 이상 있는지 확인을 하는 코드. 몇 개 이상 칩이 없으면 참여 못 합.
+        // let pokerChips = getPokerChipInfo(playerAddress);
+        // assert(pokerChips < 10);
+
         // 첫 번째 player면 방장 시켜 줌
         if (players.size() == 0) {
-            setMasterPlayer(?player);
+            setMasterPlayer(?playerAddress);
         };
+
+        // player가 가지고 있는 pockerChip token개수를 불러와서 집어넣음
         
-        let newPlayerInfo : Player = {
-            address = player;
-            isReady = true;
-            cards = List.nil<Card>();
-            totalCardNumber = 0;
-            totalBettingAmount = 0;
-            currentBettingAmount = 0;
-            bettingChoice = #NONE;
+        let newPlayerInfo : MutablePlayer = {
+            var address = playerAddress;
+            var isReady = true;
+            var cards = List.nil<Card>();
+            var totalCardNumber = 0;
+            // currentChips = pokerChips;
+            var currentChips = 0;
+            var totalBettingChips = 0;
+            var currentBettingChips = 0;
+            var bettingChoice = #NONE;
+            // totalChips = 0;
         };
-        players.put(player, newPlayerInfo);
+        players.put(playerAddress, newPlayerInfo);
+        setAnte(playerAddress);
 
         updatePlayingStatus();
+    };
+
+    query func getPokerChipInfo() : async Nat{
+        0
+    };
+
+    func setAnte(playerAddress : Principal) {
+        sendChipsToMoneyBox(playerAddress, 1);
+    };
+
+    func sendChipsToMoneyBox(playerAddress : Principal, amount : Nat) {
+        let player = players.get(playerAddress);
+        switch (player) {
+            case null return;
+            case (?actualPlayer){
+                actualPlayer.currentChips := actualPlayer.currentChips - amount;
+                gameStatus.totalBettingAmount := gameStatus.totalBettingAmount + amount;
+            }
+        }
+
+    };
+
+    func setMasterPlayer(player : ?Principal) {
+        gameStatus.masterPlayer := player;
     };
 
     func updatePlayingStatus() {
@@ -128,42 +186,55 @@ actor {
         gameStatus.playStatus := #ALL_READY;
     };
 
-    func setMasterPlayer(player : ?Principal) {
-        gameStatus.masterPlayer := player;
+    // 게임 나가기
+    public func exitGame(playerAddress : Principal) {
+        if (players.size() > 1 and ?playerAddress == gameStatus.masterPlayer) {
+            // masterPlayer가 나가면 다음 사람 master 줘야 함
+        };
+        removePlayer(playerAddress);
+        updatePlayingStatus();
+    };
+
+    func removePlayer(playerAddress : Principal) {
+        players.delete(playerAddress);
     };
 
     // 게임 시작
-    public func startGame(player : Principal) {
+    public func startGame(playerAddress : Principal) {
         // masterPlayer만 startGame 가능
-        assert(gameStatus.masterPlayer == ?player);
-        fillCardDeck(cardDeck, NUMBER_OF_CARDS_IN_CARD_DECK);
+        assert(gameStatus.masterPlayer == ?playerAddress);
+        await fillCardDeck(cardDeck, NUMBER_OF_CARDS_IN_CARD_DECK);
         drawCard(cardDeck);
 
         gameStatus.playStatus := #PLAYING;
     };
 
-    func fillCardDeck(cardDeck : MutableCardDeck, numberOfCards : Nat) {
+    func fillCardDeck(cardDeck : MutableCardDeck, numberOfCards : Nat) : async() {
         for (i in Iter.range(0, numberOfCards)) {
-            // let card : Card = await getEncryptedCard(i);
+            let card : Card = await getEncryptedCard(i);
             // 임시
-            let card : Card = {
-                cardNumber = i;
-                order = i;
-            };
+            // let card : Card = {
+            //     cardNumber = i;
+            //     order = i;
+            // };
 
             cardDeck.cards := List.push<Card>(card, cardDeck.cards);
         }
     };
 
     func getEncryptedCard(order : Nat) : async Card {
-        // cardNumber = await randomNumber.generateRandomNumber();
+        let cardNumber = Option.get((await randomNumber.generateRandomNumber(),0));
         // encryptedCardNumber = getEncryptedCardNumber(cardNumber);
         let card : Card = {
-                cardNumber = order;
+                cardNumber = cardNumber;
                 // cardNumber = encryptedCardNumber;
                 order = order;
         };
         card
+    };
+
+    public func test_getEncryptedCard(order : Nat, cardNumber : Nat) : async List.List<Card> {
+        await Test.test_getEncryptedCard(order, cardNumber);
     };
 
     func getEncryptedCardNumber(cardNumber : Nat) : async Hash.Hash {
@@ -177,20 +248,18 @@ actor {
 
     };
 
-    // func
-
-
-    // 게임 나가기
-    public func exitGame(player : Principal) {
-        if (players.size() > 1 and ?player == gameStatus.masterPlayer) {
-            // 다음 사람 줘야 함
-        };
-        removePlayer(player);
-        updatePlayingStatus();
+    func setPlayerTurn(playerAddress : ?Principal) {
+        gameStatus.whoseTurn := playerAddress;
     };
 
-    func removePlayer(player : Principal) {
-        players.delete(player);
+
+
+    public func endGame() {
+
+    };
+
+    func initalizeGame(){
+
     };
 
 }
