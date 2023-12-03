@@ -13,22 +13,22 @@ actor  {
         let entropy = await Random.blob(); // get initial entropy
         var f = Random.Finite(entropy);
         do ? {
-            var result =f.range(8)!%10;
+            var result =f.range(8)!%52;
             return ?result;
         };
     };
 
     public func generateCardDeck() : async [Nat] {
-        var isEmpty = Array.init<Bool>(10,true);
+        var isEmpty = Array.init<Bool>(52,true);
         var number = 0;
         var cardDeck = List.nil<Nat>(); // => null
-        for (n in Iter.range(1, 10)){
+        for (n in Iter.range(1, 52)){
             number := await getNumber();
-            label numberLoop for(i in Iter.range(0,10)){
+            label numberLoop for(i in Iter.range(0,52)){
                 if(isEmpty[number]==true){
                     break numberLoop;
                 };
-                number:=(number+1)%10;
+                number:=(number+1)%52;
             };
             isEmpty[number]:=false;
             cardDeck:=List.push(number+1,cardDeck);
