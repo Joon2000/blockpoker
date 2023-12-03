@@ -10,6 +10,7 @@ import Types "types";
 import Option "mo:base/Option";
 import Array "mo:base/Array";
 import Test "test";
+import Utils "utils";
 
 
 actor {
@@ -49,7 +50,7 @@ actor {
         var isAllCall = false;
     };
 
-    // 필요한 query 함수들
+    // ------------------------------------------------------------ 필요한 query 함수들
     public query func getGameStatus() : async GameStatus {
         let immuCardDeck : CardDeck = {
             cards = cardDeck.cards;
@@ -83,7 +84,7 @@ actor {
     //     players.get(player)
     // };
 
-    public shared query func getPlayerInfoList() : async List.List<Player> {
+    public query func getPlayerInfoList() : async List.List<Player> {
         var playerInfoList : List.List<Player> = List.nil<Player>();
         for (val in players.vals()) {
             let playerInfo : Player = {
@@ -105,14 +106,24 @@ actor {
         playerInfoList
     };
 
-
-    public func exchangePockerChips(amount : Nat) {
+    // ------------------------------------------------------------ Exchange Chips
+    public func exchangePockerChips(playerAddress : Principal, amount : Nat) {
         // ICP -> Chip으로 변경하는 로직
+        let player = players.get(playerAddress);
+        switch (player) {
+            case null return;
+            case (?actualPlayer){
+                actualPlayer.currentChips := actualPlayer.currentChips + amount;
+                players.put(playerAddress, actualPlayer);
+            }
+        }
     };
 
-    // 게임 준비
-    // player가 실행
-    // FE에서 playerReady -> readyGame으로 변경해줘야 함
+    // ------------------------------------------------------------ Ready Game
+
+    // // 게임 준비
+    // // player가 실행
+    // // FE에서 playerReady -> readyGame으로 변경해줘야 함
     public func readyGame(playerAddress : Principal) {
         // 참여한 player 수가 최대 player 넘어가면 에러 발생하고 player 추가 하지 않음
         assert(players.size() < MAX_PLAYER);
@@ -140,18 +151,22 @@ actor {
             var bettingChoice = #NONE;
             // totalChips = 0;
         };
+
+        // 일단 무조건 100개 주는 걸로 -> 나중에 시간이 되면 poker 토큰 만들기
+        exchangePockerChips(playerAddress, 100);
+
         players.put(playerAddress, newPlayerInfo);
         setAnte(playerAddress);
 
         updatePlayingStatus();
     };
 
-    query func getPokerChipInfo() : async Nat{
+    func getPokerChipInfo() : async Nat{
         0
     };
 
     func setAnte(playerAddress : Principal) {
-        sendChipsToMoneyBox(playerAddress, 1);
+        sendChipsToMoneyBox(playerAddress, 0);
     };
 
     func sendChipsToMoneyBox(playerAddress : Principal, amount : Nat) {
@@ -161,6 +176,7 @@ actor {
             case (?actualPlayer){
                 actualPlayer.currentChips := actualPlayer.currentChips - amount;
                 gameStatus.totalBettingAmount := gameStatus.totalBettingAmount + amount;
+                players.put(playerAddress, actualPlayer);
             }
         }
 
@@ -186,19 +202,21 @@ actor {
         gameStatus.playStatus := #ALL_READY;
     };
 
+    // ------------------------------------------------------------ Exit Game
     // 게임 나가기
     public func exitGame(playerAddress : Principal) {
         if (players.size() > 1 and ?playerAddress == gameStatus.masterPlayer) {
             // masterPlayer가 나가면 다음 사람 master 줘야 함
         };
         removePlayer(playerAddress);
-        updatePlayingStatus();
+        Utils.updatePlayingStatus(players, gameStatus);
     };
 
     func removePlayer(playerAddress : Principal) {
         players.delete(playerAddress);
     };
 
+    // ------------------------------------------------------------ Start Game
     // 게임 시작
     public func startGame(playerAddress : Principal) {
         // masterPlayer만 startGame 가능
@@ -253,7 +271,7 @@ actor {
     };
 
 
-
+    // ------------------------------------------------------------ End Game
     public func endGame() {
 
     };
