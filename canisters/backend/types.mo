@@ -3,7 +3,7 @@ import Stack "mo:base/Stack";
 
 module Types {
     public type PlayingStatus = { #NOT_ALL_READY; #ALL_READY; #PLAYING; #GAME_END };
-    public type Choice = { #FOLD; #CHECK; #RAISE; #CALL; #NONE;};
+    public type BettingAction = { #FOLD; #CHECK; #RAISE; #CALL; #NONE;};
     public type Player = {
         address : Principal;
         isReady : Bool;
@@ -13,7 +13,7 @@ module Types {
         currentChips : Nat;
         totalBettingChips : Nat;
         currentBettingChips : Nat;
-        bettingChoice : Choice;
+        bettingAction : BettingAction;
     };
 
      public type MutablePlayer = {
@@ -25,7 +25,7 @@ module Types {
         var currentChips : Nat;
         var totalBettingChips : Nat;
         var currentBettingChips : Nat;
-        var bettingChoice : Choice;
+        var bettingAction : BettingAction;
     };
 
     public type Card = {
