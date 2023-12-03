@@ -10,6 +10,7 @@ import Types "types";
 import Option "mo:base/Option";
 import Array "mo:base/Array";
 import Test "test";
+import Stack "mo:base/Stack";
 
 
 actor {
@@ -17,9 +18,9 @@ actor {
     type MutablePlayer = Types.MutablePlayer;
     type Card = Types.Card;
     type CardDeck = Types.CardDeck;
-    type MutableCardDeck = Types.MutableCardDeck;
-    type MutableGameStatus = Types.MutableGameStatus;
+    type MoneyBox = Types.MoneyBox;
     type GameStatus = Types.GameStatus;
+    type MutableGameStatus = Types.MutableGameStatus;
 
     // 게임 참여 최대 인원 수 4명
     let MAX_PLAYER = 4;
@@ -28,41 +29,28 @@ actor {
     // let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 52;
     let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 10;
 
-    var cardDeck : MutableCardDeck = {
-        var cards = List.nil<Card>();
-        var currentNumberOfCards = 0;
-        var numberOfUsedCards = 0;
-    };
+    var cardDeck : CardDeck = List.nil<Card>();
+    var usedCardDeck : CardDeck = List.nil<Card>();
 
-    var usedCardDeck : MutableCardDeck = {
-        var cards = List.nil<Card>();
-        var currentNumberOfCards = 0;
-        var numberOfUsedCards = 0;
-    };
+    var moneyBox = 0;
 
     var gameStatus : MutableGameStatus = {
-        var playStatus = #NOT_READY;
-        var totalBettingAmount = 0;
-        var whoseTurn = null;
+        var playingStatus = #NOT_ALL_READY;
         var masterPlayer = null;
+        var whoseTurn = null;
         var cardDeck = cardDeck;
+        var moneyBox = moneyBox;
         var isAllCall = false;
     };
 
     // ------------------------------------------------------------ 필요한 query 함수들
     public query func getGameStatus() : async GameStatus {
-        let immuCardDeck : CardDeck = {
-            cards = cardDeck.cards;
-            currentNumberOfCards = cardDeck.currentNumberOfCards;
-            numberOfUsedCards = cardDeck.numberOfUsedCards;  
-        };
-
         let _gameStatus : GameStatus = {
-            playStatus = gameStatus.playStatus;
-            totalBettingAmount = gameStatus.totalBettingAmount;
-            whoseTurn = gameStatus.whoseTurn;
+            playingStatus = gameStatus.playingStatus;
             masterPlayer = gameStatus.masterPlayer;
-            cardDeck = immuCardDeck;
+            whoseTurn = gameStatus.whoseTurn;
+            cardDeck = gameStatus.cardDeck;
+            moneyBox = gameStatus.moneyBox;
             isAllCall = gameStatus.isAllCall;
         };
 
@@ -174,7 +162,7 @@ actor {
             case null return;
             case (?actualPlayer){
                 actualPlayer.currentChips := actualPlayer.currentChips - amount;
-                gameStatus.totalBettingAmount := gameStatus.totalBettingAmount + amount;
+                gameStatus.moneyBox := gameStatus.moneyBox+ amount;
                 players.put(playerAddress, actualPlayer);
             }
         }
@@ -188,17 +176,17 @@ actor {
     func updatePlayingStatus() {
         // 혼자 레디인 상태면 ALL_READY가 아님
         if (players.size() == 1) {
-            gameStatus.playStatus := #NOT_READY;
+            gameStatus.playingStatus := #NOT_ALL_READY;
             return
         };
 
         for (val in players.vals()) {
             if (val.isReady == false){
-                gameStatus.playStatus := #NOT_READY;
+                gameStatus.playingStatus := #NOT_ALL_READY;
                 return
             }
         };
-        gameStatus.playStatus := #ALL_READY;
+        gameStatus.playingStatus := #ALL_READY;
     };
 
     // ------------------------------------------------------------ Exit Game
@@ -224,14 +212,14 @@ actor {
         drawCard(playerAddress);
 
 
-        gameStatus.playStatus := #PLAYING;
+        gameStatus.playingStatus := #PLAYING;
     };
 
     func fillCardDeck(numberOfCards : Nat) : async() {
         for (i in Iter.range(0, numberOfCards)) {
             let card : Card = await getEncryptedCard(i);
-            cardDeck.cards := List.push<Card>(card, cardDeck.cards);
-            cardDeck.currentNumberOfCards := cardDeck.currentNumberOfCards + 1;
+            cardDeck := List.push<Card>(card, cardDeck);
+            // cardDeck.currentNumberOfCards := cardDeck.currentNumberOfCards + 1;
         }
     };
 
@@ -262,7 +250,7 @@ actor {
     };
 
     func drawCard(playerAddress : Principal) {
-        let card = List.pop<Card>(cardDeck.cards);
+        let card = List.pop<Card>(cardDeck);
         // var player = players.get(playerAddress);
         // switch (player) {
         //     case null return;
@@ -274,7 +262,7 @@ actor {
     };
 
     public func test_drawCard() : async ?Card{
-        let (card, cardList) = List.pop<Card>(cardDeck.cards);
+        let (card, cardList) = List.pop<Card>(cardDeck);
         // var player = players.get(playerAddress);
         // switch (player) {
         //     case null return;
@@ -290,7 +278,7 @@ actor {
         //     currentNumberOfCards = cardDeck.currentNumberOfCards;
         //     numberOfUsedCards = cardDeck.numberOfUsedCards;
         // }
-        cardDeck.cards := cardList;
+        cardDeck := cardList;
 
         card
     };
