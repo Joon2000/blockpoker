@@ -42,6 +42,7 @@ actor {
         var whoseTurn = null;
         var masterPlayer = null;
         var cardDeck = cardDeck;
+        var isAllCall = false;
     };
 
     // 필요한 query 함수들
@@ -58,6 +59,7 @@ actor {
             whoseTurn = gameStatus.whoseTurn;
             masterPlayer = gameStatus.masterPlayer;
             cardDeck = immuCardDeck;
+            isAllCall = gameStatus.isAllCall;
         };
 
         _gameStatus

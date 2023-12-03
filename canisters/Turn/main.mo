@@ -30,7 +30,7 @@ actor {
         public var bettingChoice = _bettingChoice;
         public var totalChips = _totalChips;
     }; 
-
+    // merge DONE
     class GameStatus(_isBothPlayerReady:Bool, _totalBettingAmount:Nat, _gameTurn:Text, _callState:Bool){
         public var isBothPlayerReady = _isBothPlayerReady;
         public var totalBettingAmount = _totalBettingAmount;
