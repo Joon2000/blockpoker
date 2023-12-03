@@ -8,6 +8,8 @@ const StateBox = ({
   playerCurrentBettingAmount,
   counterpartTotalBettingAmount,
   counterpartCurrentBettingAmount,
+  playerTotalChips,
+  counterpartTotalChips,
 }) => {
   return (
     <div
@@ -28,11 +30,13 @@ const StateBox = ({
         <div style={{ textAlign: "center" }}>
           {position === "OPPONENT" ? (
             <div style={{}}>
+              <p>{`Chips: ${counterpartTotalChips}`}</p>
               <p>{`Current Betting: ${counterpartCurrentBettingAmount}`}</p>
               <p>{`Total Betting: ${counterpartTotalBettingAmount}`}</p>
             </div>
           ) : (
             <div style={{}}>
+              <p>{`Chips: ${playerTotalChips}`}</p>
               <p>{`Current Betting: ${playerCurrentBettingAmount}`}</p>
               <p>{`Total Betting: ${playerTotalBettingAmount}`}</p>
             </div>

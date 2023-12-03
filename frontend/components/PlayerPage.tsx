@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { PokerTable } from "./PokerTable"
 import { PlayerButton } from "./PlayerButton"
-import { Box } from "@mui/material"
+import { Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"
 import { Turn } from "../../src/declarations/Turn"
 import { Choice } from "frontend/Type"
+import { BiCommentDots } from "react-icons/bi"
+import { BiMehBlank } from "react-icons/bi"
 
 const PlayerPage = ({ wallet }) => {
   const [player, setPlayer] = useState<string>("NONE")
@@ -24,10 +26,12 @@ const PlayerPage = ({ wallet }) => {
     useState<string>("NONE")
   const [gameTurn, setGameTurn] = useState<string>("NEITHER")
   const [playerCards, setPlayerCards] = useState<number[]>([null, null, null])
+  const [playerTotalChips, setPlayerTotalChips] = useState<number>(0)
+  const [counterpartTotalChips, setcounterTotalChips] = useState<number>(0)
 
   const fetchUserData = async () => {
     const data = await Turn.getGameData(wallet.principal)
-    const cards = await Turn.getPlayer1Cards(wallet.principal)
+    const cards = await Turn.getPlayerCards(wallet.principal)
     return [data, cards]
   }
 
@@ -36,38 +40,42 @@ const PlayerPage = ({ wallet }) => {
       const [data, cards] = await fetchUserData()
       setPlayerTotalBettingAmount(Number(data[0]))
       setPlayerCurrentBettingAmount(Number(data[1]))
-      setPlayerBettingChoice(data[2])
-      setIsBothPlayerReady(data[3])
+      setPlayerBettingChoice(String(data[2]))
+      setIsBothPlayerReady(Boolean(data[3]))
       setTotalAmountBetting(Number(data[4]))
       setCounterpartTotalBettingAmount(Number(data[5]))
       setCounterpartCurrentBettingAmount(Number(data[6]))
-      setCounterPartBettingChoice(data[7])
-      setGameTurn(data[8])
-      // console.log("card1", cards[0][0][0])
-      // console.log("card2", cards[0][1][0])
-      // console.log("card3", cards[0][2][0])
-      setPlayerCards([
-        Number(cards[0][0][0]),
-        Number(cards[0][1][0]),
-        Number(cards[0][2][0]),
-      ])
+      setCounterPartBettingChoice(String(data[7]))
+      setGameTurn(String(data[8]))
+      setPlayerTotalChips(Number(data[9]))
+      setcounterTotalChips(Number(data[10]))
+      setPlayerCards([Number(cards[0]), Number(cards[1]), Number(cards[2])])
       return
     } else {
       return
     }
   }, 2000)
 
+  async function clickInitializeGame(e: { preventDefault: any }) {
+    e.preventDefault
+    await Turn.ToalInitialization()
+    console.log("Game Initialized")
+  }
+
   return (
     <div style={{ marginTop: "40px" }}>
       <Box
         sx={{
           width: 1000,
-          height: 650,
+          height: 700,
           borderRadius: 1,
           bgcolor: brown[100],
-          pt: 6,
         }}
       >
+        <div style={{ marginLeft: "465px" }}>
+          <BiMehBlank size="70" />
+          {player !== gameTurn && <BiCommentDots size="70" />}
+        </div>
         <PokerTable
           playerTotalBettingAmount={playerTotalBettingAmount}
           playerCurrentBettingAmount={playerCurrentBettingAmount}
@@ -78,14 +86,26 @@ const PlayerPage = ({ wallet }) => {
           counterpartBettingChoice={counterpartBettingChoice}
           gameTurn={gameTurn}
           playerCards={playerCards}
+          playerTotalChips={playerTotalChips}
+          counterpartTotalChips={counterpartTotalChips}
+          wallet={wallet}
         />
         <PlayerButton
           wallet={wallet}
           setPlayer={setPlayer}
           isBothPlayerReady={isBothPlayerReady}
           gameTurn={gameTurn}
+          player={player}
         />
       </Box>
+      <Button
+        variant="contained"
+        onClick={clickInitializeGame}
+        size="large"
+        color="error"
+      >
+        Initialize Game
+      </Button>
     </div>
   )
 }
