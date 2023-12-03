@@ -22,15 +22,14 @@ actor  {
         var isEmpty = Array.init<Bool>(10,true);
         var number = 0;
         var cardDeck = List.nil<Nat>(); // => null
-        for (n in Iter.range(0, 10)){
+        for (n in Iter.range(1, 10)){
             number := await getNumber();
-            // while(isEmpty[number]==false){
-            //     Debug.print (Nat.toText number);
-            //     number:=(number+1)%10
-            // };
-            Debug.print "Final number";
-            Debug.print (Nat.toText number);
-
+            label numberLoop for(i in Iter.range(0,10)){
+                if(isEmpty[number]==true){
+                    break numberLoop;
+                };
+                number:=(number+1)%10;
+            };
             isEmpty[number]:=false;
             cardDeck:=List.push(number+1,cardDeck);
         };
