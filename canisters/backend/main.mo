@@ -10,7 +10,6 @@ import Types "types";
 import Option "mo:base/Option";
 import Array "mo:base/Array";
 import Test "test";
-import Utils "utils";
 
 
 actor {
@@ -221,22 +220,18 @@ actor {
     public func startGame(playerAddress : Principal) {
         // masterPlayer만 startGame 가능
         assert(gameStatus.masterPlayer == ?playerAddress);
-        await fillCardDeck(cardDeck, NUMBER_OF_CARDS_IN_CARD_DECK);
-        drawCard(cardDeck);
+        await fillCardDeck(NUMBER_OF_CARDS_IN_CARD_DECK);
+        drawCard(playerAddress);
+
 
         gameStatus.playStatus := #PLAYING;
     };
 
-    func fillCardDeck(cardDeck : MutableCardDeck, numberOfCards : Nat) : async() {
+    func fillCardDeck(numberOfCards : Nat) : async() {
         for (i in Iter.range(0, numberOfCards)) {
             let card : Card = await getEncryptedCard(i);
-            // 임시
-            // let card : Card = {
-            //     cardNumber = i;
-            //     order = i;
-            // };
-
             cardDeck.cards := List.push<Card>(card, cardDeck.cards);
+            cardDeck.currentNumberOfCards := cardDeck.currentNumberOfCards + 1;
         }
     };
 
@@ -261,10 +256,45 @@ actor {
         Hash.hash(cardNumber)
     };
 
-    func drawCard(cardDeck : MutableCardDeck) {
-        // 플레이어들에게 카드를 2 장씩 나눠준다.
-
+    func draw2CardsToPlayers() {
+        // 플레이어마다 카드를 2 장씩 나눠준다. 
+        
     };
+
+    func drawCard(playerAddress : Principal) {
+        let card = List.pop<Card>(cardDeck.cards);
+        // var player = players.get(playerAddress);
+        // switch (player) {
+        //     case null return;
+        //     case (?actualPlayer) {
+        //         // 
+        //         // let cards = List.push<List.List<Card>>(card, actualPlayer.cards);
+        //     }
+        // }
+    };
+
+    public func test_drawCard() : async ?Card{
+        let (card, cardList) = List.pop<Card>(cardDeck.cards);
+        // var player = players.get(playerAddress);
+        // switch (player) {
+        //     case null return;
+        //     case (?actualPlayer) {
+        //         // 
+        //         // let cards = List.push<List.List<Card>>(card, actualPlayer.cards);
+        //     }
+        // }
+        // let c = cardAndCardDeck.1;
+        
+        // let cd : CardDeck = {
+        //     cards = cardDeck.cards;
+        //     currentNumberOfCards = cardDeck.currentNumberOfCards;
+        //     numberOfUsedCards = cardDeck.numberOfUsedCards;
+        // }
+        cardDeck.cards := cardList;
+
+        card
+    };
+
 
     func setPlayerTurn(playerAddress : ?Principal) {
         gameStatus.whoseTurn := playerAddress;
