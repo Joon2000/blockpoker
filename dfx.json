@@ -5,6 +5,7 @@
       "type": "motoko"
     },
     "Turn": {
+      "dependencies": ["randomNumber"],
       "main": "canisters/Turn/main.mo",
       "type": "motoko"
     },
