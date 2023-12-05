@@ -4,3 +4,29 @@ dist
 dist-ssr
 *.local
 .dfx
+
+
+
+.vscode/
+.idea/
+**/*~
+
+# Mac OSX temporary files
+.DS_Store
+**/.DS_Store
+
+# dfx temporary files
+.dfx/
+
+# rust
+target/
+
+# generated files
+src/declarations/
+
+# frontend code
+node_modules/
+dist/
+
+# environment variables
+.env
