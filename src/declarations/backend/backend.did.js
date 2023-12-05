@@ -2,21 +2,26 @@ export const idlFactory = ({ IDL }) => {
   const List = IDL.Rec();
   const List_1 = IDL.Rec();
   const List_2 = IDL.Rec();
-  const PlayStatus = IDL.Variant({
+  const List_3 = IDL.Rec();
+  const PlayingStatus = IDL.Variant({
     'PLAYING' : IDL.Null,
     'GAME_END' : IDL.Null,
     'ALL_READY' : IDL.Null,
-    'NOT_READY' : IDL.Null,
+    'NOT_ALL_READY' : IDL.Null,
   });
+  const Card__1 = IDL.Record({ 'order' : IDL.Nat, 'cardNumber' : IDL.Nat });
+  List_3.fill(IDL.Opt(IDL.Tuple(Card__1, List_3)));
+  const CardDeck = IDL.Opt(IDL.Tuple(Card__1, List_3));
+  const MoneyBox = IDL.Nat;
   const GameStatus = IDL.Record({
-    'totalBettingAmount' : IDL.Nat,
+    'playingStatus' : PlayingStatus,
+    'cardDeck' : CardDeck,
     'masterPlayer' : IDL.Opt(IDL.Principal),
-    'playStatus' : PlayStatus,
+    'isAllCall' : IDL.Bool,
     'whoseTurn' : IDL.Opt(IDL.Principal),
+    'moneyBox' : MoneyBox,
   });
-  const Card = IDL.Record({ 'order' : IDL.Nat, 'cardNumber' : IDL.Nat });
-  List_2.fill(IDL.Opt(IDL.Tuple(Card, List_2)));
-  const Choice = IDL.Variant({
+  const BettingAction = IDL.Variant({
     'CALL' : IDL.Null,
     'FOLD' : IDL.Null,
     'NONE' : IDL.Null,
@@ -24,23 +29,30 @@ export const idlFactory = ({ IDL }) => {
     'CHECK' : IDL.Null,
   });
   const Player = IDL.Record({
-    'cards' : List_2,
-    'totalBettingAmount' : IDL.Nat,
+    'cards' : List_3,
+    'totalBettingChips' : IDL.Nat,
+    'currentBettingChips' : IDL.Nat,
+    'bettingAction' : BettingAction,
     'isReady' : IDL.Bool,
-    'currentBettingAmount' : IDL.Nat,
+    'currentChips' : IDL.Nat,
+    'totalCardNumber' : IDL.Nat,
     'address' : IDL.Principal,
-    'bettingChoice' : Choice,
   });
-  List_1.fill(IDL.Opt(IDL.Tuple(Player, List_1)));
-  List.fill(IDL.Opt(IDL.Tuple(IDL.Principal, List)));
+  List_2.fill(IDL.Opt(IDL.Tuple(Player, List_2)));
+  List_1.fill(IDL.Opt(IDL.Tuple(IDL.Principal, List_1)));
+  const Card = IDL.Record({ 'order' : IDL.Nat, 'cardNumber' : IDL.Nat });
+  List.fill(IDL.Opt(IDL.Tuple(Card, List)));
   return IDL.Service({
+    'endGame' : IDL.Func([], [], ['oneway']),
+    'exchangePokerChips' : IDL.Func([IDL.Principal, IDL.Nat], [], ['oneway']),
     'exitGame' : IDL.Func([IDL.Principal], [], ['oneway']),
     'getGameStatus' : IDL.Func([], [GameStatus], ['query']),
-    'getPlayerInfo' : IDL.Func([IDL.Principal], [IDL.Opt(Player)], ['query']),
-    'getPlayerInfoList' : IDL.Func([], [List_1], ['query']),
-    'getPlayerList' : IDL.Func([], [List], ['query']),
+    'getPlayerInfoList' : IDL.Func([], [List_2], ['query']),
+    'getPlayerList' : IDL.Func([], [List_1], ['query']),
     'readyGame' : IDL.Func([IDL.Principal], [], ['oneway']),
     'startGame' : IDL.Func([IDL.Principal], [], ['oneway']),
+    'test_drawCard' : IDL.Func([], [IDL.Opt(Card)], []),
+    'test_getEncryptedCard' : IDL.Func([IDL.Nat, IDL.Nat], [List], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

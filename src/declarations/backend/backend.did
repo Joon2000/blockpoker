@@ -1,42 +1,67 @@
-type Player = 
- record {
-   address: principal;
-   bettingChoice: Choice;
-   cards: List_2;
-   currentBettingAmount: nat;
-   isReady: bool;
-   totalBettingAmount: nat;
- };
-type PlayStatus = 
+type PlayingStatus = 
  variant {
    ALL_READY;
    GAME_END;
-   NOT_READY;
+   NOT_ALL_READY;
    PLAYING;
  };
+type Player = 
+ record {
+   address: principal;
+   bettingAction: BettingAction;
+   cards: List_3;
+   currentBettingChips: nat;
+   currentChips: nat;
+   isReady: bool;
+   totalBettingChips: nat;
+   totalCardNumber: nat;
+ };
+type MoneyBox = nat;
+type List_3 = 
+ opt record {
+       Card__1;
+       List_3;
+     };
 type List_2 = 
  opt record {
-       Card;
+       Player;
        List_2;
      };
 type List_1 = 
  opt record {
-       Player;
+       principal;
        List_1;
      };
 type List = 
  opt record {
-       principal;
+       Card;
        List;
      };
 type GameStatus = 
  record {
+   cardDeck: CardDeck;
+   isAllCall: bool;
    masterPlayer: opt principal;
-   playStatus: PlayStatus;
-   totalBettingAmount: nat;
+   moneyBox: MoneyBox;
+   playingStatus: PlayingStatus;
    whoseTurn: opt principal;
  };
-type Choice = 
+type Card__1 = 
+ record {
+   cardNumber: nat;
+   order: nat;
+ };
+type CardDeck = 
+ opt record {
+       Card__1;
+       List_3;
+     };
+type Card = 
+ record {
+   cardNumber: nat;
+   order: nat;
+ };
+type BettingAction = 
  variant {
    CALL;
    CHECK;
@@ -44,17 +69,15 @@ type Choice =
    NONE;
    RAISE;
  };
-type Card = 
- record {
-   cardNumber: nat;
-   order: nat;
- };
 service : {
+  endGame: () -> () oneway;
+  exchangePokerChips: (principal, nat) -> () oneway;
   exitGame: (principal) -> () oneway;
   getGameStatus: () -> (GameStatus) query;
-  getPlayerInfo: (principal) -> (opt Player) query;
-  getPlayerInfoList: () -> (List_1) query;
-  getPlayerList: () -> (List) query;
+  getPlayerInfoList: () -> (List_2) query;
+  getPlayerList: () -> (List_1) query;
   readyGame: (principal) -> () oneway;
   startGame: (principal) -> () oneway;
+  test_drawCard: () -> (opt Card);
+  test_getEncryptedCard: (nat, nat) -> (List);
 }
