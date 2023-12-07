@@ -3,10 +3,11 @@ export const idlFactory = ({ IDL }) => {
     'Call' : IDL.Func([IDL.Text], [], []),
     'Fold' : IDL.Func([IDL.Text], [], []),
     'Raise' : IDL.Func([IDL.Text], [], []),
-    'ToalInitialization' : IDL.Func([], [], []),
+    'TotalInitialization' : IDL.Func([], [], []),
     'addCard' : IDL.Func([], [], []),
     'findBiggestCardSum' : IDL.Func([IDL.Vec(IDL.Nat)], [IDL.Nat], []),
     'getCard' : IDL.Func([], [IDL.Nat], []),
+    'getCiphertext' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Text)], ['query']),
     'getCounterpartCards' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Nat)], ['query']),
     'getGameData' : IDL.Func(
         [IDL.Text],
@@ -29,7 +30,7 @@ export const idlFactory = ({ IDL }) => {
     'handleCall' : IDL.Func([], [], []),
     'initializeCards' : IDL.Func([], [], []),
     'initializeGame' : IDL.Func([], [], []),
-    'playerReady' : IDL.Func([IDL.Text], [IDL.Text], []),
+    'playerReady' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Text], []),
   });
 };
 export const init = ({ IDL }) => { return []; };
