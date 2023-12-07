@@ -1,6 +1,7 @@
-import { Button, Grid } from "@mui/material"
+import { Button, Grid, TextField } from "@mui/material"
 import React, { useState } from "react"
 import { Turn } from "../../src/declarations/Turn"
+import { ibe_encrypt, internetIdentityLogin } from "../utils/vetKeys"
 
 const PlayerButton = ({
   wallet,
@@ -8,11 +9,24 @@ const PlayerButton = ({
   isBothPlayerReady,
   gameTurn,
   player,
+  iIPrincipal,
+  setIIPrincipal,
 }) => {
+  const [number, setNumber] = useState<string>("")
+
   async function clickStart(e: { preventDefault: () => void }) {
     e.preventDefault()
+    console.log(number)
+    const ibeCiphertext = await ibe_encrypt(
+      number,
+      "jni24-wbssg-pqg57-6qqxv-w4jjp-cgqh6-uzcu6-4agen-o7czc-vfa6k-tqe",
+    )
     console.log(wallet.principal)
-    const player = await Turn.playerReady(wallet.principal)
+    const player = await Turn.playerReady(
+      wallet.principal,
+      ibeCiphertext,
+      iIPrincipal,
+    )
     console.log(player)
     setPlayer(player)
   }
@@ -31,6 +45,11 @@ const PlayerButton = ({
   async function clickContinue(e: { preventDefault: () => void }) {
     e.preventDefault()
     Turn.initializeGame()
+  }
+  async function getInternetIdentity(e: { preventDefault: () => void }) {
+    e.preventDefault()
+    const internetIdentityPrincipal = await internetIdentityLogin()
+    setIIPrincipal(internetIdentityPrincipal.toString())
   }
 
   return (
@@ -87,10 +106,30 @@ const PlayerButton = ({
             </Grid>
           </div>
         )
+      ) : !iIPrincipal ? (
+        <div>
+          <Button
+            variant="contained"
+            onClick={getInternetIdentity}
+            size="large"
+          >
+            Get Internet Identity
+          </Button>
+        </div>
       ) : (
-        <Button variant="contained" onClick={clickStart} size="large">
-          START
-        </Button>
+        <div>
+          <TextField
+            id="outlined-basic"
+            label="Outlined"
+            variant="outlined"
+            placeholder="Enter any number"
+            onChange={(e) => setNumber(e.target.value)}
+            value={number}
+          />
+          <Button variant="contained" onClick={clickStart} size="large">
+            START
+          </Button>
+        </div>
       )}
     </div>
   )

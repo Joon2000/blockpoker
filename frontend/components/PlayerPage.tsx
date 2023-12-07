@@ -28,12 +28,25 @@ const PlayerPage = ({ wallet }) => {
   const [playerCards, setPlayerCards] = useState<number[]>([null, null, null])
   const [playerTotalChips, setPlayerTotalChips] = useState<number>(0)
   const [counterpartTotalChips, setcounterTotalChips] = useState<number>(0)
+  const [iIPrincipal, setIIPrincipal] = useState<string>("")
 
   const fetchUserData = async () => {
     const data = await Turn.getGameData(wallet.principal)
     const cards = await Turn.getPlayerCards(wallet.principal)
     return [data, cards]
   }
+
+  const getCiphertext = async () => {
+    const cipherTexts = await Turn.getCiphertext(wallet.principal)
+    return cipherTexts
+  }
+
+  useEffect(() => {
+    if (player === "DEALER") {
+      const cipherTexts = getCiphertext()
+      console.log(cipherTexts)
+    }
+  }, [player])
 
   useInterval(async () => {
     if (player != "NONE" && wallet.principal) {
@@ -58,7 +71,8 @@ const PlayerPage = ({ wallet }) => {
 
   async function clickInitializeGame(e: { preventDefault: any }) {
     e.preventDefault
-    await Turn.ToalInitialization()
+    await Turn.TotalInitialization()
+    setIIPrincipal("")
     console.log("Game Initialized")
   }
 
@@ -96,6 +110,8 @@ const PlayerPage = ({ wallet }) => {
           isBothPlayerReady={isBothPlayerReady}
           gameTurn={gameTurn}
           player={player}
+          iIPrincipal={iIPrincipal}
+          setIIPrincipal={setIIPrincipal}
         />
       </Box>
       <Button
