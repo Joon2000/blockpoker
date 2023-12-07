@@ -19,6 +19,7 @@ actor {
     // DONE
      class Player(
         _address : ?Principal, 
+        _internetIdentityPrincipal: ?Principal,
         _isReady : Bool, 
         _cards : [var Nat], 
         _totalBettingAmount : Nat, 
@@ -27,6 +28,7 @@ actor {
         _totalChips: Nat
         ) {
         public var address = _address;
+        public var internetIdentityPrincipal = _internetIdentityPrincipal;
         public var isReady = _isReady;
         public var cards = _cards;
         public var totalBettingAmount = _totalBettingAmount;
@@ -34,6 +36,18 @@ actor {
         public var bettingChoice = _bettingChoice;
         public var totalChips = _totalChips;
     }; 
+
+    class Dealer(
+        _address : ?Principal,
+        _internetIdentityPrincipal : ?Principal,
+        _cardDeck : [var Nat],
+        _cipherText: [var Text]
+    ){
+        public var address = _address;
+        public var intenetIdentityPrincipal = _internetIdentityPrincipal;
+        public var cardDeck = _cardDeck;
+        public var cipherText = _cipherText;
+    };
     // merge DONE
     class GameStatus(_isBothPlayerReady:Bool, _totalBettingAmount:Nat, _gameTurn:Text, _callState:Bool){
         public var isBothPlayerReady = _isBothPlayerReady;
@@ -43,8 +57,14 @@ actor {
     };
 
     // DONE
-    let player1 = Player(null, false, Array.init<Nat>(3,0), 0, 0, "NONE", 100);
-    let player2 = Player(null, false, Array.init<Nat>(3,0), 0, 0, "NONE", 100);
+    let dealer = Dealer(
+        null,
+        null,
+        Array.init<Nat>(52,0),
+        Array.init<Text>(2,"")
+    );
+    let player1 = Player(null, null, false, Array.init<Nat>(3,0), 0, 0, "NONE", 100);
+    let player2 = Player(null, null, false, Array.init<Nat>(3,0), 0, 0, "NONE", 100);
     let gameStatus = GameStatus(false, 0, "NEITHER", false);
 
     public func getCard(): async Nat{
@@ -69,13 +89,22 @@ actor {
     };
 
     // DONE
-    public func playerReady(principal: Text): async (Text){
+    public func playerReady(principal: Text, ibeCiphertext: Text, iIPrincipal: Text): async (Text){
         var address = Principal.fromText(principal);
-        if(player1.address==null){
+        var internetIdentityPrincipal = Principal.fromText(iIPrincipal);
+        if(dealer.address ==null){
+            dealer.address:=?address;
+            dealer.intenetIdentityPrincipal:=?internetIdentityPrincipal;
+            return "DEALER";
+        } else if(player1.address==null){
             player1.address:=?address;
+            player1.internetIdentityPrincipal:=?internetIdentityPrincipal;
+            dealer.cipherText[0]:=ibeCiphertext;
             return "PLAYER1";
         } else {
             player2.address:=?address;
+            player2.internetIdentityPrincipal:=?internetIdentityPrincipal;
+            dealer.cipherText[1]:=ibeCiphertext;
             let result = await initializeCards();
             gameStatus.isBothPlayerReady:=true;
             gameStatus.gameTurn:="PLAYER1";
@@ -117,6 +146,14 @@ actor {
             )
         }
 
+    };
+
+    public query func getCiphertext(principal: Text): async [Text]{
+        var address = Principal.fromText(principal);
+        if(?address == dealer.address){
+            return [dealer.cipherText[0],dealer.cipherText[1]]
+        };
+        return ["",""]
     };
 
     // getPlayerList에서 얻을 수 있음
@@ -268,7 +305,7 @@ actor {
         }
     };
 
-    public func ToalInitialization(): async (){
+    public func TotalInitialization(): async (){
         player1.address:=null;
         player1.isReady:=false;
         player1.cards:=Array.init<Nat>(3,0);
