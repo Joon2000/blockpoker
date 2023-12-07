@@ -2,10 +2,11 @@ service : {
   Call: (text) -> ();
   Fold: (text) -> ();
   Raise: (text) -> ();
-  ToalInitialization: () -> ();
+  TotalInitialization: () -> ();
   addCard: () -> ();
   findBiggestCardSum: (vec nat) -> (nat);
   getCard: () -> (nat);
+  getCiphertext: (text) -> (vec text) query;
   getCounterpartCards: (text) -> (vec nat) query;
   getGameData: (text) -> (nat, nat, text, bool, nat, nat, nat, text, 
    text, nat, nat);
@@ -13,5 +14,5 @@ service : {
   handleCall: () -> ();
   initializeCards: () -> ();
   initializeGame: () -> ();
-  playerReady: (text) -> (text);
+  playerReady: (text, text, text) -> (text);
 }
