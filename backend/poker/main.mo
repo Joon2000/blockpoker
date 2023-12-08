@@ -7,10 +7,12 @@ import Prelude "mo:base/Prelude";
 import Hash "mo:base/Hash";
 import random_number "canister:random_number";
 import Types "types";
+import Utils "utils";
 import Option "mo:base/Option";
 import Array "mo:base/Array";
 import Test "test";
 import Stack "mo:base/Stack";
+import D "mo:base/Debug";
 
 
 actor {
@@ -146,7 +148,55 @@ actor {
 
     };
 
+    func convertToSharedPlayer(player : ?Player) : ?SharedPlayer {
+        Utils.convertToSharedPlayer(player)
+    };
 
+    func convertToSharedGameStatus(gameStatus : GameStatus) : SharedGameStatus {
+        Utils.convertToSharedGameStatus(gameStatus)
+    };
+
+    public query func getGameStatus() : async SharedGameStatus { 
+        let sharedGameStatus : SharedGameStatus = convertToSharedGameStatus(gameStatus);
+        sharedGameStatus
+    };
+
+    public query func getPlayerInfo(playerAddress : Principal) : async ?SharedPlayer {
+        let playerInfo : ?Player = gameTable.getPlayerInfo(playerAddress);
+        let sharedPlayerInfo : ?SharedPlayer = convertToSharedPlayer(playerInfo);
+        sharedPlayerInfo
+    };
+
+    public query func getPlayerInfoList() : async List.List<SharedPlayer> {
+        var sharedPlayerInfoList : List.List<SharedPlayer> = List.nil<SharedPlayer>();
+        let playerInfoList = gameTable.getPlayerInfoList();
+
+        label forloop for (i in Iter.range(0, List.size(playerInfoList))) {
+            let playerInfo : ?Player = List.get(playerInfoList, i);
+            let sharedPlayerInfo : ?SharedPlayer = convertToSharedPlayer(playerInfo);
+            switch (sharedPlayerInfo) {
+                case null continue forloop;
+                case (?sharedPlayerInfo) {
+                    sharedPlayerInfoList := List.push<SharedPlayer>(sharedPlayerInfo, sharedPlayerInfoList);
+                }
+            }; 
+        };
+        sharedPlayerInfoList
+    };
+
+    public func addNewPlayer(playerAddress : Principal) {
+        let player : Player = {
+            var address = playerAddress;
+            var isReady = false;
+            var cards = List.nil<Card>();
+            var totalCardNumber = 0;
+            var currentChips = 0;
+            var totalBetAmount = 0;
+            var betAmount = 0;
+            var bettingAction = #NONE; 
+        };
+        gameTable.updatePlayerInfo(playerAddress, player); 
+    };
 
 
 

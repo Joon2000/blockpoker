@@ -57,6 +57,6 @@ module Types {
         playingStatus : PlayingStatus;
         masterPlayer : ?Principal;
         whoseTurn : ?Principal;
-        isAllCall : Bool;
+        isAllPlayerCall : Bool;
     };
 };
