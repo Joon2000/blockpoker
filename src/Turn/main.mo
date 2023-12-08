@@ -1,4 +1,4 @@
-import randomNumber "canister:randomNumber";
+import random_number "canister:random_number";
 import Array "mo:base/Array";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
@@ -68,7 +68,7 @@ actor {
     let gameStatus = GameStatus(false, 0, "NEITHER", false);
 
     public func getCard(): async Nat{
-        let card = await randomNumber.generateRandomNumber();
+        let card = await random_number.generateRandomNumber();
         return Option.get((card, 0))
 
     };

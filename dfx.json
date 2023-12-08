@@ -1,15 +1,15 @@
 {
   "canisters": {
     "system_api": {
-      "candid": "src/system_api/vetkd_system_api.did",
+      "candid": "backend/system_api/vetkd_system_api.did",
       "package": "vetkd_system_api",
       "type": "rust"
     },
-    "app_backend": {
+    "vet_key": {
       "dependencies": [
         "system_api"
       ],
-      "main": "src/app_backend/Main.mo",
+      "main": "backend/vet_key/Main.mo",
       "type": "motoko"
     },
     "internet_identity": {
@@ -23,20 +23,21 @@
       },
       "frontend": {}
     },
-    "backend": {
-      "main": "src/backend/main.mo"
+    "poker": {
+      "main": "backend/poker/main.mo",
+      "type": "motoko"
     },
-    "randomNumber": {
-      "main": "src/randomNumber/main.mo",
+    "random_number": {
+      "main": "backend/random_number/main.mo",
       "type": "motoko"
     },
     "Turn": {
-      "dependencies": ["randomNumber"],
+      "dependencies": ["random_number"],
       "main": "src/Turn/main.mo",
       "type": "motoko"
     },
     "assets": {
-      "dependencies": ["backend", "randomNumber", "Turn"],
+      "dependencies": ["poker", "random_number", "Turn"],
       "frontend": {
         "entrypoint": "dist/index.html"
       },
