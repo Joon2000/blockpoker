@@ -1,7 +1,7 @@
 import { Button, Grid, TextField } from "@mui/material"
 import React, { useState } from "react"
 import { Turn } from "../../src/declarations/Turn"
-import { ibe_encrypt, internetIdentityLogin } from "../utils/vetKeys"
+import { internetIdentityLogin } from "../utils/vetKeys"
 
 const PlayerButton = ({
   wallet,
@@ -12,21 +12,10 @@ const PlayerButton = ({
   iIPrincipal,
   setIIPrincipal,
 }) => {
-  const [number, setNumber] = useState<string>("")
-
   async function clickStart(e: { preventDefault: () => void }) {
     e.preventDefault()
-    console.log(number)
-    const ibeCiphertext = await ibe_encrypt(
-      number,
-      "jni24-wbssg-pqg57-6qqxv-w4jjp-cgqh6-uzcu6-4agen-o7czc-vfa6k-tqe",
-    )
     console.log(wallet.principal)
-    const player = await Turn.playerReady(
-      wallet.principal,
-      ibeCiphertext,
-      iIPrincipal,
-    )
+    const player = await Turn.playerReady(wallet.principal, iIPrincipal)
     console.log(player)
     setPlayer(player)
   }
@@ -118,14 +107,6 @@ const PlayerButton = ({
         </div>
       ) : (
         <div>
-          <TextField
-            id="outlined-basic"
-            label="Outlined"
-            variant="outlined"
-            placeholder="Enter any number"
-            onChange={(e) => setNumber(e.target.value)}
-            value={number}
-          />
           <Button variant="contained" onClick={clickStart} size="large">
             START
           </Button>
