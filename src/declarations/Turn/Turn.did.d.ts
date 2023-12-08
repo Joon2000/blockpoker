@@ -5,10 +5,11 @@ export interface _SERVICE {
   'Call' : ActorMethod<[string], undefined>,
   'Fold' : ActorMethod<[string], undefined>,
   'Raise' : ActorMethod<[string], undefined>,
-  'ToalInitialization' : ActorMethod<[], undefined>,
+  'TotalInitialization' : ActorMethod<[], undefined>,
   'addCard' : ActorMethod<[], undefined>,
   'findBiggestCardSum' : ActorMethod<[Array<bigint>], bigint>,
   'getCard' : ActorMethod<[], bigint>,
+  'getCiphertext' : ActorMethod<[string], Array<string>>,
   'getCounterpartCards' : ActorMethod<[string], Array<bigint>>,
   'getGameData' : ActorMethod<
     [string],
@@ -30,5 +31,5 @@ export interface _SERVICE {
   'handleCall' : ActorMethod<[], undefined>,
   'initializeCards' : ActorMethod<[], undefined>,
   'initializeGame' : ActorMethod<[], undefined>,
-  'playerReady' : ActorMethod<[string], string>,
+  'playerReady' : ActorMethod<[string, string, string], string>,
 }
