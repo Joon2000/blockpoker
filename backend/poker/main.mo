@@ -5,7 +5,7 @@ import HashMap "mo:base/HashMap";
 import Iter "mo:base/Iter";
 import Prelude "mo:base/Prelude";
 import Hash "mo:base/Hash";
-import randomNumber "canister:randomNumber";
+import random_number "canister:random_number";
 import Types "types";
 import Option "mo:base/Option";
 import Array "mo:base/Array";
@@ -375,7 +375,7 @@ actor {
     // };
 
     func getEncryptedCard(order : Nat) : async Card {
-        let cardNumber = Option.get((await randomNumber.generateRandomNumber(),0));
+        let cardNumber = Option.get((await random_number.generateRandomNumber(),0));
         // encryptedCardNumber = getEncryptedCardNumber(cardNumber);
         let card : Card = {
                 cardNumber = cardNumber;

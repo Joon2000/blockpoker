@@ -2,7 +2,7 @@ import List "mo:base/List";
 import Types "types";
 import Iter "mo:base/Iter";
 import Option "mo:base/Option";
-import randomNumber "canister:randomNumber";
+import randomNumber "canister:random_number";
 
 
 module {
