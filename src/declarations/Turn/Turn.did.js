@@ -1,16 +1,24 @@
 export const idlFactory = ({ IDL }) => {
   return IDL.Service({
-    'Call' : IDL.Func([IDL.Text], [], []),
-    'Fold' : IDL.Func([IDL.Text], [], []),
-    'Raise' : IDL.Func([IDL.Text], [], []),
+    'Call' : IDL.Func([IDL.Principal], [], []),
+    'Fold' : IDL.Func([IDL.Principal], [], []),
+    'Raise' : IDL.Func([IDL.Principal], [], []),
     'TotalInitialization' : IDL.Func([], [], []),
-    'addCard' : IDL.Func([], [], []),
     'findBiggestCardSum' : IDL.Func([IDL.Vec(IDL.Nat)], [IDL.Nat], []),
-    'getCard' : IDL.Func([], [IDL.Nat], []),
-    'getCiphertext' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Text)], ['query']),
-    'getCounterpartCards' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Nat)], ['query']),
+    'getCounterpartCards' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(IDL.Nat)],
+        ['query'],
+      ),
+    'getDecryptedCards' : IDL.Func([IDL.Principal, IDL.Vec(IDL.Nat)], [], []),
+    'getEncryptedCardDeck' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
+    'getEncryptedPlayerCards' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(IDL.Text)],
+        [],
+      ),
     'getGameData' : IDL.Func(
-        [IDL.Text],
+        [IDL.Principal],
         [
           IDL.Nat,
           IDL.Nat,
@@ -23,14 +31,25 @@ export const idlFactory = ({ IDL }) => {
           IDL.Text,
           IDL.Nat,
           IDL.Nat,
+          IDL.Bool,
+          IDL.Bool,
         ],
         [],
       ),
-    'getPlayerCards' : IDL.Func([IDL.Text], [IDL.Vec(IDL.Nat)], ['query']),
+    'getPlayerInternetIdentityPrincipals' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(IDL.Opt(IDL.Principal))],
+        ['query'],
+      ),
     'handleCall' : IDL.Func([], [], []),
-    'initializeCards' : IDL.Func([], [], []),
     'initializeGame' : IDL.Func([], [], []),
-    'playerReady' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Text], []),
+    'playerReady' : IDL.Func([IDL.Principal, IDL.Principal], [IDL.Text], []),
+    'storeEncryptedCardDeck' : IDL.Func([IDL.Vec(IDL.Text)], [], []),
+    'storeEncryptedPlayerCards' : IDL.Func(
+        [IDL.Principal, IDL.Vec(IDL.Text)],
+        [],
+        [],
+      ),
   });
 };
 export const init = ({ IDL }) => { return []; };
