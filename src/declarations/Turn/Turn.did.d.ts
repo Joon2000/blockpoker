@@ -2,17 +2,17 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 
 export interface _SERVICE {
-  'Call' : ActorMethod<[string], undefined>,
-  'Fold' : ActorMethod<[string], undefined>,
-  'Raise' : ActorMethod<[string], undefined>,
+  'Call' : ActorMethod<[Principal], undefined>,
+  'Fold' : ActorMethod<[Principal], undefined>,
+  'Raise' : ActorMethod<[Principal], undefined>,
   'TotalInitialization' : ActorMethod<[], undefined>,
-  'addCard' : ActorMethod<[], undefined>,
   'findBiggestCardSum' : ActorMethod<[Array<bigint>], bigint>,
-  'getCard' : ActorMethod<[], bigint>,
-  'getCiphertext' : ActorMethod<[string], Array<string>>,
-  'getCounterpartCards' : ActorMethod<[string], Array<bigint>>,
+  'getCounterpartCards' : ActorMethod<[Principal], Array<bigint>>,
+  'getDecryptedCards' : ActorMethod<[Principal, Array<bigint>], undefined>,
+  'getEncryptedCardDeck' : ActorMethod<[], Array<string>>,
+  'getEncryptedPlayerCards' : ActorMethod<[Principal], Array<string>>,
   'getGameData' : ActorMethod<
-    [string],
+    [Principal],
     [
       bigint,
       bigint,
@@ -25,11 +25,20 @@ export interface _SERVICE {
       string,
       bigint,
       bigint,
+      boolean,
+      boolean,
     ]
   >,
-  'getPlayerCards' : ActorMethod<[string], Array<bigint>>,
+  'getPlayerInternetIdentityPrincipals' : ActorMethod<
+    [Principal],
+    Array<[] | [Principal]>
+  >,
   'handleCall' : ActorMethod<[], undefined>,
-  'initializeCards' : ActorMethod<[], undefined>,
   'initializeGame' : ActorMethod<[], undefined>,
-  'playerReady' : ActorMethod<[string, string, string], string>,
+  'playerReady' : ActorMethod<[Principal, Principal], string>,
+  'storeEncryptedCardDeck' : ActorMethod<[Array<string>], undefined>,
+  'storeEncryptedPlayerCards' : ActorMethod<
+    [Principal, Array<string>],
+    undefined
+  >,
 }
