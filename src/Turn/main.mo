@@ -67,7 +67,9 @@ actor {
     
 
     // DONE
-    public func playerReady(principal: Principal, iIPrincipal: Principal): async (Text){
+    public func playerReady(principalText: Text, iIPrincipalText: Text): async (Text){
+        let principal = Principal.fromText(principalText);
+        let iIPrincipal = Principal.fromText(iIPrincipalText);
         if(dealer.address ==null){
             dealer.address:=?principal;
             dealer.intenetIdentityPrincipal:=?iIPrincipal;
@@ -87,7 +89,8 @@ actor {
 
     //Retun 값이 JSON 형태면 좋겠음
     // DONE
-    public func getGameData(principal: Principal): async (Nat, Nat, Text, Bool, Nat, Nat, Nat, Text, Text, Nat, Nat, Bool, Bool, Bool){
+    public func getGameData(principalText: Text): async (Nat, Nat, Text, Bool, Nat, Nat, Nat, Text, Text, Nat, Nat, Bool, Bool, Bool){
+        let principal = Principal.fromText(principalText);
         if(?principal==player1.address){
             return (
                 player1.totalBettingAmount, 
@@ -155,7 +158,8 @@ actor {
     };
 
     // 필요함
-    public func Fold(principal: Principal): async (){
+    public func Fold(principalText: Text): async (){
+        let principal = Principal.fromText(principalText);
         if (?principal==player1.address){
             player2.totalChips+=gameStatus.totalBettingAmount;
         } else {
@@ -213,7 +217,8 @@ actor {
         };
     };
 
-    public func Call(principal: Principal): async (){
+    public func Call(principalText: Text): async (){
+        let principal = Principal.fromText(principalText);
         if(?principal==player1.address){
             player1.currentBettingAmount:=player2.totalBettingAmount-player1.totalBettingAmount;
             if(player1.currentBettingAmount==0){
@@ -243,7 +248,8 @@ actor {
         }
     }; 
 
-    public func Raise(principal: Principal): async (){
+    public func Raise(principalText: Text): async (){
+        let principal = Principal.fromText(principalText);
         if(?principal==player1.address){
             player1.currentBettingAmount:=player2.totalBettingAmount-player1.totalBettingAmount;
             player1.currentBettingAmount+=2;
@@ -285,7 +291,8 @@ actor {
         gameStatus.callState:=false;
     };
 
-    public func storeEncryptedPlayerCards(iIPrincipal: Principal, encryptedCards: [Text]): async (){
+    public func storeEncryptedPlayerCards(iIPrincipalText: Text, encryptedCards: [Text]): async (){
+        let iIPrincipal = Principal.fromText(iIPrincipalText);
         if(gameStatus.callState==false) {        
             if(?iIPrincipal==player1.internetIdentityPrincipal){
                 player1.encryptedCards[0]:=encryptedCards[0];
@@ -303,7 +310,8 @@ actor {
         };
     };
 
-    public func getEncryptedPlayerCards(iIPrincipal: Principal): async [Text]{
+    public func getEncryptedPlayerCards(iIPrincipalText: Text): async [Text]{
+        let iIPrincipal = Principal.fromText(iIPrincipalText);
         if(?iIPrincipal==player1.internetIdentityPrincipal){
             return [player1.encryptedCards[0], player1.encryptedCards[1], player1.encryptedCards[2]]
         } else {
@@ -311,7 +319,8 @@ actor {
         }
     };
 
-    public query func getPlayerInternetIdentityPrincipals(principal: Principal): async [?Principal] {
+    public query func getPlayerInternetIdentityPrincipals(principalText: Text): async [?Principal] {
+        let principal = Principal.fromText(principalText);
         if (?principal==dealer.address){
             return [player1.internetIdentityPrincipal, player2.internetIdentityPrincipal]
         };
@@ -328,7 +337,8 @@ actor {
         return List.toArray(List.fromVarArray(dealer.encryptedCardDeck));
     };
 
-    public func getDecryptedCards(principal: Principal, cards: [Nat]): async() {
+    public func getDecryptedCards(principalText: Text, cards: [Nat]): async() {
+        let principal = Principal.fromText(principalText);
         if(?principal==player1.address){
             for(i in Iter.range(0,2)){
                 player1.decryptedCards[i] := cards[i]
@@ -340,7 +350,8 @@ actor {
         }
     };
 
-    public query func getCounterpartCards(principal: Principal): async [Nat]{
+    public query func getCounterpartCards(principalText: Text): async [Nat]{
+        let principal = Principal.fromText(principalText);
         if(?principal==player2.address){
             return [player1.decryptedCards[0],player1.decryptedCards[1],player1.decryptedCards[2]];
         } else {

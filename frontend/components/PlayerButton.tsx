@@ -2,6 +2,7 @@ import { Button, Grid, TextField } from "@mui/material"
 import React, { useState } from "react"
 import { Turn } from "../../src/declarations/Turn"
 import { internetIdentityLogin } from "../utils/vetKeys"
+import { Principal } from "@dfinity/principal"
 
 const PlayerButton = ({
   wallet,
