@@ -180,9 +180,10 @@ const PlayerPage = ({ wallet }) => {
   }
 
   useEffect(() => {
-    if (player === "DEALER" && iIPrincipal) {
+    if (player === "DEALER" && iIPrincipal && isBothPlayerReady) {
       const initialDeck = Array.from({ length: 52 }, (_, index) => index + 1)
       let randomDeck = shuffle(initialDeck)
+      console.log(randomDeck[0], randomDeck[1], randomDeck[2], randomDeck[3])
       const playerInternetIdentityPrincipals =
         fetchPlayerInternetIdentityPrincipals()
       const player1InternetIdentityPrincipal =
@@ -198,7 +199,7 @@ const PlayerPage = ({ wallet }) => {
       //보안을 위해 프론트에 randomDeck 초기화
       randomDeck = Array.from({ length: 52 }, (_, index) => index + 1)
     }
-  }, [player, initializeSwitch])
+  }, [initializeSwitch, isBothPlayerReady])
 
   //Add one more card
   useEffect(() => {
