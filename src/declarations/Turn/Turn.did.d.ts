@@ -6,11 +6,11 @@ export interface _SERVICE {
   'Fold' : ActorMethod<[string], undefined>,
   'Raise' : ActorMethod<[string], undefined>,
   'TotalInitialization' : ActorMethod<[], undefined>,
-  'addCard' : ActorMethod<[], undefined>,
   'findBiggestCardSum' : ActorMethod<[Array<bigint>], bigint>,
-  'getCard' : ActorMethod<[], bigint>,
-  'getCiphertext' : ActorMethod<[string], Array<string>>,
   'getCounterpartCards' : ActorMethod<[string], Array<bigint>>,
+  'getDecryptedCards' : ActorMethod<[string, Array<bigint>], undefined>,
+  'getEncryptedCardDeck' : ActorMethod<[], Array<string>>,
+  'getEncryptedPlayerCards' : ActorMethod<[string], Array<string>>,
   'getGameData' : ActorMethod<
     [string],
     [
@@ -25,11 +25,18 @@ export interface _SERVICE {
       string,
       bigint,
       bigint,
+      boolean,
+      boolean,
+      boolean,
     ]
   >,
-  'getPlayerCards' : ActorMethod<[string], Array<bigint>>,
+  'getPlayerInternetIdentityPrincipals' : ActorMethod<
+    [string],
+    Array<[] | [Principal]>
+  >,
   'handleCall' : ActorMethod<[], undefined>,
-  'initializeCards' : ActorMethod<[], undefined>,
   'initializeGame' : ActorMethod<[], undefined>,
-  'playerReady' : ActorMethod<[string, string, string], string>,
+  'playerReady' : ActorMethod<[string, string], string>,
+  'storeEncryptedCardDeck' : ActorMethod<[Array<string>], undefined>,
+  'storeEncryptedPlayerCards' : ActorMethod<[string, Array<string>], undefined>,
 }

@@ -3,16 +3,17 @@ service : {
   Fold: (text) -> ();
   Raise: (text) -> ();
   TotalInitialization: () -> ();
-  addCard: () -> ();
   findBiggestCardSum: (vec nat) -> (nat);
-  getCard: () -> (nat);
-  getCiphertext: (text) -> (vec text) query;
   getCounterpartCards: (text) -> (vec nat) query;
+  getDecryptedCards: (text, vec nat) -> ();
+  getEncryptedCardDeck: () -> (vec text) query;
+  getEncryptedPlayerCards: (text) -> (vec text);
   getGameData: (text) -> (nat, nat, text, bool, nat, nat, nat, text, 
-   text, nat, nat);
-  getPlayerCards: (text) -> (vec nat) query;
+   text, nat, nat, bool, bool, bool);
+  getPlayerInternetIdentityPrincipals: (text) -> (vec opt principal) query;
   handleCall: () -> ();
-  initializeCards: () -> ();
   initializeGame: () -> ();
-  playerReady: (text, text, text) -> (text);
+  playerReady: (text, text) -> (text);
+  storeEncryptedCardDeck: (vec text) -> ();
+  storeEncryptedPlayerCards: (text, vec text) -> ();
 }
