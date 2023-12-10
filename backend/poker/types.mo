@@ -1,6 +1,7 @@
 import List "mo:base/List";
 import Stack "mo:base/Stack";
 import HashMap "mo:base/HashMap";
+import Principal "mo:base/Principal";
 
 module Types {
     public type PlayingStatus = { #NOT_ALL_READY; #ALL_READY; #PLAYING; #GAME_END };
@@ -42,6 +43,11 @@ module Types {
         var numberOfCards : Nat;
     };
 
+    public type SharedCardDeck = {
+        cards : List.List<Card>;
+        numberOfCards : Nat;
+    };
+
     public type MoneyBox = {
         var totalBetAmount : Nat;
     };
@@ -49,14 +55,37 @@ module Types {
     public type GameStatus = {
         var playingStatus : PlayingStatus;
         var masterPlayer : ?Principal;
-        var whoseTurn : ?Principal;
+        var gameTurn : ?Principal;
         var isAllPlayerCall : Bool;
     };
 
     public type SharedGameStatus = {
         playingStatus : PlayingStatus;
         masterPlayer : ?Principal;
-        whoseTurn : ?Principal;
+        gameTurn : ?Principal;
         isAllPlayerCall : Bool;
+    };
+
+    public type GameTable = {
+        getPlayer : Principal -> ?Player;
+        getPlayers : () -> PlayerSeats;
+        getPlayerList : () -> List.List<Player>;
+        getCardDeck : () -> CardDeck;
+        getUsedCardDeck : () -> CardDeck;
+        getMoneyBox : () -> MoneyBox;
+
+        setPlayer : (Principal, ?Player) -> ();
+        // setNewPlayer : (Principal) -> ();
+        removePlayer : (Principal) -> ();
+        setPlayerIsReady : (Principal, Bool) -> ();
+        setCardDeck : (CardDeck) -> ();
+        addCardIntoPlayer : (Principal, Card) -> ();
+        addCardIntoDeck : (Card) -> ();
+        drawCardFromDeck :() -> ?Card;
+
+        // drawCardToPlayer : Principal -> ();
+        cleanPlayerCards : Principal -> ();
+        setBetAmount : (Principal, Nat) -> ();
+        setBettingAction : (Principal, BettingAction) -> ();
     };
 };
