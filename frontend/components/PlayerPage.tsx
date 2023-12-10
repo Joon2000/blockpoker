@@ -9,6 +9,7 @@ import { Choice } from "frontend/Type"
 import { BiCommentDots } from "react-icons/bi"
 import { BiMehBlank } from "react-icons/bi"
 import { ibe_decrypt, ibe_encrypt } from "../utils/vetKeys"
+import { poker } from "../../src/declarations/poker"
 
 const PlayerPage = ({ wallet }) => {
   const [player, setPlayer] = useState<string>("NONE")
@@ -44,10 +45,15 @@ const PlayerPage = ({ wallet }) => {
         cards[i] = "0"
       }
     }
+
+    const gameStatus = await poker.getGameStatus();
+    console.log("gameStatus :",gameStatus);
+
     return [data, cards]
   }
 
   useInterval(async () => {
+
     if (player != "NONE" && wallet.principal) {
       const [data, cards] = await fetchUserData()
       setPlayerTotalBettingAmount(Number(data[0]))
