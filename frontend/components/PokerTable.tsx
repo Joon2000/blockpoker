@@ -41,7 +41,7 @@ const PokerTable = ({
         }}
       >
         <Message />
-        <StateBox
+        {/* <StateBox
           position={"OPPONENT"}
           playerTotalBettingAmount={playerTotalBettingAmount}
           playerCurrentBettingAmount={playerCurrentBettingAmount}
@@ -49,12 +49,12 @@ const PokerTable = ({
           counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
           playerTotalChips={playerTotalChips}
           counterpartTotalChips={counterpartTotalChips}
-        />
-        <CounterpartCards gameTurn={gameTurn} wallet={wallet} />
-        <CardDeck />
-        <MoneyBox totalBettingAmount={totalAmountBetting} />
-        <PlayerCards playerCards={playerCards} />
-        <StateBox
+        /> */}
+        {/* <CounterpartCards gameTurn={gameTurn} wallet={wallet} /> */}
+        {/* <CardDeck /> */}
+        {/* <MoneyBox totalBettingAmount={totalAmountBetting} /> */}
+        {/* <PlayerCards playerCards={playerCards} /> */}
+        {/* <StateBox
           position={"PLAYER"}
           playerTotalBettingAmount={playerTotalBettingAmount}
           playerCurrentBettingAmount={playerCurrentBettingAmount}
@@ -62,7 +62,7 @@ const PokerTable = ({
           counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
           playerTotalChips={playerTotalChips}
           counterpartTotalChips={counterpartTotalChips}
-        />
+        /> */}
       </Box>
     </div>
   )
