@@ -255,16 +255,11 @@ module Utils {
             case null return;
             case (?card) {
                 gameTable.addCardIntoPlayer(playerAddress, card);
-                D.print("card");
-                D.print(Nat.toText(card.cardNumber));
-                D.print("order");
-                D.print(Nat.toText(card.order));
             };
         };
     };
 
     public func drawCardEveryPlayers(gameTable : GameTable) {
-        D.print("drawCardEveryPlayers");
         var players = gameTable.getPlayers();
         for (player in players.vals()) { 
             drawCardToPlayer(gameTable, player.address);
