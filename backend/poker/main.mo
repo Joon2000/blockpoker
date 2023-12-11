@@ -360,6 +360,18 @@ actor {
         gameStatus.gameTurn := gameStatus.masterPlayer;
     };
 
+    public func endGame() {
+        gameStatus.playingStatus := #NOT_ALL_READY;
+        gameStatus.masterPlayer := null; //winner 로 배정
+        gameStatus.gameTurn := null;
+        gameStatus.isAllPlayerCall := false;
+
+        var players = gameTable.getPlayers();
+        for (player in players.vals()) {
+            gameTable.setPlayerIsReady(player.address, false);
+        };
+    };
+
     public func test_fillCardDeck() : async SharedCardDeck{
         await fillCardDeck(NUMBER_OF_CARDS_IN_CARD_DECK);
 
