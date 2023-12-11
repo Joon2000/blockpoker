@@ -4,7 +4,7 @@ import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 
 module Types {
-    public type PlayingStatus = { #NOT_ALL_READY; #ALL_READY; #PLAYING; #GAME_END };
+    public type PlayingStatus = { #NOT_ALL_READY; #ALL_READY; #PLAYING; #GAME_END};
     public type BettingAction = { #FOLD; #CHECK; #RAISE; #CALL; #NONE;};
 
     public type Player = {
@@ -69,7 +69,7 @@ module Types {
     public type GameTable = {
         getPlayer : Principal -> ?Player;
         getPlayers : () -> PlayerSeats;
-        getPlayerList : () -> List.List<Player>;
+        getPlayerArray : () -> [Player];
         getCardDeck : () -> CardDeck;
         getUsedCardDeck : () -> CardDeck;
         getMoneyBox : () -> MoneyBox;
