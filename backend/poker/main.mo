@@ -67,13 +67,13 @@ actor {
             players
         };
 
-        public func getPlayerList() : List.List<Player> {
+        public func getPlayerArray() : [Player] {
             let players : PlayerSeats = gameTable.getPlayers();
             var playerList : List.List<Player> = List.nil<Player>();
             for (player in players.vals()) {
                 playerList := List.push<Player>(player, playerList);
             };
-            playerList
+            List.toArray(playerList)
         };
 
         public func getCardDeck() : CardDeck {
@@ -273,12 +273,14 @@ actor {
         sharedPlayerInfo
     };
 
-    public query func getPlayerInfoList() : async List.List<SharedPlayer> {
+    public query func getPlayerInfoArray() : async [SharedPlayer] {
         var sharedPlayerInfoList : List.List<SharedPlayer> = List.nil<SharedPlayer>();
-        let playerInfoList = gameTable.getPlayerList();
+        let playerInfoArray = gameTable.getPlayerArray();
 
-        label forloop for (i in Iter.range(0, List.size(playerInfoList))) {
-            let playerInfo : ?Player = List.get(playerInfoList, i);
+        // label forloop for (i in Iter.range(0, Array.size(playerInfoArray))) {
+        label forloop for (player in playerInfoArray.vals()) {
+            let playerInfo = ?player;
+            // let playerInfo : ?Player = List.get(playerInfoList, i);
             let sharedPlayerInfo : ?SharedPlayer = convertToSharedPlayer(playerInfo);
             switch (sharedPlayerInfo) {
                 case null continue forloop;
@@ -287,7 +289,7 @@ actor {
                 }
             }; 
         };
-        sharedPlayerInfoList
+        List.toArray(sharedPlayerInfoList)
     };
 
     public query func getCardDeck() : async SharedCardDeck {

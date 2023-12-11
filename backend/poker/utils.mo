@@ -20,6 +20,7 @@ module Utils {
     type Card = Types.Card;
     type CardDeck = Types.CardDeck;
     type SharedCardDeck = Types.SharedCardDeck;
+    type BettingAction = Types.BettingAction;
 
     // test 용
     let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 52;
