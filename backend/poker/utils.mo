@@ -31,7 +31,7 @@ module Utils {
             case (?player) {
                 let sharedPlayer : SharedPlayer = {
                     address = player.address;
-                    isReady = player.isReady;
+                    playingState = player.playingState;
                     cards = player.cards;
                     totalCardNumber = player.totalCardNumber;
                     currentChips = player.currentChips;
@@ -66,7 +66,7 @@ module Utils {
    public func getNewPlayer(playerAddress : Principal) : Player {
         let player : Player = {
             var address = playerAddress;
-            var isReady = false;
+            var playingState = #ENTER;
             var cards = List.nil<Card>();
             var totalCardNumber = 0;
             var currentChips = 0;
@@ -85,7 +85,7 @@ module Utils {
             case (?player){
                 let updatedPlayer : Player = {
                     var address = player.address;
-                    var isReady = player.isReady;
+                    var playingState = player.playingState;
                     var cards = player.cards;
                     // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
                     var totalCardNumber = player.totalCardNumber;
