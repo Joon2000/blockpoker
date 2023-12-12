@@ -4,12 +4,13 @@ import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 
 module Types {
-    public type PlayingStatus = { #NOT_ALL_READY; #ALL_READY; #PLAYING; #GAME_END};
+    public type GamePlayingState = { #NOT_ALL_READY; #ALL_READY; #PLAYING; #GAME_END};
+    public type PlayerPlayingState = { #ENTER; #READY; #PLAYING; #END};
     public type BettingAction = { #FOLD; #CHECK; #RAISE; #CALL; #NONE;};
 
     public type Player = {
         var address : Principal;
-        var isReady : Bool;
+        var playingState : PlayerPlayingState;
         var cards : List.List<Card>;
         // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
         var totalCardNumber : Nat;
@@ -21,7 +22,7 @@ module Types {
 
     public type SharedPlayer = {
         address : Principal;
-        isReady : Bool;
+        playingState : PlayerPlayingState;
         cards : List.List<Card>;
         // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
         totalCardNumber : Nat;
@@ -53,14 +54,14 @@ module Types {
     };
 
     public type GameStatus = {
-        var playingStatus : PlayingStatus;
+        var playingStatus : GamePlayingState;
         var masterPlayer : ?Principal;
         var gameTurn : ?Principal;
         var isAllPlayerCall : Bool;
     };
 
     public type SharedGameStatus = {
-        playingStatus : PlayingStatus;
+        playingStatus : GamePlayingState;
         masterPlayer : ?Principal;
         gameTurn : ?Principal;
         isAllPlayerCall : Bool;
@@ -77,7 +78,7 @@ module Types {
         setPlayer : (Principal, ?Player) -> ();
         // setNewPlayer : (Principal) -> ();
         removePlayer : (Principal) -> ();
-        setPlayerIsReady : (Principal, Bool) -> ();
+        setPlayerPlayingState : (Principal, PlayerPlayingState) -> ();
         setCardDeck : (CardDeck) -> ();
         addCardIntoPlayer : (Principal, Card) -> ();
         addCardIntoDeck : (Card) -> ();

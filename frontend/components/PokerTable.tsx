@@ -40,7 +40,7 @@ const PokerTable = ({
           bgcolor: brown[200],
         }}
       >
-        <Message />
+        <Message message={"message"}/>
         <StateBox
           position={"OPPONENT"}
           playerTotalBettingAmount={playerTotalBettingAmount}

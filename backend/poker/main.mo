@@ -27,6 +27,7 @@ actor {
     type GameStatus = Types.GameStatus;
     type SharedGameStatus = Types.SharedGameStatus;
     type BettingAction = Types.BettingAction;
+    type PlayerPlayingState = Types.PlayerPlayingState;
 
     // 게임 참여 최대 인원 수 4명
     let MAX_PLAYER = 4;
@@ -111,12 +112,12 @@ actor {
             players.delete(playerAddress);
         };
 
-        public func setPlayerIsReady(playerAddress : Principal, isReady : Bool) {
+        public func setPlayerPlayingState(playerAddress : Principal, playingState : PlayerPlayingState) {
             var player : ?Player = getPlayer(playerAddress);
             switch (player){
                 case null return;
                 case (?player) {
-                    player.isReady := isReady;
+                    player.playingState := playingState;
                     setPlayer(playerAddress, ?player);
                 };
             };
@@ -130,15 +131,50 @@ actor {
             };
 
             for (player in players.vals()) {
-                if (player.isReady == false){
+                if (player.playingState == #ENTER){
                     gameStatus.playingStatus := #NOT_ALL_READY;
                     return
                 };
             };
 
-            D.print("below for loop");
-            
-            gameStatus.playingStatus := #ALL_READY;
+            for (player in players.vals()) {
+                if (player.playingState != #READY){
+                    return
+                };
+            };
+
+            for (player in players.vals()) {
+                if (player.playingState == #READY){
+                    gameStatus.playingStatus := #ALL_READY;
+                    return
+                };
+            };
+
+            for (player in players.vals()) {
+                if (player.playingState != #PLAYING){
+                    return
+                };
+            };
+
+            for (player in players.vals()) {
+                if (player.playingState == #PLAYING){
+                    gameStatus.playingStatus := #PLAYING;
+                    return
+                };
+            };
+
+            for (player in players.vals()) {
+                if (player.playingState != #END){
+                    return
+                };
+            };
+
+            for (player in players.vals()) {
+                if (player.playingState == #END){
+                    gameStatus.playingStatus := #GAME_END;
+                    return
+                };
+            };
         }; 
 
         public func setCardDeck(newCardDeck : CardDeck) {
@@ -331,7 +367,7 @@ actor {
             case null return;
             case (?player) {assert(player.currentChips < 10);};
         };
-        gameTable.setPlayerIsReady(playerAddress, true);
+        gameTable.setPlayerPlayingState(playerAddress, #READY);
         gameTable.updatePlayingStatus();
     };
 
@@ -356,19 +392,23 @@ actor {
         drawCardEveryPlayers();
 
         gameStatus.playingStatus := #PLAYING;
+        var players = gameTable.getPlayers();
+        for (player in players.vals()) {
+            gameTable.setPlayerPlayingState(player.address, #PLAYING);
+        };
         // master player 부터 시작
         gameStatus.gameTurn := gameStatus.masterPlayer;
     };
 
     public func endGame() {
-        gameStatus.playingStatus := #NOT_ALL_READY;
+        gameStatus.playingStatus := #GAME_END;
         gameStatus.masterPlayer := null; //winner 로 배정
         gameStatus.gameTurn := null;
         gameStatus.isAllPlayerCall := false;
 
         var players = gameTable.getPlayers();
         for (player in players.vals()) {
-            gameTable.setPlayerIsReady(player.address, false);
+            gameTable.setPlayerPlayingState(player.address, #END);
         };
     };
 

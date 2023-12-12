@@ -29,7 +29,7 @@ const PokerTableRefactor = ({
           bgcolor: brown[200],
         }}
       >
-        <Message />
+        <Message message={"message"}/>
         <StateBoxRefactor
           // position={"OPPONENT"}
           // playerTotalBettingAmount={playerTotalBettingAmount}

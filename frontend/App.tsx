@@ -25,7 +25,7 @@ import { Profile } from "./components/Profile"
 import { useWallet } from "@connect2ic/react"
 import { ConnectWallet } from "./components/ConnectWallet"
 import { PlayerPage } from "./components/PlayerPage"
-import { PlayerPageRefactor } from "./components/PlayerPageRefactor"
+import { MainPage } from "./components/MainPage"
 import { Container } from "@mui/material"
 
 function App() {
@@ -40,7 +40,7 @@ function App() {
       <ConnectDialog />
 
       {/* {wallet ? <PlayerPage wallet={wallet} /> : <ConnectWallet />} */}
-      {wallet ? <PlayerPageRefactor wallet={wallet} /> : <ConnectWallet />}
+      {wallet ? <MainPage wallet={wallet} /> : <ConnectWallet />}
     </Container>
   )
 }
