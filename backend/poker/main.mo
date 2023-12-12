@@ -375,8 +375,14 @@ actor {
         let players = gameTable.getPlayers();
         if (players.size() > 1 and ?playerAddress == gameStatus.masterPlayer) {
             // masterPlayer가 나가면 다음 사람 master 줘야 함
+            gameTable.removePlayer(playerAddress);
+            label temp for (player in players.vals()) {
+                gameStatus.masterPlayer := ?player.address;
+                break temp;
+            };
+        } else {
+            gameTable.removePlayer(playerAddress);
         };
-        gameTable.removePlayer(playerAddress);
         gameTable.updatePlayingStatus();
     };
 
@@ -384,6 +390,8 @@ actor {
     public func startGame(playerAddress : Principal) : async() {
         // masterPlayer만 startGame 가능
         assert(gameStatus.masterPlayer == ?playerAddress);
+        // ALL READY 상태에서만 startGame 가능
+        assert(gameStatus.playingStatus == #ALL_READY);
 
         await fillCardDeck(NUMBER_OF_CARDS_IN_CARD_DECK);
 
@@ -410,6 +418,21 @@ actor {
         for (player in players.vals()) {
             gameTable.setPlayerPlayingState(player.address, #END);
         };
+
+        settleupGame();
+    };
+
+    public func settleupGame() {
+        gameStatus.playingStatus := #NOT_ALL_READY;
+        gameStatus.masterPlayer := null; //winner 로 배정
+        gameStatus.gameTurn := null;
+        gameStatus.isAllPlayerCall := false; 
+
+        var players = gameTable.getPlayers();
+        for (player in players.vals()) {
+            gameTable.setPlayerPlayingState(player.address, #ENTER);
+        };
+
     };
 
     public func test_fillCardDeck() : async SharedCardDeck{
