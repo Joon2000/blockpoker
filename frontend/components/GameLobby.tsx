@@ -17,20 +17,16 @@ const GameLobby = ({
   wallet,
   playerInfo,
   playerInfoArray,
-  masterPlayer
+  masterPlayer,
+  playingState
 }) => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
-  const [playerPlayingState, setPlayerPlayingState] = useState<string>("");
+  // const [playerPlayingState, setPlayerPlayingState] = useState<string>("");
 
-  useEffect(()=>{
-    setPlayerPlayingState(playerInfo!=null&&Object.keys(playerInfo.playingState)[0])
-    // console.log(playerInfo!=null&&Object.keys(playerInfo.playingState)[0])
-    // console.log(playerInfo!=null&&playerInfo.betAmount)
-    // console.log("playerPlayingState", playerPlayingState)
-    // console.log(playerInfoArray[0])
-    // console.log( playerInfo!=null&&masterPlayer==playerInfo.address.toString())
-  },[playerInfo])
+  // useEffect(()=>{
+  //   setPlayerPlayingState(playerInfo!=null&&Object.keys(playerInfo.playingState)[0])
+  // },[playerInfo])
 
   async function enterGame(e: { preventDefault: any }) {
     e.preventDefault
@@ -39,15 +35,6 @@ const GameLobby = ({
     setIsButtonDisabled(false);
 
     console.log("Game enterGame")
-  };
-
-  async function exitGame(e: { preventDefault: any }) {
-    e.preventDefault
-    setIsButtonDisabled(true);
-    await poker.exitGame(Principal.fromText(wallet.principal));
-    setIsButtonDisabled(false);
-
-    console.log("Exit Game")
   };
 
   async function readyGame(e: { preventDefault: any }) {
@@ -62,7 +49,12 @@ const GameLobby = ({
   async function startGame(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
-    await poker.startGame(Principal.fromText(wallet.principal));
+    try {
+      await poker.startGame(Principal.fromText(wallet.principal));
+    } catch (err){
+      console.log(err)
+    };
+    
     setIsButtonDisabled(false);
 
     console.log("Game startGame")
@@ -72,24 +64,27 @@ const GameLobby = ({
       <Box
         sx={{
           // width: 950,
-          height: 550,
+          // height: 500,
           // borderRadius: 1,
           bgcolor: brown[200],
-          // pb: 10,
+          pb: 5,
         }}
       >
-        <Box sx={{pd:10}}>
+        <Box sx={{}}>
           <Typography> Here Is GameLobby</Typography>
           {playerInfo == null ? <p>not yet enter game</p> : <p>player : {playerInfo.address.toString()}</p>}
-            <Grid container spacing={2}>
+
+          <Grid container spacing={2}>
             {playerInfoArray.map((player)=>(
-              <Grid item xs={6} md={4} lg={3} key={player.address.toString()}><ParticipationStatusCard playerPrinciple={player.address.toString()}/></Grid>
+              <Grid item xs={6} md={4} lg={3} key={player.address.toString()}>
+                <ParticipationStatusCard playerPrinciple={player.address.toString()}/>
+              </Grid>
             ))}
           </Grid>
         </Box>
-        <Box>
+        <Box sx={{ml:2, mt: 5}}>
           {playerInfo == null ? 
-            <Button
+          <Button
               variant="contained"
               onClick={enterGame}
               size="large"
@@ -99,37 +94,22 @@ const GameLobby = ({
             :
             <Button
               variant="contained"
-              onClick={exitGame}
+              onClick={readyGame}
               size="large"
               color="error"
               disabled={isButtonDisabled}
-            > Exit Game </Button>
+            > Ready Game </Button>
           }
-          {
-            {
-              "ENTER" : 
-              <Button
-                variant="contained"
-                onClick={readyGame}
-                size="large"
-                color="warning"
-                disabled={isButtonDisabled}
-              >
-                Ready Game
-              </Button>
-              ,"READY" :
-              playerInfo!=null && masterPlayer==playerInfo.address.toString() 
-              &&
-              <Button
-                variant="contained"
-                onClick={startGame}
-                size="large"
-                color="error"
-                disabled={isButtonDisabled}
-              >
-                Start Game
-              </Button>
-            }[playerPlayingState]
+          {playerInfo!=null && playingState=="ALL_READY" && masterPlayer==wallet.principal.toString()&&
+            <Button
+              variant="contained"
+              onClick={startGame}
+              size="large"
+              color="error"
+              disabled={isButtonDisabled}
+            >
+              Start Game
+            </Button> 
           }
         </Box>
 

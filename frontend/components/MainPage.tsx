@@ -27,7 +27,7 @@ const MainPage = ({ wallet }) => {
   const [isAllPlayerCall, setIsAllPlayerCall] = useState<boolean>(false);
 
   // Player Informations
-  const [playerInfo, setPlayerInfo] = useState<null|SharedPlayer>();
+  const [playerInfo, setPlayerInfo] = useState<null|SharedPlayer>(null);
   const [playerInfoArray, setPlayerInfoArray] = useState<SharedPlayer[]>([]);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
@@ -43,35 +43,41 @@ const MainPage = ({ wallet }) => {
     setPlayerInfoArray(playerInfoArray);
     const playerInfo = await poker.getPlayerInfo(Principal.fromText(wallet.principal));
     setPlayerInfo(playerInfo[0]);
+
+
     console.log("player info", playerInfo[0]);
     console.log("wallet :", wallet.principal);
-
   }, 2000)
  
 
-
-
-
-
-  async function endGame(e: { preventDefault: any }) {
+  async function exitGame(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
-    await poker.endGame();
+    await poker.exitGame(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
 
-    console.log("Game endGame")
+    console.log("Exit Game")
   };
- 
-
 
   return (
     <Box>
       <Typography> Here Is MainPage</Typography>
       <Typography>player's wallet principal : {wallet.principal}</Typography>
+      {playerInfo!=null &&
+        <Button
+          variant="contained"
+          onClick={exitGame}
+          size="large"
+          color="primary"
+          disabled={isButtonDisabled}
+        >
+          Exit Game
+        </Button>
+      }
+      
       <Box
         sx={{
-          // width: 1000,
-          // height: 700,
+          minHeight : 600,
           borderRadius: 1,
           bgcolor: brown[100],
         }}
@@ -86,24 +92,19 @@ const MainPage = ({ wallet }) => {
 
         
 
-        {playingState == "PLAYTING" ? <PokerTableRefactor wallet={wallet}/>
-        : playingState == "GAME_END" ? <PokerTableRefactor wallet={wallet}/>
+        {playingState == "PLAYTING" || playingState == "GAME_END" 
+        ? <PokerTableRefactor 
+        wallet={wallet}/>
         :  <GameLobby 
         wallet={wallet} 
         playerInfo={playerInfo} 
         playerInfoArray={playerInfoArray} 
-        masterPlayer={masterPlayer} /> }
+        masterPlayer={masterPlayer} 
+        playingState={playingState}
+        /> }
       </Box>
    
-      <Button
-        variant="contained"
-        onClick={endGame}
-        size="large"
-        color="primary"
-        disabled={isButtonDisabled}
-      >
-        End Game
-      </Button>
+      
     </Box>
   )
 }
