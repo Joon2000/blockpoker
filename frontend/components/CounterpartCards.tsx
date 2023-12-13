@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { CardBack } from "./CardBack"
 import { Grid } from "@mui/material"
 import { Turn } from "../../src/declarations/Turn"
-import { NumberCard } from "./NumberCard"
+import { TrumpCard } from "./TrumpCard"
 
 const CounterpartCards = ({ gameTurn, wallet }) => {
   const [counterpartCards, setCounterpartCards] = useState<number[]>([0, 0, 0])
@@ -26,7 +26,7 @@ const CounterpartCards = ({ gameTurn, wallet }) => {
         {counterpartCards.map((card: number, index: React.Key) => {
           return (
             <Grid item xs={6} md={4} key={index}>
-              {card ? <NumberCard number={card} /> : <CardBack />}
+              {card ? <TrumpCard number={card} /> : <CardBack />}
             </Grid>
           )
         })}

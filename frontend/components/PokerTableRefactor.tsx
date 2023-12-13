@@ -4,17 +4,16 @@ import React from "react"
 import { StateBoxRefactor } from "./StateBoxRefactor"
 import { MoneyBoxRefactor } from "./MoneyBoxRefactor"
 import { CounterpartCardsRefactor } from "./CounterpartCardsRefactor"
-import { PlayerCardsRefactor } from "./PlayerCardsRefactor"
+import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
 import { Message } from "./Message"
 
 const PokerTableRefactor = ({
   wallet,
+  playerInfo,
+  playerInfoArray,
   updateState,
 }) => {
-
-  
-
 
   return (
     <Box
@@ -61,8 +60,8 @@ const PokerTableRefactor = ({
 
         </Box>
         <Box>
-          <PlayerCardsRefactor 
-          // playerCards={playerCards} 
+          <PlayerCards 
+          playerInfo={playerInfo}
           />
         </Box>
         <Box>

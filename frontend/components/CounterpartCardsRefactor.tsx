@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { CardBack } from "./CardBack"
 import { Grid } from "@mui/material"
 import { Turn } from "../../src/declarations/Turn"
-import { NumberCard } from "./NumberCard"
+import { TrumpCard } from "./TrumpCard"
 
 const CounterpartCardsRefactor = ({ 
   // gameTurn, 
@@ -20,7 +20,7 @@ const CounterpartCardsRefactor = ({
         {counterpartCards.map((card: number, index: React.Key) => {
           return (
             <Grid item xs={4} key={index}>
-              {card ? <NumberCard number={card} /> : <CardBack />}
+              {card ? <TrumpCard number={card} /> : <CardBack />}
             </Grid>
           )
         })}

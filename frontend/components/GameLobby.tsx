@@ -4,7 +4,7 @@ import { brown } from "@mui/material/colors"
 import { StateBoxRefactor } from "./StateBoxRefactor"
 import { MoneyBoxRefactor } from "./MoneyBoxRefactor"
 import { CounterpartCardsRefactor } from "./CounterpartCardsRefactor"
-import { PlayerCardsRefactor } from "./PlayerCardsRefactor"
+import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
 import { Message } from "./Message"
 import { ParticipationStatusCard } from "./ParticipationStatusCard"
@@ -23,11 +23,6 @@ const GameLobby = ({
 }) => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
-  // const [playerPlayingState, setPlayerPlayingState] = useState<string>("");
-
-  // useEffect(()=>{
-  //   setPlayerPlayingState(playerInfo!=null&&Object.keys(playerInfo.playingState)[0])
-  // },[playerInfo])
 
   async function enterGame(e: { preventDefault: any }) {
     e.preventDefault
