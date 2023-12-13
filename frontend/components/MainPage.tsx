@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { PokerTableRefactor } from "./PokerTableRefactor"
+import { PokerTable } from "./PokerTable"
 import { PlayerButton } from "./PlayerButton"
 import { Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
@@ -29,6 +29,7 @@ const MainPage = ({ wallet }) => {
   // Player Informations
   const [playerInfo, setPlayerInfo] = useState<null|SharedPlayer>(null);
   const [playerInfoArray, setPlayerInfoArray] = useState<SharedPlayer[]>([]);
+  const [playerNumber, setPlayerNumber] = useState<number>(0);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
@@ -49,12 +50,12 @@ const MainPage = ({ wallet }) => {
 
     const playerInfoArray = await poker.getPlayerInfoArray();
     setPlayerInfoArray(playerInfoArray);
+    setPlayerNumber(playerInfoArray.length);
     const playerInfo = await poker.getPlayerInfo(Principal.fromText(wallet.principal));
     setPlayerInfo(playerInfo[0]);
 
-    console.log("playingState", playingState);
+    console.log("playerNumber", playerNumber);
     console.log("wallet :", wallet.principal);
-    console.log("player info ", playerInfo[0].cards);
   };
  
 
@@ -104,7 +105,7 @@ const MainPage = ({ wallet }) => {
         <Typography>isAllPlayerCall : {isAllPlayerCall.toString()}</Typography>
 
         {playingState === "PLAYING" || playingState === "GAME_END" 
-        ? <PokerTableRefactor 
+        ? <PokerTable 
         wallet={wallet}
         playerInfo={playerInfo}
         playerInfoArray={playerInfoArray}

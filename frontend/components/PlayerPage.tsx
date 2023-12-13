@@ -237,7 +237,7 @@ const PlayerPage = ({ wallet }) => {
           <BiMehBlank size="70" />
           {player !== gameTurn && <BiCommentDots size="70" />}
         </div>
-        <PokerTable
+        {/* <PokerTable
           playerTotalBettingAmount={playerTotalBettingAmount}
           playerCurrentBettingAmount={playerCurrentBettingAmount}
           playerBettingChoice={playerBettingChoice}
@@ -250,7 +250,7 @@ const PlayerPage = ({ wallet }) => {
           playerTotalChips={playerTotalChips}
           counterpartTotalChips={counterpartTotalChips}
           wallet={wallet}
-        />
+        /> */}
         <PlayerButton
           wallet={wallet}
           setPlayer={setPlayer}
