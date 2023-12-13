@@ -16,15 +16,16 @@ const CounterpartCardsRefactor = ({
   }
 
   return (
-      <Grid container spacing={4}>
-        {counterpartCards.map((card: number, index: React.Key) => {
-          return (
-            <Grid item xs={4} key={index}>
-              {card ? <TrumpCard number={card} /> : <CardBack />}
-            </Grid>
-          )
-        })}
-      </Grid>
+      // <Grid container spacing={4}>
+      //   {counterpartCards.map((card: number, index: React.Key) => {
+      //     return (
+      //       <Grid item xs={4} key={index}>
+      //         {card ? <TrumpCard number={card} /> : <CardBack />}
+      //       </Grid>
+      //     )
+      //   })}
+      // </Grid>
+      <Grid></Grid>
   )
 }
 
