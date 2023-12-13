@@ -11,6 +11,7 @@ module Types {
     public type Player = {
         var address : Principal;
         var playingState : PlayerPlayingState;
+        var playerOrder: Nat;
         var cards : List.List<Card>;
         // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
         var totalCardNumber : Nat;
@@ -23,6 +24,7 @@ module Types {
     public type SharedPlayer = {
         address : Principal;
         playingState : PlayerPlayingState;
+        playerOrder: Nat;
         cards : [Card];
         // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
         totalCardNumber : Nat;
@@ -56,14 +58,14 @@ module Types {
     public type GameStatus = {
         var playingStatus : GamePlayingState;
         var masterPlayer : ?Principal;
-        var gameTurn : ?Principal;
+        var gameTurn : Nat;
         var isAllPlayerCall : Bool;
     };
 
     public type SharedGameStatus = {
         playingStatus : GamePlayingState;
         masterPlayer : ?Principal;
-        gameTurn : ?Principal;
+        gameTurn : Nat;
         isAllPlayerCall : Bool;
     };
 
@@ -75,18 +77,27 @@ module Types {
         getUsedCardDeck : () -> CardDeck;
         getMoneyBox : () -> MoneyBox;
 
-        setPlayer : (Principal, ?Player) -> ();
-        // setNewPlayer : (Principal) -> ();
+        setPlayer : (Principal, Player) -> ();
+        createNewPlayer : (Principal) -> ();
         removePlayer : (Principal) -> ();
         setPlayerPlayingState : (Principal, PlayerPlayingState) -> ();
-        setCardDeck : (CardDeck) -> ();
+        setPlayerOrder : (Principal, Nat) -> ();
+
+        setWholeCardDeck : (CardDeck) -> ();
         addCardIntoPlayer : (Principal, Card) -> ();
         addCardIntoDeck : (Card) -> ();
+        addCardIntoUsedDeck : (Card) -> ();
         drawCardFromDeck :() -> ?Card;
 
-        // drawCardToPlayer : Principal -> ();
-        cleanPlayerCards : Principal -> ();
-        setBetAmount : (Principal, Nat) -> ();
+        setCurrentChips : (Principal, Nat) -> ();
+        setCurrentBetAmount : (Principal, Nat) -> ();
         setBettingAction : (Principal, BettingAction) -> ();
+
+        cleanPlayerCards : Principal -> ();
+        cleanPlayerBettingInfo : (Principal) -> ();
+        cleanPlayerInfo : (Principal) -> ();
+        cleanPlayersInfo : () -> ();
+
+        updatePlayingStatus : () -> ();
     };
 };
