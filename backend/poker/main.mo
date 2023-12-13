@@ -38,7 +38,7 @@ actor {
     var gameStatus : GameStatus = {
         var playingStatus = #NOT_ALL_READY;
         var masterPlayer = null;
-        var gameTurn = null;
+        var gameTurn = 0;
         var isAllPlayerCall = false;
     };
 
@@ -77,6 +77,8 @@ actor {
             List.toArray(playerList)
         };
 
+        // #####################################
+
         public func getCardDeck() : CardDeck {
             cardDeck
         };
@@ -93,19 +95,25 @@ actor {
         // ################ GameTable Methods ####################
         // ################# Update Methods ######################
 
-        public func setPlayer(playerAddress : Principal, player : ?Player) {
+        // ########################
+        // ######## Player ########
+        // ########################
+
+        public func setPlayer(playerAddress : Principal, player : Player) {
             let player : ?Player = players.get(playerAddress);
             switch (player) {
-                case null setNewPlayer(playerAddress);
+                case null return;
                 case (?player) {
                     players.put(playerAddress, player);
                 };
             };
+            
         };
 
-        func setNewPlayer(playerAddress : Principal) {
+        public func createNewPlayer(playerAddress : Principal) {
             let newPlayer = getNewPlayer(playerAddress);
             players.put(playerAddress, newPlayer);
+            gameTable.setPlayerOrder(playerAddress, players.size()-1);
         };
         
         public func removePlayer(playerAddress : Principal) {
@@ -118,16 +126,166 @@ actor {
                 case null return;
                 case (?player) {
                     player.playingState := playingState;
-                    setPlayer(playerAddress, ?player);
+                    setPlayer(playerAddress, player);
                 };
             };
         };
+
+        public func setPlayerOrder(playerAddress : Principal, playerOrder : Nat) {
+            var player : ?Player = getPlayer(playerAddress);
+            switch (player){
+                case null return;
+                case (?player) {
+                    player.playerOrder := playerOrder;
+                    setPlayer(playerAddress, player);
+                };
+            };
+        };
+
+        // ########################
+        // ######### Card #########
+        // ########################
+
+        public func setWholeCardDeck(newCardDeck : CardDeck) {
+            cardDeck := newCardDeck;
+        };
+
+        public func addCardIntoPlayer(playerAddress : Principal, card : Card) {
+            var player : ?Player = getPlayer(playerAddress);
+            switch (player) {
+                case null return;
+                case (?player) {
+                    player.cards := List.push(card, player.cards);
+                    player.totalCardNumber := player.totalCardNumber + card.cardNumber;
+                    setPlayer(playerAddress, player)
+                };
+            };
+        };
+
+        public func addCardIntoDeck(card : Card) {
+            let cards = List.push<Card>(card, cardDeck.cards);
+            cardDeck.cards := cards;
+            cardDeck.numberOfCards += 1;
+        };
+
+        public func addCardIntoUsedDeck(card : Card) {
+            let cards = List.push<Card>(card, usedCardDeck.cards);
+            usedCardDeck.cards := cards;
+            usedCardDeck.numberOfCards += 1;
+        };
+
+        public func drawCardFromDeck() : ?Card {
+            let (card, cards) = List.pop<Card>(cardDeck.cards);
+            cardDeck.cards := cards;
+            cardDeck.numberOfCards -= 1;
+            card
+        };
+
+        // ########################
+        // ####### Betting ########
+        // ########################
+
+        public func setCurrentChips(playerAddress : Principal, chipAmount : Nat) {
+            var player : ?Player = getPlayer(playerAddress);
+            switch (player){
+                case null return;
+                case (?player) {
+                    player.currentChips := chipAmount;
+                    setPlayer(playerAddress, player);
+                };
+            }; 
+
+        };
+
+        public func setCurrentBetAmount(playerAddress : Principal, betAmount : Nat) {
+            var player : ?Player = getPlayer(playerAddress);
+            switch (player){
+                case null return;
+                case (?player) {
+                    player.betAmount := betAmount;
+                    player.currentChips -= betAmount;
+                    player.totalBetAmount += betAmount;
+                    setPlayer(playerAddress, player);
+
+                    moneyBox.totalBetAmount += betAmount;
+                };
+            }; 
+        };
+
+        public func setBettingAction(playerAddress : Principal, bettingAction : BettingAction) {
+           var player : ?Player = getPlayer(playerAddress);
+            switch (player){
+                case null return;
+                case (?player) {
+                    player.bettingAction := bettingAction;
+                    setPlayer(playerAddress, player);
+                };
+            };  
+        };
+
+        // ########################
+        // ######## Clean #########
+        // ########################
+
+        public func cleanPlayerCards(playerAddress : Principal) {
+            var player : ?Player = getPlayer(playerAddress);
+            var usedPlayerCards : List.List<Card> = List.nil<Card>();
+            switch (player){
+                case null return;
+                case (?player) {
+                    usedPlayerCards := player.cards;
+                    player.cards := List.nil<Card>();
+                    player.totalCardNumber := 0;
+                    setPlayer(playerAddress, player);
+
+                    usedCardDeck.cards := List.append<Card>(usedPlayerCards, usedCardDeck.cards);
+                    usedCardDeck.numberOfCards += List.size<Card>(usedPlayerCards);
+                };
+            }; 
+        };
+
+        public func cleanPlayerBettingInfo(playerAddress : Principal) {
+           var player : ?Player = getPlayer(playerAddress);
+            switch (player){
+                case null return;
+                case (?player) {
+                    player.betAmount := 0;
+                    player.totalBetAmount := 0;
+                    setBettingAction(playerAddress, #NONE);
+                    setPlayer(playerAddress, player);
+                };
+            };  
+
+        };
+
+        public func cleanPlayerInfo(playerAddress : Principal) {
+            let player = getPlayer(playerAddress);
+            switch (player) {
+                case null return;
+                case (?player) {
+                    setPlayerPlayingState(playerAddress, #ENTER);
+                    cleanPlayerCards(playerAddress);
+                    cleanPlayerBettingInfo(playerAddress);
+                    setPlayer(playerAddress, player);
+                };
+            };
+        };
+
+        public func cleanPlayersInfo() {
+            for (player in players.vals()) {
+                cleanPlayerInfo(player.address);
+            };
+        };
+
+        // ########################
+        // ######## Update ########
+        // ########################
 
         public func updatePlayingStatus() {
             // 혼자 레디인 상태면 ALL_READY가 아님
             if (players.size() <= 1) {
                 gameStatus.playingStatus := #NOT_ALL_READY;
-                gameStatus.gameTurn := null;
+                gameStatus.gameTurn := 0;
                 gameStatus.isAllPlayerCall := false;
                 for (player in players.vals()) {
                     cleanPlayerCards(player.address);
@@ -138,7 +296,7 @@ actor {
             for (player in players.vals()) {
                 if (player.playingState == #ENTER){
                     gameStatus.playingStatus := #NOT_ALL_READY;
-                    gameStatus.gameTurn := null;
+                    gameStatus.gameTurn := 0;
                     gameStatus.isAllPlayerCall := false;
                     return
                 };
@@ -183,87 +341,6 @@ actor {
                 };
             };
         }; 
-
-        public func cleanPlayersInfo() {
-            for (player in players.vals()) {
-                cleanPlayerCards(player.address);
-                setPlayerPlayingState(player.address, #ENTER);
-                // player.totalBetAmount := 0;
-                // player.betAmount := 0;
-                // player.bettingAction := #NONE;
-            };
-        };
-
-        public func setCardDeck(newCardDeck : CardDeck) {
-            cardDeck := newCardDeck;
-        };
-
-        public func addCardIntoPlayer(playerAddress : Principal, card : Card) {
-            var player : ?Player = getPlayer(playerAddress);
-            switch (player) {
-                case null return;
-                case (?player) {
-                    player.cards := List.push(card, player.cards);
-                    setPlayer(playerAddress, ?player)
-                };
-            };
-        };
-
-        public func addCardIntoDeck(card : Card) {
-            let cards = List.push<Card>(card, cardDeck.cards);
-            cardDeck.cards := cards;
-            cardDeck.numberOfCards += 1;
-        };
-
-        public func drawCardFromDeck() : ?Card {
-            let (card, cards) = List.pop<Card>(cardDeck.cards);
-            cardDeck.cards := cards;
-            cardDeck.numberOfCards -= 1;
-            card
-        };
-
-        public func cleanPlayerCards(playerAddress : Principal) {
-            var player : ?Player = getPlayer(playerAddress);
-            var usedPlayerCards : List.List<Card> = List.nil<Card>();
-            switch (player){
-                case null return;
-                case (?player) {
-                    usedPlayerCards := player.cards;
-                    player.cards := List.nil<Card>();
-                    player.totalCardNumber := 0;
-                    setPlayer(playerAddress, ?player);
-
-                    usedCardDeck.cards := List.append<Card>(usedPlayerCards, usedCardDeck.cards);
-                    usedCardDeck.numberOfCards += List.size<Card>(usedPlayerCards);
-                };
-            }; 
-        };
-
-        public func setBetAmount(playerAddress : Principal, betAmount : Nat) {
-            var player : ?Player = getPlayer(playerAddress);
-            switch (player){
-                case null return;
-                case (?player) {
-                    player.betAmount := betAmount;
-                    player.currentChips -= betAmount;
-                    player.totalBetAmount += betAmount;
-                    setPlayer(playerAddress, ?player);
-
-                    moneyBox.totalBetAmount += betAmount;
-                };
-            }; 
-        };
-
-        public func setBettingAction(playerAddress : Principal, bettingAction : BettingAction) {
-           var player : ?Player = players.get(playerAddress);
-            switch (player){
-                case null return;
-                case (?player) {
-                    player.bettingAction := bettingAction;
-                    setPlayer(playerAddress, ?player);
-                };
-            };  
-        };
 
     };
 
@@ -352,7 +429,7 @@ actor {
     };
 
     // ################################################################################
-    // ########################### UPDATE FUNCTIONS ###################################
+    // ########################### GAME FUNCTIONS ###################################
     // ################################################################################
 
     // connect wallet 또는 identity 로그인 시 실행
@@ -365,9 +442,11 @@ actor {
         if (players.size() == 0) {
             setMasterPlayer(?playerAddress);
         };
+        // player 순서 설정
+        
 
-        // 기존에 있던 player의 chip 불러오는 코드
-        gameTable.setPlayer(playerAddress, null);
+        // new player 설정
+        gameTable.createNewPlayer(playerAddress);
         gameTable.updatePlayingStatus();
     };
 
@@ -431,13 +510,13 @@ actor {
             gameTable.setPlayerPlayingState(player.address, #PLAYING);
         };
         // master player 부터 시작
-        gameStatus.gameTurn := gameStatus.masterPlayer;
+        gameStatus.gameTurn := 0;
     };
 
     public func endGame() {
         gameStatus.playingStatus := #GAME_END;
         gameStatus.masterPlayer := null; //winner 로 배정
-        gameStatus.gameTurn := null;
+        gameStatus.gameTurn := 0;
         gameStatus.isAllPlayerCall := false;
 
         var players = gameTable.getPlayers();
@@ -451,7 +530,7 @@ actor {
     public func settleupGame() {
         gameStatus.playingStatus := #NOT_ALL_READY;
         gameStatus.masterPlayer := null; //winner 로 배정
-        gameStatus.gameTurn := null;
+        gameStatus.gameTurn := 0;
         gameStatus.isAllPlayerCall := false; 
 
         var players = gameTable.getPlayers();
@@ -461,6 +540,10 @@ actor {
 
     };
 
+    // ################################################################################
+    // ############################# TEST FUNCTIONS ###################################
+    // ################################################################################
+
     public func test_fillCardDeck() : async SharedCardDeck{
         await fillCardDeck(NUMBER_OF_CARDS_IN_CARD_DECK);
 
@@ -468,5 +551,9 @@ actor {
         let sharedCardDeck = convertToSharedCardDeck(cardDeck);
         sharedCardDeck
     };
+
+    public func test_52List() : async List.List<Nat> {
+        await Utils.getShuffled52NumberList()
+    }
 
 }
