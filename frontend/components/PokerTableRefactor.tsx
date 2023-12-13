@@ -10,7 +10,12 @@ import { Message } from "./Message"
 
 const PokerTableRefactor = ({
   wallet,
+  updateState,
 }) => {
+
+  
+
+
   return (
     <Box
       sx={{
@@ -20,11 +25,16 @@ const PokerTableRefactor = ({
         bgcolor: brown[200],
       }}
     >
-      <Box  display={"flex"} justifyContent={"center"}>
-        <CounterpartCardsRefactor 
-        // gameTurn={gameTurn} 
-        wallet={wallet} 
-        />
+      <Box  display={"flex"} justifyContent={"space-between"}>
+        <Box></Box>
+        <Box>
+          <CounterpartCardsRefactor 
+          // gameTurn={gameTurn} 
+          wallet={wallet} 
+          />
+        </Box>
+        <Box></Box>
+        
       </Box>
       <Box display={"flex"} justifyContent={"space-between"}>
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
@@ -48,7 +58,7 @@ const PokerTableRefactor = ({
       </Box>
       <Box display={"flex"} justifyContent={"space-between"}>
         <Box>
-          
+
         </Box>
         <Box>
           <PlayerCardsRefactor 
@@ -56,30 +66,9 @@ const PokerTableRefactor = ({
           />
         </Box>
         <Box>
-          <StateBoxRefactor
-          // position={"OPPONENT"}
-          // playerTotalBettingAmount={playerTotalBettingAmount}
-          // playerCurrentBettingAmount={playerCurrentBettingAmount}
-          // counterpartTotalBettingAmount={counterpartTotalBettingAmount}
-          // counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
-          // playerTotalChips={playerTotalChips}
-          // counterpartTotalChips={counterpartTotalChips}
-            />
+          <StateBoxRefactor/>
         </Box>
       </Box>
-      {/* <Message message={"message"}/> */}
-     
-      
-      
-      {/* <StateBoxRefactor
-        // position={"PLAYER"}
-        // playerTotalBettingAmount={playerTotalBettingAmount}
-        // playerCurrentBettingAmount={playerCurrentBettingAmount}
-        // counterpartTotalBettingAmount={counterpartTotalBettingAmount}
-        // counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
-        // playerTotalChips={playerTotalChips}
-        // counterpartTotalChips={counterpartTotalChips}
-      /> */}
     </Box>
   )
 }

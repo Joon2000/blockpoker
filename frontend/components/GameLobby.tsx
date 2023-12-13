@@ -18,7 +18,8 @@ const GameLobby = ({
   playerInfo,
   playerInfoArray,
   masterPlayer,
-  playingState
+  playingState,
+  updateState
 }) => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
@@ -33,6 +34,7 @@ const GameLobby = ({
     setIsButtonDisabled(true);
     await poker.enterGame(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
+    updateState()
 
     console.log("Game enterGame")
   };
@@ -42,8 +44,19 @@ const GameLobby = ({
     setIsButtonDisabled(true);
     await poker.readyGame(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
+    updateState()
 
     console.log("Game readyGame")
+  };
+
+  async function cancelReadyGame(e: { preventDefault: any }) {
+    e.preventDefault
+    setIsButtonDisabled(true);
+    await poker.cancelReadyGame(Principal.fromText(wallet.principal));
+    setIsButtonDisabled(false);
+    updateState()
+
+    console.log("Cancel readyGame")
   };
 
   async function startGame(e: { preventDefault: any }) {
@@ -56,6 +69,7 @@ const GameLobby = ({
     };
     
     setIsButtonDisabled(false);
+    updateState()
 
     console.log("Game startGame")
   };
@@ -77,7 +91,7 @@ const GameLobby = ({
           <Grid container spacing={2}>
             {playerInfoArray.map((player)=>(
               <Grid item xs={6} md={4} lg={3} key={player.address.toString()}>
-                <ParticipationStatusCard playerPrinciple={player.address.toString()}/>
+                <ParticipationStatusCard playerPrinciple={player.address.toString()} playinState={Object.keys(player.playingState)[0]}/>
               </Grid>
             ))}
           </Grid>
@@ -91,6 +105,14 @@ const GameLobby = ({
               color="primary"
               disabled={isButtonDisabled}
             > Enter Game </Button>
+            : Object.keys(playerInfo.playingState)[0]=="READY" ?
+            <Button
+              variant="contained"
+              onClick={cancelReadyGame}
+              size="large"
+              color="error"
+              disabled={isButtonDisabled}
+            > Cancel Ready </Button>
             :
             <Button
               variant="contained"

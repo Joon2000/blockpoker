@@ -371,6 +371,11 @@ actor {
         gameTable.updatePlayingStatus();
     };
 
+     public func cancelReadyGame(playerAddress : Principal) {
+        gameTable.setPlayerPlayingState(playerAddress, #ENTER);
+        gameTable.updatePlayingStatus();
+    };
+
     public func exitGame(playerAddress : Principal) {
         let players = gameTable.getPlayers();
         if (players.size() > 1 and ?playerAddress == gameStatus.masterPlayer) {

@@ -56,7 +56,7 @@ module Utils {
 
     public func convertToSharedCardDeck(cardDeck : CardDeck) : SharedCardDeck {
         let sharedCardDeck : SharedCardDeck = {
-            cards = cardDeck.cards;
+            cards = List.toArray(cardDeck.cards);
             numberOfCards = cardDeck.numberOfCards;
         };
         sharedCardDeck 
