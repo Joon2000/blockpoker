@@ -1,4 +1,4 @@
-import { Box } from "@mui/material"
+import { Grid, Box } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import React from "react"
 import { StateBoxRefactor } from "./StateBoxRefactor"
@@ -24,50 +24,47 @@ const PokerTableRefactor = ({
         bgcolor: brown[200],
       }}
     >
-      <Box  display={"flex"} justifyContent={"space-between"}>
-        <Box></Box>
-        <Box>
+      <Grid container spacing={5}>
+        <Grid item xs={4}></Grid>
+        <Grid item xs={4}>
           <CounterpartCardsRefactor 
-          // gameTurn={gameTurn} 
-          wallet={wallet} 
+            wallet={wallet} 
           />
-        </Box>
-        <Box></Box>
-        
-      </Box>
-      <Box display={"flex"} justifyContent={"space-between"}>
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        </Grid>
+        <Grid item xs={4}></Grid>
+      </Grid>
+      <Grid container spacing={5}>
+        <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <CounterpartCardsRefactor 
-          // gameTurn={gameTurn} 
-          wallet={wallet} 
+            wallet={wallet} 
           />
-        </Box>
-        <Box>
-          <MoneyBoxRefactor 
-          // totalBettingAmount={totalAmountBetting} 
-          />
-          <CardDeck />
-        </Box>
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+        </Grid>
+        <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <Box>
+            <MoneyBoxRefactor />
+            <CardDeck />   
+          </Box>
+                 
+        </Grid>
+        <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <CounterpartCardsRefactor 
-          // gameTurn={gameTurn} 
           wallet={wallet} 
-          />
-        </Box>
-      </Box>
-      <Box display={"flex"} justifyContent={"space-between"}>
-        <Box>
+          /> 
+        </Grid>
+      </Grid>
+      <Grid container spacing={5}>
+        <Grid item xs={4}>
 
-        </Box>
-        <Box>
+        </Grid>
+        <Grid item xs={4}>
           <PlayerCards 
           playerInfo={playerInfo}
           />
-        </Box>
-        <Box>
+        </Grid>
+        <Grid item xs={4}>
           <StateBoxRefactor/>
-        </Box>
-      </Box>
+        </Grid>
+      </Grid>
     </Box>
   )
 }
