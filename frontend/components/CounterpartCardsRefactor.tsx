@@ -24,7 +24,6 @@ const CounterpartCardsRefactor = ({
   // }, [gameTurn])
 
   return (
-    <div style={{ position: "absolute", left: "32%", top: "10px" }}>
       <Grid container spacing={4}>
         {counterpartCards.map((card: number, index: React.Key) => {
           return (
@@ -34,7 +33,6 @@ const CounterpartCardsRefactor = ({
           )
         })}
       </Grid>
-    </div>
   )
 }
 

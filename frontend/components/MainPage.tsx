@@ -31,6 +31,7 @@ const MainPage = ({ wallet }) => {
   const [playerInfoArray, setPlayerInfoArray] = useState<SharedPlayer[]>([]);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useInterval(async () => {
     const gameStatus = await poker.getGameStatus();
@@ -44,10 +45,10 @@ const MainPage = ({ wallet }) => {
     const playerInfo = await poker.getPlayerInfo(Principal.fromText(wallet.principal));
     setPlayerInfo(playerInfo[0]);
 
-
-    console.log("player info", playerInfo[0]);
+    setIsLoading(false);
+    console.log("playingState", playingState);
     console.log("wallet :", wallet.principal);
-  }, 2000)
+  }, 1000)
  
 
   async function exitGame(e: { preventDefault: any }) {
@@ -61,19 +62,24 @@ const MainPage = ({ wallet }) => {
 
   return (
     <Box>
-      <Typography> Here Is MainPage</Typography>
-      <Typography>player's wallet principal : {wallet.principal}</Typography>
-      {playerInfo!=null &&
-        <Button
-          variant="contained"
-          onClick={exitGame}
-          size="large"
-          color="primary"
-          disabled={isButtonDisabled}
-        >
-          Exit Game
-        </Button>
-      }
+      
+      <Box display={"flex"} justifyContent={"space-between"}>
+        <Box>
+          <Typography> Here Is MainPage</Typography>
+          <Typography>player's wallet principal : {wallet.principal}</Typography>
+        </Box>
+        {playerInfo!=null &&
+          <Button
+            variant="contained"
+            onClick={exitGame}
+            size="large"
+            color="primary"
+            disabled={isButtonDisabled}
+          >
+            Exit Game
+          </Button>
+        }
+      </Box>
       
       <Box
         sx={{
@@ -83,18 +89,16 @@ const MainPage = ({ wallet }) => {
         }}
       >
         <Typography> Here Is an Box in the MainPage</Typography>
-
         <Typography> Game Status</Typography>
         <Typography>playingStatus : {playingState}</Typography>
         <Typography>masterPlayer : {masterPlayer}</Typography>
         <Typography>gameTurn : {gameTurn}</Typography>
         <Typography>isAllPlayerCall : {isAllPlayerCall.toString()}</Typography>
 
-        
-
-        {playingState == "PLAYTING" || playingState == "GAME_END" 
+        {playingState === "PLAYING" || playingState === "GAME_END" 
         ? <PokerTableRefactor 
         wallet={wallet}/>
+        
         :  <GameLobby 
         wallet={wallet} 
         playerInfo={playerInfo} 

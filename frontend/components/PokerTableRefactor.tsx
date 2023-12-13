@@ -12,25 +12,51 @@ const PokerTableRefactor = ({
   wallet,
 }) => {
   return (
-    <div
-      style={{
-        width: 950,
+    <Box
+      sx={{
+        // width: 950,
         height: 550,
-        marginLeft: "25px",
-        marginRight: "25px",
-        position: "relative",
+        borderRadius: 1,
+        bgcolor: brown[200],
       }}
     >
-      <Box
-        sx={{
-          width: 950,
-          height: 550,
-          borderRadius: 1,
-          bgcolor: brown[200],
-        }}
-      >
-        <Message message={"message"}/>
-        <StateBoxRefactor
+      <Box  display={"flex"} justifyContent={"center"}>
+        <CounterpartCardsRefactor 
+        // gameTurn={gameTurn} 
+        wallet={wallet} 
+        />
+      </Box>
+      <Box display={"flex"} justifyContent={"space-between"}>
+        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <CounterpartCardsRefactor 
+          // gameTurn={gameTurn} 
+          wallet={wallet} 
+          />
+        </Box>
+        <Box>
+          <MoneyBoxRefactor 
+          // totalBettingAmount={totalAmountBetting} 
+          />
+          <CardDeck />
+        </Box>
+        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <CounterpartCardsRefactor 
+          // gameTurn={gameTurn} 
+          wallet={wallet} 
+          />
+        </Box>
+      </Box>
+      <Box display={"flex"} justifyContent={"space-between"}>
+        <Box>
+          
+        </Box>
+        <Box>
+          <PlayerCardsRefactor 
+          // playerCards={playerCards} 
+          />
+        </Box>
+        <Box>
+          <StateBoxRefactor
           // position={"OPPONENT"}
           // playerTotalBettingAmount={playerTotalBettingAmount}
           // playerCurrentBettingAmount={playerCurrentBettingAmount}
@@ -38,29 +64,23 @@ const PokerTableRefactor = ({
           // counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
           // playerTotalChips={playerTotalChips}
           // counterpartTotalChips={counterpartTotalChips}
-        />
-        <CounterpartCardsRefactor 
-        // gameTurn={gameTurn} 
-        wallet={wallet} 
-        />
-        <CardDeck />
-        <MoneyBoxRefactor 
-        // totalBettingAmount={totalAmountBetting} 
-        />
-        <PlayerCardsRefactor 
-        // playerCards={playerCards} 
-        />
-        <StateBoxRefactor
-          // position={"PLAYER"}
-          // playerTotalBettingAmount={playerTotalBettingAmount}
-          // playerCurrentBettingAmount={playerCurrentBettingAmount}
-          // counterpartTotalBettingAmount={counterpartTotalBettingAmount}
-          // counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
-          // playerTotalChips={playerTotalChips}
-          // counterpartTotalChips={counterpartTotalChips}
-        />
+            />
+        </Box>
       </Box>
-    </div>
+      {/* <Message message={"message"}/> */}
+     
+      
+      
+      {/* <StateBoxRefactor
+        // position={"PLAYER"}
+        // playerTotalBettingAmount={playerTotalBettingAmount}
+        // playerCurrentBettingAmount={playerCurrentBettingAmount}
+        // counterpartTotalBettingAmount={counterpartTotalBettingAmount}
+        // counterpartCurrentBettingAmount={counterpartCurrentBettingAmount}
+        // playerTotalChips={playerTotalChips}
+        // counterpartTotalChips={counterpartTotalChips}
+      /> */}
+    </Box>
   )
 }
 
