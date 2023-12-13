@@ -23,7 +23,7 @@ module Types {
     public type SharedPlayer = {
         address : Principal;
         playingState : PlayerPlayingState;
-        cards : List.List<Card>;
+        cards : [Card];
         // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
         totalCardNumber : Nat;
         currentChips : Nat;

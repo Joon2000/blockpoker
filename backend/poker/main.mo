@@ -127,12 +127,19 @@ actor {
             // 혼자 레디인 상태면 ALL_READY가 아님
             if (players.size() <= 1) {
                 gameStatus.playingStatus := #NOT_ALL_READY;
+                gameStatus.gameTurn := null;
+                gameStatus.isAllPlayerCall := false;
+                for (player in players.vals()) {
+                    cleanPlayerCards(player.address);
+                };
                 return
             };
 
             for (player in players.vals()) {
                 if (player.playingState == #ENTER){
                     gameStatus.playingStatus := #NOT_ALL_READY;
+                    gameStatus.gameTurn := null;
+                    gameStatus.isAllPlayerCall := false;
                     return
                 };
             };
@@ -176,6 +183,16 @@ actor {
                 };
             };
         }; 
+
+        public func cleanPlayersInfo() {
+            for (player in players.vals()) {
+                cleanPlayerCards(player.address);
+                setPlayerPlayingState(player.address, #ENTER);
+                // player.totalBetAmount := 0;
+                // player.betAmount := 0;
+                // player.bettingAction := #NONE;
+            };
+        };
 
         public func setCardDeck(newCardDeck : CardDeck) {
             cardDeck := newCardDeck;
@@ -378,7 +395,11 @@ actor {
 
     public func exitGame(playerAddress : Principal) {
         let players = gameTable.getPlayers();
-        if (players.size() > 1 and ?playerAddress == gameStatus.masterPlayer) {
+        if (players.size() <= 1) {
+            gameTable.removePlayer(playerAddress);
+            gameStatus.masterPlayer := null;
+
+        }else if (players.size() > 1 and ?playerAddress == gameStatus.masterPlayer) {
             // masterPlayer가 나가면 다음 사람 master 줘야 함
             gameTable.removePlayer(playerAddress);
             label temp for (player in players.vals()) {

@@ -32,7 +32,7 @@ module Utils {
                 let sharedPlayer : SharedPlayer = {
                     address = player.address;
                     playingState = player.playingState;
-                    cards = player.cards;
+                    cards = List.toArray(player.cards);
                     totalCardNumber = player.totalCardNumber;
                     currentChips = player.currentChips;
                     totalBetAmount = player.totalBetAmount;

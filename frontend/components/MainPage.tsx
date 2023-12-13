@@ -31,7 +31,6 @@ const MainPage = ({ wallet }) => {
   const [playerInfoArray, setPlayerInfoArray] = useState<SharedPlayer[]>([]);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useInterval(async () => {
     updateState();
@@ -53,9 +52,9 @@ const MainPage = ({ wallet }) => {
     const playerInfo = await poker.getPlayerInfo(Principal.fromText(wallet.principal));
     setPlayerInfo(playerInfo[0]);
 
-    setIsLoading(false);
     console.log("playingState", playingState);
     console.log("wallet :", wallet.principal);
+    console.log("player info ", playerInfo[0].cards);
   };
  
 
@@ -107,6 +106,8 @@ const MainPage = ({ wallet }) => {
         {playingState === "PLAYING" || playingState === "GAME_END" 
         ? <PokerTableRefactor 
         wallet={wallet}
+        playerInfo={playerInfo}
+        playerInfoArray={playerInfoArray}
         updateState={updateState}
         />
         
