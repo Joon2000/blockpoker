@@ -4,6 +4,7 @@ import React from "react"
 
 const ParticipationStatusCard = ({
   playerPrinciple,
+  playinState,
   }) => {
   return (
     <Box
@@ -16,6 +17,7 @@ const ParticipationStatusCard = ({
       }}
     >
       <Typography>{playerPrinciple}</Typography>
+      <Typography>{playinState}</Typography>
     </Box>
   )
 }

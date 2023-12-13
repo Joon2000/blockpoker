@@ -45,7 +45,7 @@ module Types {
     };
 
     public type SharedCardDeck = {
-        cards : List.List<Card>;
+        cards : [Card];
         numberOfCards : Nat;
     };
 

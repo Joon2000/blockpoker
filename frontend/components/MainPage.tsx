@@ -34,6 +34,14 @@ const MainPage = ({ wallet }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useInterval(async () => {
+    updateState();
+  }, 3000)
+
+  useEffect(()=>{
+    updateState();
+  },[])
+
+  async function updateState() {
     const gameStatus = await poker.getGameStatus();
     setPlayingState(Object.keys(gameStatus.playingStatus)[0]);
     setMasterPlayer(gameStatus.masterPlayer.toString());
@@ -48,7 +56,7 @@ const MainPage = ({ wallet }) => {
     setIsLoading(false);
     console.log("playingState", playingState);
     console.log("wallet :", wallet.principal);
-  }, 1000)
+  };
  
 
   async function exitGame(e: { preventDefault: any }) {
@@ -56,6 +64,7 @@ const MainPage = ({ wallet }) => {
     setIsButtonDisabled(true);
     await poker.exitGame(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
+    updateState();
 
     console.log("Exit Game")
   };
@@ -97,7 +106,9 @@ const MainPage = ({ wallet }) => {
 
         {playingState === "PLAYING" || playingState === "GAME_END" 
         ? <PokerTableRefactor 
-        wallet={wallet}/>
+        wallet={wallet}
+        updateState={updateState}
+        />
         
         :  <GameLobby 
         wallet={wallet} 
@@ -105,6 +116,7 @@ const MainPage = ({ wallet }) => {
         playerInfoArray={playerInfoArray} 
         masterPlayer={masterPlayer} 
         playingState={playingState}
+        updateState={updateState}
         /> }
       </Box>
    
