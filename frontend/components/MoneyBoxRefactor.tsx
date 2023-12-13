@@ -7,14 +7,7 @@ const MoneyBoxRefactor = ({
   // totalBettingAmount 
 }) => {
   return (
-    <div
-      style={{
-        position: "absolute",
-        right: "30px",
-        top: "30%",
-        textAlign: "center",
-      }}
-    >
+    <Box>
       <img src={pokerChips} alt="poker-chips" width={120} height={120} />
       <Box
         sx={{
@@ -27,7 +20,7 @@ const MoneyBoxRefactor = ({
         {/* total: {totalBettingAmount} */}
         total: 10
       </Box>
-    </div>
+    </Box>
   )
 }
 

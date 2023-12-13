@@ -1,12 +1,14 @@
 import React from "react"
 import { CardBack } from "./CardBack"
+import { Box } from "@mui/material"
 
 const CardDeck = () => {
   const i = Array.from({ length: 10 }, (_, index) => index)
 
   return (
-    <div style={{ position: "absolute", left: "10px", top: "200px" }}>
-      {i.map((n) => (
+    <Box>
+      <CardBack />
+      {/* {i.map((n) => (
         <div
           key={n}
           style={{
@@ -17,8 +19,8 @@ const CardDeck = () => {
         >
           <CardBack />
         </div>
-      ))}
-    </div>
+      ))} */}
+    </Box>
   )
 }
 

@@ -72,7 +72,7 @@ const GameLobby = ({
       >
         <Box sx={{}}>
           <Typography> Here Is GameLobby</Typography>
-          {playerInfo == null ? <p>not yet enter game</p> : <p>player : {playerInfo.address.toString()}</p>}
+          {playerInfo == null ? <p>not yet enter game</p> : <p>player address : {playerInfo.address.toString()}</p>}
 
           <Grid container spacing={2}>
             {playerInfoArray.map((player)=>(
