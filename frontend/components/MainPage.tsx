@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { PokerTable } from "./PokerTable"
-import { PlayerButton } from "./PlayerButton"
 import { Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"
@@ -110,7 +109,7 @@ const MainPage = ({ wallet }) => {
       
       <Box
         sx={{
-          minHeight : 600,
+          minHeight : 700,
           borderRadius: 1,
           bgcolor: brown[100],
         }}
