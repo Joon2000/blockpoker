@@ -17,7 +17,7 @@ module Types {
         var totalCardNumber : Nat;
         var currentChips : Nat;
         var totalBetAmount : Nat;
-        var betAmount : Nat;
+        var currentBetAmount : Nat;
         var bettingAction : BettingAction;
     };
 
@@ -30,7 +30,7 @@ module Types {
         totalCardNumber : Nat;
         currentChips : Nat;
         totalBetAmount : Nat;
-        betAmount : Nat;
+        currentBetAmount : Nat;
         bettingAction : BettingAction;
     };
 
@@ -55,6 +55,8 @@ module Types {
         var totalBetAmount : Nat;
     };
 
+    public type ChipExchange =  HashMap.HashMap<Principal, Nat>; 
+
     public type GameStatus = {
         var playingStatus : GamePlayingState;
         var masterPlayer : ?Principal;
@@ -70,13 +72,13 @@ module Types {
     };
 
     public type GameTable = {
-        getPlayer : Principal -> ?Player;
         getPlayers : () -> PlayerSeats;
         getPlayerArray : () -> [Player];
         getCardDeck : () -> CardDeck;
         getUsedCardDeck : () -> CardDeck;
         getMoneyBox : () -> MoneyBox;
 
+        getPlayer : Principal -> ?Player;
         setPlayer : (Principal, Player) -> ();
         createNewPlayer : (Principal) -> ();
         removePlayer : (Principal) -> ();
@@ -93,6 +95,12 @@ module Types {
         setCurrentChips : (Principal, Nat) -> ();
         setCurrentBetAmount : (Principal, Nat) -> ();
         setBettingAction : (Principal, BettingAction) -> ();
+
+        getExchangeBalance : (Principal) ->(?Nat);
+        depositICPAddPokerChip : (Principal, Nat) -> ();
+        withdrawICPSubtractPokerChip : (Principal, Nat) -> ();
+        // getPokerChipFromExchange : (Principal, Nat) -> ();
+        // returnPokerChipToExchange : (Principal, Nat) -> ();
 
         cleanPlayerCards : Principal -> ();
         cleanPlayerBettingInfo : (Principal) -> ();

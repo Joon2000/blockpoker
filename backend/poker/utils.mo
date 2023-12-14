@@ -39,7 +39,7 @@ module Utils {
                     totalCardNumber = player.totalCardNumber;
                     currentChips = player.currentChips;
                     totalBetAmount = player.totalBetAmount;
-                    betAmount = player.betAmount;
+                    currentBetAmount = player.currentBetAmount;
                     bettingAction = player.bettingAction;
                 };
                 return ?sharedPlayer;
@@ -66,6 +66,18 @@ module Utils {
     };
 
     // ################################################################################
+    // ######################### GAME STATUS FUNCTIONS ################################
+    // ################################################################################
+
+    public func cleanGameStatus(gameStatus : GameStatus) {
+        gameStatus.playingStatus := #NOT_ALL_READY;
+        gameStatus.masterPlayer := null;
+        gameStatus.gameTurn := 0;
+        gameStatus.isAllPlayerCall := false;
+    };
+
+
+    // ################################################################################
     // ########################### PLAYER FUNCTIONS ###################################
     // ################################################################################
    
@@ -78,7 +90,7 @@ module Utils {
             var totalCardNumber = 0;
             var currentChips = 0;
             var totalBetAmount = 0;
-            var betAmount = 0;
+            var currentBetAmount = 0;
             var bettingAction = #NONE; 
         };
         player
@@ -92,29 +104,29 @@ module Utils {
     // ######################## BETTING CHIPS FUNCTIONS ###############################
     // ################################################################################
 
-    public func exchangePokerChips(gameTable : GameTable, playerAddress : Principal, amount : Nat) {
-        // ICP -> Chip으로 변경하는 로직으로 변경해야 함
-        let player : ?Player = gameTable.getPlayer( playerAddress);
-        switch (player) {
-            case null return;
-            case (?player){
-                let updatedPlayer : Player = {
-                    var address = player.address;
-                    var playingState = player.playingState;
-                    var playerOrder = player.playerOrder;
-                    var cards = player.cards;
-                    // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
-                    var totalCardNumber = player.totalCardNumber;
-                    var currentChips = player.currentChips + amount;
-                    var totalBetAmount = player.totalBetAmount;
-                    var betAmount = player.betAmount;
-                    var bettingAction = player.bettingAction;
+    // public func exchangePokerChips(gameTable : GameTable, playerAddress : Principal, amount : Nat) {
+    //     // ICP -> Chip으로 변경하는 로직으로 변경해야 함
+    //     let player : ?Player = gameTable.getPlayer( playerAddress);
+    //     switch (player) {
+    //         case null return;
+    //         case (?player){
+    //             let updatedPlayer : Player = {
+    //                 var address = player.address;
+    //                 var playingState = player.playingState;
+    //                 var playerOrder = player.playerOrder;
+    //                 var cards = player.cards;
+    //                 // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
+    //                 var totalCardNumber = player.totalCardNumber;
+    //                 var currentChips = player.currentChips + amount;
+    //                 var totalBetAmount = player.totalBetAmount;
+    //                 var betAmount = player.betAmount;
+    //                 var bettingAction = player.bettingAction;
 
-                };
-                gameTable.setPlayer(playerAddress, updatedPlayer); 
-            }
-        }
-    };
+    //             };
+    //             gameTable.setPlayer(playerAddress, updatedPlayer); 
+    //         }
+    //     }
+    // };
 
     // ################################################################################
     // ######################## CARD DECK FUNCTIONS ###################################
@@ -275,7 +287,7 @@ module Utils {
     // ################################################################################
     // ###################### ENCRYPTION FUNCTIONS ###################################
     // ################################################################################
-    
+
     // TODO : CardDeck 통째로 encrpyt
     func encryptCardDeck(gameTable : GameTable) : async Card {
         let cardNumber = Option.get((await random_number.generateRandomNumber(),0));

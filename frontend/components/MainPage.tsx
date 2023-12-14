@@ -57,10 +57,10 @@ const MainPage = ({ wallet }) => {
     console.log("playerNumber", playerNumber);
     console.log("player Info", playerInfo);
     console.log("wallet :", wallet.principal.toString());
-    console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4])
-    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4])
-    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+2)%4])
-    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+3)%4])
+    // console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4])
+    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4])
+    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+2)%4])
+    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+3)%4])
   };
 
   function compare( a, b ) {
@@ -72,14 +72,20 @@ const MainPage = ({ wallet }) => {
     }
     return 0;
   }
-  
-  
- 
 
   async function exitGame(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
     await poker.exitGame(Principal.fromText(wallet.principal));
+    setIsButtonDisabled(false);
+    updateState();
+
+    console.log("Exit Game")
+  };
+  async function getPokerChips(e: { preventDefault: any }) {
+    e.preventDefault
+    setIsButtonDisabled(true);
+    await poker.test_addPokerChip(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
     updateState();
 
@@ -105,6 +111,16 @@ const MainPage = ({ wallet }) => {
             Exit Game
           </Button>
         }
+        <Button
+          variant="contained"
+          onClick={getPokerChips}
+          size="large"
+          color="primary"
+          disabled={isButtonDisabled}
+        >
+          Get Poker Chips
+        </Button>
+        
       </Box>
       
       <Box
