@@ -552,8 +552,8 @@ actor {
         sharedCardDeck
     };
 
-    public func test_52List() : async List.List<Nat> {
-        await Utils.getShuffled52NumberList()
+    public func test_52List() : async ?[Nat] {
+        await Utils.getShuffled52NumberArray()
     }
 
 }

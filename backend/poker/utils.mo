@@ -23,9 +23,6 @@ module Utils {
     type SharedCardDeck = Types.SharedCardDeck;
     type BettingAction = Types.BettingAction;
 
-    // test 용
-    let NUMBER_OF_CARDS_IN_CARD_DECK : Nat = 52;
-
     // ################################################################################
     // ########################### CONVERT FUNCTIONS ##################################
     // ################################################################################
@@ -119,95 +116,35 @@ module Utils {
         }
     };
 
-
-
-
     // ################################################################################
     // ######################## CARD DECK FUNCTIONS ###################################
     // ################################################################################
 
     public func fillCardDeck(gameTable : GameTable, numberOfCards : Nat) : async() {
-        let cardDeck : CardDeck = getNewCardDeck(numberOfCards);
+        let shuffledNumberArray = await getShuffled52NumberArray();
         var suffledCardDeck : CardDeck = {
             var cards = List.nil<Card>();
             var numberOfCards = 0;
-        } ; 
-        var randomNumber1 :?Nat = await generateRandomNumber();
-        var randomNumber2 :?Nat = await generateRandomNumber();
-        var randomNumber3 :?Nat = await generateRandomNumber();
-        var shuffleNumber1 :Nat = 0;
-        var shuffleNumber2 :Nat = 0;
-        var shuffleNumber3 :Nat = 0;
-        var shuffleNumber4 :Nat = 0;
-        var shuffleNumber5 :Nat = 0;
-        var shuffleNumber6 :Nat = 0;
-
-        switch (randomNumber1) {
-            case null return ;
-            case (?randomNumber1) {
-                if (randomNumber1 <= 1 ){
-                    shuffleNumber1 := 7;
-                    shuffleNumber6 := 11;
-                } else {
-                    shuffleNumber1 := randomNumber1;
-                    shuffleNumber6 := randomNumber1 + 5;
-                };
+        };
+        switch (shuffledNumberArray) {
+            case null return;
+            case (?shuffledNumberArray) {
+            suffledCardDeck := getNewShuffledCardDeck(shuffledNumberArray);
             };
         };
-        switch (randomNumber2) {
-            case null return ;
-            case (?randomNumber2) {
-                if (randomNumber2 <= 1 ){
-                    shuffleNumber2 := 13;
-                    shuffleNumber5 := 17;
-                } else {
-                    shuffleNumber2 := randomNumber2 + 5;
-                    shuffleNumber5 := randomNumber2 + 7;
-                };
-            };
-        };
-        switch (randomNumber3) {
-            case null return ;
-            case (?randomNumber3) {
-                if (randomNumber3 <= 1 ){
-                    shuffleNumber3 := 19;
-                    shuffleNumber4 := 23;
-                } else {
-                    shuffleNumber3 := randomNumber3 + 10;
-                    shuffleNumber4 := randomNumber3 + 3;
-                }
-            };
-        };
-
-        suffledCardDeck := Utils.shuffleCardDeck(cardDeck, shuffleNumber1);
-        for (i in Iter.range(1, 20)) {
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber1);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber2);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber5);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber3);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber4);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber5);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber6);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber1);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber2);
-            suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber3);
-        };
-
-        suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber1);
-        suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber2);
-        suffledCardDeck := Utils.shuffleCardDeck(suffledCardDeck, shuffleNumber3);
-
+        
         gameTable.setWholeCardDeck(suffledCardDeck);
     };
 
-    func getNewCardDeck(numberOfCards : Nat) : CardDeck {
+    func getNewShuffledCardDeck(shuffledNumberArray : [Nat]) :CardDeck {
         var cardDeck : CardDeck = {
             var cards = List.nil<Card>();
             var numberOfCards = 0;
         };
-        for (i in Iter.range(1, numberOfCards)) {
+
+        for (i in Iter.range(0, Array.size(shuffledNumberArray)-1 )) {
             let card : Card = {
-                cardNumber = i;
+                cardNumber = shuffledNumberArray[i];
                 order = i;
             };
             let cards = List.push<Card>(card, cardDeck.cards);
@@ -219,18 +156,11 @@ module Utils {
         cardDeck
     };
 
-/////////////////////////// 여기 작업 해야 해 ///////////////////////////////////////////
-/////////////////////////// 여기 작업 해야 해 ///////////////////////////////////////////
-/////////////////////////// 여기 작업 해야 해 ///////////////////////////////////////////
-/////////////////////////// 여기 작업 해야 해 ///////////////////////////////////////////
-/////////////////////////// 여기 작업 해야 해 ///////////////////////////////////////////
-/////////////////////////// 여기 작업 해야 해 ///////////////////////////////////////////
-/////////////////////////// 여기 작업 해야 해 ///////////////////////////////////////////
-// getShuffled52NumberList는 다 만들었음 이거 가지고 CardDeck 생성해야 함
-    public func getShuffled52NumberList() : async List.List<Nat> {
+
+// 3개의 random number를 이용해서 number list를 섞어서 리턴함
+    public func getShuffled52NumberArray() : async ?[Nat] {
         var numberList = List.nil<Nat>();
-        var shuffledNumberList = List.nil<Nat>();
-        for (i in Iter.range(1,52)) {
+        for (i in Iter.range(1, 52)) {
             numberList := List.push<Nat>(i, numberList);
         };
         numberList := List.reverse(numberList);
@@ -238,22 +168,17 @@ module Utils {
         var randomNumber1 :?Nat = await generateRandomNumber();
         var randomNumber2 :?Nat = await generateRandomNumber();
         var randomNumber3 :?Nat = await generateRandomNumber();
-        var shuffleNumber1 :Nat = 0;
-        var shuffleNumber2 :Nat = 0;
-        var shuffleNumber3 :Nat = 0;
-        var shuffleNumber4 :Nat = 0;
-        var shuffleNumber5 :Nat = 0;
-        var shuffleNumber6 :Nat = 0;
+        var shuffleNumbers : [var Nat] = Array.init<Nat>(6, 0);
 
         switch (randomNumber1) {
             case null return null;
             case (?randomNumber1) {
                 if (randomNumber1 <= 1 ){
-                    shuffleNumber1 := 7;
-                    shuffleNumber6 := 11;
+                    shuffleNumbers[0] := 7;
+                    shuffleNumbers[5] := 11;
                 } else {
-                    shuffleNumber1 := randomNumber1;
-                    shuffleNumber6 := randomNumber1 + 5;
+                    shuffleNumbers[0] := randomNumber1;
+                    shuffleNumbers[5] := randomNumber1 + 5;
                 };
             };
         };
@@ -261,11 +186,11 @@ module Utils {
             case null return null;
             case (?randomNumber2) {
                 if (randomNumber2 <= 1 ){
-                    shuffleNumber2 := 13;
-                    shuffleNumber5 := 17;
+                    shuffleNumbers[1] := 13;
+                    shuffleNumbers[4] := 17;
                 } else {
-                    shuffleNumber2 := randomNumber2 + 5;
-                    shuffleNumber5 := randomNumber2 + 7;
+                    shuffleNumbers[1] := randomNumber2 + 5;
+                    shuffleNumbers[4] := randomNumber2 + 7;
                 };
             };
         };
@@ -273,50 +198,55 @@ module Utils {
             case null return null;
             case (?randomNumber3) {
                 if (randomNumber3 <= 1 ){
-                    shuffleNumber3 := 19;
-                    shuffleNumber4 := 23;
+                    shuffleNumbers[2] := 19;
+                    shuffleNumbers[3] := 23;
                 } else {
-                    shuffleNumber3 := randomNumber3 + 10;
-                    shuffleNumber4 := randomNumber3 + 3;
+                    shuffleNumbers[2] := randomNumber3 + 10;
+                    shuffleNumbers[3] := randomNumber3 + 3;
                 }
             };
         };
 
-        shuffledNumberList := shuffleNumberList(numberList, shuffleNumber1);
-        for (i in Iter.range(1, 40)) {
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber1);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber2);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber5);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber3);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber4);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber5);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber6);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber1);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber2);
-            shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber3);
-        };
+        let shuffledNumberList = shuffleNumberList(numberList, shuffleNumbers);
 
-        shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber1);
-        shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber2);
-        shuffledNumberList := shuffleNumberList(shuffledNumberList, shuffleNumber3);
+        ?List.toArray(shuffledNumberList)
+    };
+
+    func shuffleNumberList(numberList : List.List<Nat>, shuffleNumbers : [var Nat]) : List.List<Nat> {
+        var shuffledNumberList = shuffleNumberListOnce(numberList, shuffleNumbers[0]);
+        for (i in Iter.range(1, 40)) {
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[0]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[1]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[4]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[2]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[3]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[4]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[5]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[0]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[1]);
+            shuffledNumberList := shuffleNumberListOnce(shuffledNumberList, shuffleNumbers[2]);
+        }; 
 
         shuffledNumberList
     };
 
-    public func shuffleNumberList(numberList : List.List<Nat>, shuffleNumber : Nat) : List.List<Nat> {
+    func shuffleNumberListOnce(numberList : List.List<Nat>, bundle : Nat) : List.List<Nat> {
         var numbers = List.reverse(numberList);
         var shuffledNumberList = List.nil<Nat>();
+        let size : Nat = List.size(numberList);
 
-        var loopNum = 0;
-        if (NUMBER_OF_CARDS_IN_CARD_DECK % shuffleNumber == 0){
-            loopNum := NUMBER_OF_CARDS_IN_CARD_DECK / shuffleNumber;
+        var loopCount = 0;
+        if (size % bundle == 0){
+            loopCount := size / bundle;
         } else {
-            loopNum := (NUMBER_OF_CARDS_IN_CARD_DECK / shuffleNumber) + 1;
+            loopCount := (size / bundle) + 1;
         };
 
-        for (i in Iter.range(1, loopNum)) {
+        // 화투 패 처럼 섞는 행위를 하는 부분
+        for (i in Iter.range(1, loopCount)) {
             var tempNumberList = List.nil<Nat>();
-            label f for (i in Iter.range(1, shuffleNumber)){
+            // bundle 수만큼 number들을 다른 List에 옮겨 담음
+            label f for (i in Iter.range(1, bundle)){
                 let (number, afterNubmers) = List.pop<Nat>(numbers);
                 numbers := afterNubmers;
                 switch (number) {
@@ -326,39 +256,11 @@ module Utils {
                     };
                 };
             };
+            // 뺀 걸 뒤에 넣는다.
             shuffledNumberList := List.append<Nat>(shuffledNumberList, tempNumberList);
         };
         
         shuffledNumberList
-    };
-
-    public func shuffleCardDeck(cardDeck : CardDeck, shuffleNumber : Nat) : CardDeck {
-        var cards = List.reverse(cardDeck.cards);
-        var shuffledCards = List.nil<Card>();
-
-        var loopNum = 0;
-        if (NUMBER_OF_CARDS_IN_CARD_DECK % shuffleNumber == 0){
-            loopNum := NUMBER_OF_CARDS_IN_CARD_DECK / shuffleNumber;
-        } else {
-            loopNum := (NUMBER_OF_CARDS_IN_CARD_DECK / shuffleNumber) + 1;
-        };
-
-        for (i in Iter.range(1, loopNum)) {
-            var tempCardList = List.nil<Card>();
-            label f for (i in Iter.range(1, shuffleNumber)){
-                let (card, afterCards) = List.pop<Card>(cards);
-                cards := afterCards;
-                switch (card) {
-                    case null continue f;
-                    case (?card) {
-                        tempCardList := List.push<Card>(card, tempCardList);
-                    };
-                };
-            };
-            shuffledCards := List.append<Card>(shuffledCards, tempCardList);
-        };
-        cardDeck.cards := shuffledCards;
-        cardDeck
     };
 
     func generateRandomNumber() : async ?Nat {
@@ -370,6 +272,10 @@ module Utils {
         };
     };
 
+    // ################################################################################
+    // ###################### ENCRYPTION FUNCTIONS ###################################
+    // ################################################################################
+    
     // TODO : CardDeck 통째로 encrpyt
     func encryptCardDeck(gameTable : GameTable) : async Card {
         let cardNumber = Option.get((await random_number.generateRandomNumber(),0));
