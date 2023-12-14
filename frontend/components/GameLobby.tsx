@@ -7,7 +7,7 @@ import { CounterpartCardsRefactor } from "./CounterpartCardsRefactor"
 import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
 import { Message } from "./Message"
-import { ParticipationStatusCard } from "./ParticipationStatusCard"
+import { LobbyPlayerCard } from "./LobbyPlayerCard"
 import { poker} from "../../src/declarations/poker"
 import { Principal } from "@dfinity/principal"
 import { Typography } from '@mui/material';
@@ -84,11 +84,18 @@ const GameLobby = ({
           {playerInfo == null ? <p>not yet enter game</p> : <p>player address : {playerInfo.address.toString()}</p>}
 
           <Grid container spacing={2}>
-            {playerInfoArray.map((player)=>(
-              <Grid item xs={6} md={4} lg={3} key={player.address.toString()}>
-                <ParticipationStatusCard playerPrinciple={player.address.toString()} playinState={Object.keys(player.playingState)[0]}/>
-              </Grid>
-            ))}
+            {playerInfoArray!=null && playerInfo!=null &&
+            playerInfoArray.map((player)=>{
+              var isMe = false;
+              if (playerInfo.address.toString() == player.address.toString()) {
+                isMe = true;
+              }
+              return(
+                <Grid item xs={6} md={3} key={player.address.toString()}>
+                  <LobbyPlayerCard player={player} isMe={isMe} />
+                </Grid>
+              )
+            })}
           </Grid>
         </Box>
         <Box sx={{ml:2, mt: 5}}>

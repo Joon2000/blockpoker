@@ -55,6 +55,7 @@ const MainPage = ({ wallet }) => {
     setPlayerInfo(playerInfo[0]);
 
     console.log("playerNumber", playerNumber);
+    console.log("player Info", playerInfo);
     console.log("wallet :", wallet.principal);
   };
  

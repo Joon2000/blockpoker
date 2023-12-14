@@ -451,10 +451,6 @@ actor {
     };
 
     public func readyGame(playerAddress : Principal) {
-        // 참여한 player 수가 최대 player 넘어가면 에러 발생하고 player 추가 하지 않음
-        let players = gameTable.getPlayers();
-        assert(players.size() < MAX_PLAYER);
-
         // 일단 무조건 100개 주는 걸로 -> 나중에 시간이 되면 poker 토큰 만들기
         exchangePokerChips(playerAddress, 100);
         // Chip이 몇 개 이상 있는지 확인을 하는 코드. 몇 개 이상 칩이 없으면 참여 못 합.
