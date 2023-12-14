@@ -6,7 +6,9 @@ import { Card } from "src/declarations/poker/poker.did"
 
 const PlayerCards = ({
   player,
+  playerCrpytoNumber,
 }) => {
+  
 
   return (
     <Box>
@@ -14,7 +16,10 @@ const PlayerCards = ({
         {player!=null &&
         player.cards.map((card : Card, index: React.Key) => (
             <Grid item xs={4} key={index}>
-              <TrumpCard cardNumber={ Number(card.cardNumber)} />
+              <TrumpCard 
+              cardNumber={ Number(card.cardNumber)}
+              order={card.order}
+              playerCrpytoNumber={playerCrpytoNumber}/>
             </Grid>
         ))}
       </Grid>

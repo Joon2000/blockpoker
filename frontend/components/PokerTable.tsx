@@ -15,6 +15,7 @@ const PokerTable = ({
   totalBetAmount,
   playerInfo,
   playerInfoArray,
+  playerCrpytoNumber,
   updateState,
 }) => { 
 
@@ -92,6 +93,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]}
+            playerCrpytoNumber={0}
           />}
         </Grid>
         <Grid item xs={4}>
@@ -103,6 +105,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]}
+            playerCrpytoNumber={0}
           />}
         </Grid>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
@@ -116,6 +119,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]}
+            playerCrpytoNumber={0}
           />}
         </Grid>
       </Grid>
@@ -127,6 +131,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+0)%4]!=null &&
             <PlayerCards 
             player={playerInfoArray[Number(playerInfo.playerOrder)%4]}
+            playerCrpytoNumber={playerCrpytoNumber}
             />
           }
         </Grid>
