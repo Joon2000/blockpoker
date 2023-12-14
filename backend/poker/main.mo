@@ -362,18 +362,19 @@ actor {
         // ######## Update ########
         // ########################
         func checkIsAllReady() {
-            var isAllReady = true;
+            if (gameStatus.playingStatus == #PLAYING or gameStatus.playingStatus == #GAME_END) {
+                return
+            };
             if (players.size() < 2) {
                 gameStatus.playingStatus := #NOT_ALL_READY;
             };
-            
-            label f for (player in players.vals()) {
-                if (player.playingState == #ENTER) {
-                    isAllReady := false;
-                    break f;
+            var readyCount = 0;
+            for (player in players.vals()) {
+                if (player.playingState == #READY ) {
+                    readyCount += 1;
                 };
             };
-            if (isAllReady) {
+            if (readyCount == players.size()) {
                 gameStatus.playingStatus := #ALL_READY;
             } else {
                 gameStatus.playingStatus := #NOT_ALL_READY;
