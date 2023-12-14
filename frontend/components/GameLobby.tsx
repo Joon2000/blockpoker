@@ -3,10 +3,8 @@ import { Box, Button, Grid } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { StateBoxRefactor } from "./StateBoxRefactor"
 import { MoneyBoxRefactor } from "./MoneyBoxRefactor"
-import { CounterpartCardsRefactor } from "./CounterpartCardsRefactor"
 import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
-import { Message } from "./Message"
 import { LobbyPlayerCard } from "./LobbyPlayerCard"
 import { poker} from "../../src/declarations/poker"
 import { Principal } from "@dfinity/principal"
@@ -84,10 +82,10 @@ const GameLobby = ({
           {playerInfo == null ? <p>not yet enter game</p> : <p>player address : {playerInfo.address.toString()}</p>}
 
           <Grid container spacing={2}>
-            {playerInfoArray!=null && playerInfo!=null &&
+            {playerInfoArray!=null && 
             playerInfoArray.map((player)=>{
               var isMe = false;
-              if (playerInfo.address.toString() == player.address.toString()) {
+              if (wallet.principal.toString() == player.address.toString()) {
                 isMe = true;
               }
               return(

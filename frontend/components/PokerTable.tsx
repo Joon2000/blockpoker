@@ -3,17 +3,15 @@ import { brown } from "@mui/material/colors"
 import React from "react"
 import { StateBoxRefactor } from "./StateBoxRefactor"
 import { MoneyBoxRefactor } from "./MoneyBoxRefactor"
-import { CounterpartCardsRefactor } from "./CounterpartCardsRefactor"
 import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
-import { Message } from "./Message"
 
 const PokerTable = ({
   wallet,
   playerInfo,
   playerInfoArray,
   updateState,
-}) => {
+}) => { 
 
   return (
     <Box
@@ -24,20 +22,28 @@ const PokerTable = ({
         bgcolor: brown[200],
       }}
     >
-      <Grid container spacing={5}>
-        <Grid item xs={4}></Grid>
+      <Grid container spacing={5} id={"Top Line"}>
         <Grid item xs={4}>
-          <CounterpartCardsRefactor 
-            wallet={wallet} 
-          />
+
         </Grid>
-        <Grid item xs={4}></Grid>
-      </Grid>
-      <Grid container spacing={5}>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-          <CounterpartCardsRefactor 
-            wallet={wallet} 
-          />
+          {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]!=null &&
+          <PlayerCards 
+            wallet={wallet}
+            player={playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]}
+          />}
+        </Grid>
+        <Grid item xs={4}>
+
+        </Grid>
+      </Grid>
+      <Grid container spacing={5} id={"Middle Line"}>
+        <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]!=null &&
+          <PlayerCards 
+            wallet={wallet}
+            player={playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]}
+          />}
         </Grid>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <Box>
@@ -47,21 +53,26 @@ const PokerTable = ({
                  
         </Grid>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-          <CounterpartCardsRefactor 
-          wallet={wallet} 
-          /> 
+          {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]!=null &&
+          <PlayerCards 
+            wallet={wallet}
+            player={playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]}
+          />}
         </Grid>
       </Grid>
-      <Grid container spacing={5}>
+      <Grid container spacing={5} id={"Bottom Line"}>
         <Grid item xs={4}>
 
         </Grid>
-        <Grid item xs={4}>
-          <PlayerCards 
-          playerInfo={playerInfo}
-          />
+        <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+0)%4]!=null &&
+            <PlayerCards 
+            wallet={wallet}
+            player={playerInfoArray[Number(playerInfo.playerOrder)%4]}
+            />
+          }
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <StateBoxRefactor/>
         </Grid>
       </Grid>

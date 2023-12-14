@@ -80,6 +80,7 @@ module Types {
         setPlayer : (Principal, Player) -> ();
         createNewPlayer : (Principal) -> ();
         removePlayer : (Principal) -> ();
+        removeAllPlayer : () -> ();
         setPlayerPlayingState : (Principal, PlayerPlayingState) -> ();
         setPlayerOrder : (Principal, Nat) -> ();
 
