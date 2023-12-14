@@ -12,6 +12,7 @@ import { HttpAgent, Actor } from "@dfinity/agent";
 
 const PokerTable = ({
   wallet,
+  gameTurn,
   totalBetAmount,
   playerInfo,
   playerInfoArray,
@@ -28,6 +29,8 @@ const PokerTable = ({
     let app_backend_principal = await Actor.agentOf(vet_key).getPrincipal();
     const seed = window.crypto.getRandomValues(new Uint8Array(32));
     console.log("seed", seed)
+    // 여기서 에러  남....ㅜㅜㅜㅜㅜㅜ  vetkey examaple에선 잘 잘동하던 코드...
+    // error code : wasm.__wbindgen_add_to_stack_pointer is not a function
     const tsk : any = new vetkd.TransportSecretKey(seed);
     console.log("tsk", tsk)
     const ek_bytes_hex = await vet_key.encrypted_symmetric_key_for_caller(tsk.public_key());
@@ -93,6 +96,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]}
+            gameTurn={gameTurn}
             playerCrpytoNumber={0}
           />}
         </Grid>
@@ -105,6 +109,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]}
+            gameTurn={gameTurn}
             playerCrpytoNumber={0}
           />}
         </Grid>
@@ -119,6 +124,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]}
+            gameTurn={gameTurn}
             playerCrpytoNumber={0}
           />}
         </Grid>
@@ -131,6 +137,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+0)%4]!=null &&
             <PlayerCards 
             player={playerInfoArray[Number(playerInfo.playerOrder)%4]}
+            gameTurn={gameTurn}
             playerCrpytoNumber={playerCrpytoNumber}
             />
           }
