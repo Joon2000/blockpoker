@@ -69,10 +69,10 @@ const MainPage = ({ wallet }) => {
     console.log("playerNumber", playerNumber);
     console.log("player Info", playerInfo);
     console.log("wallet :", wallet.principal.toString());
-    // console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4])
-    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4])
-    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+2)%4])
-    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+3)%4])
+    console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4].playerOrder)
+    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4].playerOrder)
+    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+2)%4].playerOrder)
+    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+3)%4].playerOrder)
   };
 
   function compare( a, b ) {
@@ -152,6 +152,7 @@ const MainPage = ({ wallet }) => {
         {playingState === "PLAYING" || playingState === "GAME_END" 
         ? <PokerTable 
         wallet={wallet}
+        gameTurn={gameTurn}
         totalBetAmount={totalBetAmount}
         playerInfo={playerInfo}
         playerInfoArray={playerInfoArray}

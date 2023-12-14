@@ -694,28 +694,27 @@ actor {
     public func call(playerAddress : Principal) {
         assert(gameStatus.isAllPlayerCall == false);
 
-        // var currentPlayer = gameTable.getPlayer(playerAddress);
-        // let players = gameTable.getPlayers();
-        // var previousTurnBetAmount = 0;
-        // switch (currentPlayer) {
-        //     case null return;
-        //     case (?currentPlayer){
-        //         // 현재 turn이 아니면 불가
-        //         assert(gameStatus.gameTurn == currentPlayer.playerOrder);
-        //         for (player in players.vals()) {
-        //             if (currentPlayer.playerOrder == 0 and player.playerOrder == (players.size()-1)) {
-        //                 previousTurnBetAmount := player.currentBetAmount;
-        //             } else if (player.playerOrder == (currentPlayer.playerOrder+1)) {
-        //                 previousTurnBetAmount := player.currentBetAmount;
-        //             }
-        //         };
-        //         gameTable.betChips(playerAddress, previousTurnBetAmount);
-        //         currentPlayer.bettingAction := #CALL;
-        //         gameTable.setPlayer(playerAddress, currentPlayer);
-        //     };
-        // };
-
-        gameTable.betChips(playerAddress, 1);
+        var currentPlayer = gameTable.getPlayer(playerAddress);
+        let players = gameTable.getPlayers();
+        var previousTurnBetAmount = 0;
+        switch (currentPlayer) {
+            case null return;
+            case (?currentPlayer){
+                // 현재 turn이 아니면 불가
+                assert(gameStatus.gameTurn == currentPlayer.playerOrder);
+                for (player in players.vals()) {
+                    if (currentPlayer.playerOrder == 0 and player.playerOrder == (players.size()-1)) {
+                        previousTurnBetAmount := player.currentBetAmount;
+                    } else if (player.playerOrder == (currentPlayer.playerOrder+1)) {
+                        previousTurnBetAmount := player.currentBetAmount;
+                    }
+                };
+                // gameTable.betChips(playerAddress, previousTurnBetAmount);
+                gameTable.betChips(playerAddress, 1);
+                currentPlayer.bettingAction := #CALL;
+                gameTable.setPlayer(playerAddress, currentPlayer);
+            };
+        };
 
         gameTable.checkIsAllCall();
         gameTable.nextGameTurn(playerAddress);
@@ -724,27 +723,26 @@ actor {
     public func raise(playerAddress : Principal) {
         assert(gameStatus.isAllPlayerCall == false);
 
-        // var currentPlayer = gameTable.getPlayer(playerAddress);
-        // let players = gameTable.getPlayers();
-        // var previousTurnBetAmount = 0;
-        // switch (currentPlayer) {
-        //     case null return;
-        //     case (?currentPlayer){
-        //         assert(gameStatus.gameTurn == currentPlayer.playerOrder);
-        //         for (player in players.vals()) {
-        //             if (currentPlayer.playerOrder == 0 and player.playerOrder == 3) {
-        //                 previousTurnBetAmount := player.currentBetAmount + 1;
-        //             } else if (player.playerOrder == (currentPlayer.playerOrder+1)) {
-        //                 previousTurnBetAmount := player.currentBetAmount + 1;
-        //             }
-        //         };
-        //         gameTable.betChips(playerAddress, previousTurnBetAmount);
-        //         currentPlayer.bettingAction := #RAISE;
-        //         gameTable.setPlayer(playerAddress, currentPlayer);
-        //     };
-        // };
-
-        gameTable.betChips(playerAddress, 2);
+        var currentPlayer = gameTable.getPlayer(playerAddress);
+        let players = gameTable.getPlayers();
+        var previousTurnBetAmount = 0;
+        switch (currentPlayer) {
+            case null return;
+            case (?currentPlayer){
+                assert(gameStatus.gameTurn == currentPlayer.playerOrder);
+                for (player in players.vals()) {
+                    if (currentPlayer.playerOrder == 0 and player.playerOrder == 3) {
+                        previousTurnBetAmount := player.currentBetAmount + 1;
+                    } else if (player.playerOrder == (currentPlayer.playerOrder+1)) {
+                        previousTurnBetAmount := player.currentBetAmount + 1;
+                    }
+                };
+                // gameTable.betChips(playerAddress, previousTurnBetAmount);
+                gameTable.betChips(playerAddress, 2);
+                currentPlayer.bettingAction := #RAISE;
+                gameTable.setPlayer(playerAddress, currentPlayer);
+            };
+        };
 
         gameTable.nextGameTurn(playerAddress);
     };
