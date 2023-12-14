@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import { Turn } from "../../src/declarations/Turn"
 import { internetIdentityLogin } from "../utils/vetKeys"
 import { Principal } from "@dfinity/principal"
+import { poker} from "../../src/declarations/poker"
 
 const PokerGameButton = ({
   updateState,
@@ -13,6 +14,7 @@ const PokerGameButton = ({
   async function bet(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
+    await poker.test_message()
     // await poker.exitGame(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
     updateState();
@@ -65,7 +67,7 @@ const PokerGameButton = ({
           > Call </Button>
           <Button
             variant="contained"
-            onClick={call}
+            onClick={raise}
             size="large"
             color="primary"
             disabled={isButtonDisabled}

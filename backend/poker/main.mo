@@ -1,5 +1,6 @@
 import Principal "mo:base/Principal";
 import Bool "mo:base/Bool";
+import Nat "mo:base/Nat";
 import List "mo:base/List";
 import HashMap "mo:base/HashMap";
 import Iter "mo:base/Iter";
@@ -23,6 +24,7 @@ actor {
     type CardDeck = Types.CardDeck;
     type SharedCardDeck = Types.SharedCardDeck;
     type MoneyBox = Types.MoneyBox;
+    type ChipExchange = Types.ChipExchange;
     type GameTable = Types.GameTable;
     type GameStatus = Types.GameStatus;
     type SharedGameStatus = Types.SharedGameStatus;
@@ -56,13 +58,16 @@ actor {
             var totalBetAmount = 0;
         };
 
+        // TODO : 나중에 stable로 관리하기
+        var chipExchange : ChipExchange = HashMap.HashMap<Principal, Nat>(100, Principal.equal , Principal.hash);
+
         // #######################################################
         // ################ GameTable Methods ####################
         // ################### Get Methods #######################
-        public func getPlayer(playerAddress : Principal) : ?Player {
-            var player : ?Player = players.get(playerAddress);
-            player
-        };
+
+        // ########################
+        // ###### Components ######
+        // ########################
 
         public func getPlayers() : PlayerSeats{
             players
@@ -77,7 +82,7 @@ actor {
             List.toArray(playerList)
         };
 
-        // #####################################
+   
 
         public func getCardDeck() : CardDeck {
             cardDeck
@@ -98,6 +103,10 @@ actor {
         // ########################
         // ######## Player ########
         // ########################
+        public func getPlayer(playerAddress : Principal) : ?Player {
+            var player : ?Player = players.get(playerAddress);
+            player
+        };
 
         public func setPlayer(playerAddress : Principal, player : Player) {
             let player : ?Player = players.get(playerAddress);
@@ -107,13 +116,11 @@ actor {
                     players.put(playerAddress, player);
                 };
             };
-            
         };
 
         public func createNewPlayer(playerAddress : Principal) {
             let newPlayer = getNewPlayer(playerAddress);
             players.put(playerAddress, newPlayer);
-            gameTable.setPlayerOrder(playerAddress, players.size()-1);
         };
         
         public func removePlayer(playerAddress : Principal) {
@@ -208,8 +215,9 @@ actor {
             switch (player){
                 case null return;
                 case (?player) {
-                    player.betAmount := betAmount;
+                    player.currentBetAmount := betAmount;
                     player.currentChips -= betAmount;
+                    subPokerChip(playerAddress, betAmount);
                     player.totalBetAmount += betAmount;
                     setPlayer(playerAddress, player);
 
@@ -230,22 +238,89 @@ actor {
         };
 
         // ########################
+        // #### Exchange Chip ######
+        // ########################
+        func checkPlayerInExchange(playerAddress : Principal) {
+            var balance : ?Nat = chipExchange.get(playerAddress);
+            switch (balance) {
+                case null {
+                    chipExchange.put(playerAddress, 0);
+                };
+                case (?balance) return;
+            };
+
+        };
+
+        public func getExchangeBalance(playerAddress : Principal) : ?Nat{
+            checkPlayerInExchange(playerAddress);
+            var balance : ?Nat = chipExchange.get(playerAddress);
+            balance
+        };
+
+        func addPokerChip(playerAddress : Principal, chipAmount : Nat){
+            checkPlayerInExchange(playerAddress);
+
+            var balance : ?Nat = chipExchange.get(playerAddress);
+            switch (balance) {
+                case null return;
+                case (?balance) {
+                    let postExchangeBalance = balance + chipAmount;
+                    chipExchange.put(playerAddress, postExchangeBalance);
+                    
+                };
+            };
+
+        };
+
+        func subPokerChip(playerAddress : Principal, chipAmount : Nat) {
+            checkPlayerInExchange(playerAddress);
+
+            var balance : ?Nat = chipExchange.get(playerAddress);
+            switch (balance) {
+                case null return;
+                case (?balance) {
+                    assert(balance > chipAmount);
+                    let postExchangeBalance = balance - chipAmount;
+                    chipExchange.put(playerAddress, postExchangeBalance);
+                    
+                };
+            };
+        };
+
+        // TODO : parameter -> IPC amount 추가
+        public func depositICPAddPokerChip(playerAddress : Principal, chipAmount : Nat){
+            // deposint ICP
+            //
+            //
+
+            addPokerChip(playerAddress, chipAmount);
+        };
+
+        // TODO : parameter -> IPC amount 추가
+        public func withdrawICPSubtractPokerChip(playerAddress : Principal, chipAmount : Nat){
+            subPokerChip(playerAddress, chipAmount);
+
+            // withdraw ICP
+            //
+            //
+        };
+
+        // ########################
         // ######## Clean #########
         // ########################
 
         public func cleanPlayerCards(playerAddress : Principal) {
             var player : ?Player = getPlayer(playerAddress);
-            var usedPlayerCards : List.List<Card> = List.nil<Card>();
+            var usedPlayerCards = List.nil<Card>();
             switch (player){
                 case null return;
                 case (?player) {
-                    usedPlayerCards := player.cards;
+                    usedCardDeck.cards := List.append<Card>( player.cards, usedCardDeck.cards);
+                    usedCardDeck.numberOfCards += List.size<Card>(player.cards);
+
                     player.cards := List.nil<Card>();
                     player.totalCardNumber := 0;
                     setPlayer(playerAddress, player);
-
-                    usedCardDeck.cards := List.append<Card>(usedPlayerCards, usedCardDeck.cards);
-                    usedCardDeck.numberOfCards += List.size<Card>(usedPlayerCards);
                 };
             }; 
         };
@@ -255,7 +330,7 @@ actor {
             switch (player){
                 case null return;
                 case (?player) {
-                    player.betAmount := 0;
+                    player.currentBetAmount := 0;
                     player.totalBetAmount := 0;
                     setBettingAction(playerAddress, #NONE);
                     setPlayer(playerAddress, player);
@@ -286,66 +361,38 @@ actor {
         // ########################
         // ######## Update ########
         // ########################
+        func checkIsAllReady() {
+            var isAllReady = true;
+            if (players.size() < 2) {
+                gameStatus.playingStatus := #NOT_ALL_READY;
+            };
+            
+            label f for (player in players.vals()) {
+                if (player.playingState == #ENTER) {
+                    isAllReady := false;
+                    break f;
+                };
+            };
+            if (isAllReady) {
+                gameStatus.playingStatus := #ALL_READY;
+            } else {
+                gameStatus.playingStatus := #NOT_ALL_READY;
+            };
+        };
+
+
+        func checkIsGameEnd() {
+            if (gameStatus.playingStatus == #NOT_ALL_READY or gameStatus.playingStatus == #ALL_READY ){
+                return
+            } else if (gameStatus.playingStatus == #PLAYING and players.size() <= 1) {
+                gameStatus.playingStatus := #GAME_END;
+            };
+
+        };
 
         public func updatePlayingStatus() {
-            // 혼자 레디인 상태면 ALL_READY가 아님
-            if (players.size() <= 1) {
-                gameStatus.playingStatus := #NOT_ALL_READY;
-                gameStatus.gameTurn := 0;
-                gameStatus.isAllPlayerCall := false;
-                for (player in players.vals()) {
-                    cleanPlayerCards(player.address);
-                };
-                return
-            };
-
-            for (player in players.vals()) {
-                if (player.playingState == #ENTER){
-                    gameStatus.playingStatus := #NOT_ALL_READY;
-                    gameStatus.gameTurn := 0;
-                    gameStatus.isAllPlayerCall := false;
-                    return
-                };
-            };
-
-            for (player in players.vals()) {
-                if (player.playingState != #READY){
-                    return
-                };
-            };
-
-            for (player in players.vals()) {
-                if (player.playingState == #READY){
-                    gameStatus.playingStatus := #ALL_READY;
-                    return
-                };
-            };
-
-            for (player in players.vals()) {
-                if (player.playingState != #PLAYING){
-                    return
-                };
-            };
-
-            for (player in players.vals()) {
-                if (player.playingState == #PLAYING){
-                    gameStatus.playingStatus := #PLAYING;
-                    return
-                };
-            };
-
-            for (player in players.vals()) {
-                if (player.playingState != #END){
-                    return
-                };
-            };
-
-            for (player in players.vals()) {
-                if (player.playingState == #END){
-                    gameStatus.playingStatus := #GAME_END;
-                    return
-                };
-            };
+            checkIsAllReady();
+            checkIsGameEnd();
         }; 
 
     };
@@ -370,9 +417,9 @@ actor {
         Utils.getNewPlayer(playerAddress);
     };
 
-    func exchangePokerChips(playerAddress : Principal, amount : Nat) {
-        Utils.exchangePokerChips(gameTable, playerAddress, amount);  
-    };
+    // func exchangePokerChips(playerAddress : Principal, amount : Nat) {
+    //     Utils.exchangePokerChips(gameTable, playerAddress, amount);  
+    // };
 
     // func updatePlayingStatus(players : PlayerSeats) {
     //     Utils.updatePlayingStatus(gameStatus, players);
@@ -438,32 +485,50 @@ actor {
     // ########################### GAME FUNCTIONS ###################################
     // ################################################################################
 
-    // connect wallet 또는 identity 로그인 시 실행
     public func enterGame(playerAddress : Principal) {
         // 참여한 player 수가 최대 player 넘어가면 에러 발생하고 player 추가 하지 않음
         let players = gameTable.getPlayers();
         assert(players.size() < MAX_PLAYER);
 
+        // player의 exchange에 있는 chip이 10개 미만일 경우 게임 참가 불가
+        var balance = gameTable.getExchangeBalance(playerAddress);
+        var currentChips = 0;
+        switch (balance) {
+            case null return;
+            case (?balance) {
+                // D.print(Nat.toText(balance));
+                assert(balance > 10);
+                currentChips := balance;
+            };
+        };
+        
+        var player = gameTable.getPlayer(playerAddress);
+        switch(player) {
+            case null {
+                gameTable.createNewPlayer(playerAddress);
+                gameTable.setCurrentChips(playerAddress, currentChips);
+            };
+            case(?player) { 
+                return
+            };
+        };
+        
         // 첫 번째 player면 방장 시켜 줌
-        if (players.size() == 0) {
+        if (players.size() == 1) {
             setMasterPlayer(?playerAddress);
         };
-        // player 순서 설정
         
-
-        // new player 설정
-        gameTable.createNewPlayer(playerAddress);
+        // player 순서 설정
+        gameTable.setPlayerOrder(playerAddress, players.size()-1);
+        
         gameTable.updatePlayingStatus();
     };
 
     public func readyGame(playerAddress : Principal) {
-        // 일단 무조건 100개 주는 걸로 -> 나중에 시간이 되면 poker 토큰 만들기
-        exchangePokerChips(playerAddress, 100);
-        // Chip이 몇 개 이상 있는지 확인을 하는 코드. 몇 개 이상 칩이 없으면 참여 못 합.
         let player = gameTable.getPlayer(playerAddress);
         switch (player) {
             case null return;
-            case (?player) {assert(player.currentChips < 10);};
+            case (?player) {assert(player.currentChips > 10);};
         };
         gameTable.setPlayerPlayingState(playerAddress, #READY);
         gameTable.updatePlayingStatus();
@@ -476,22 +541,29 @@ actor {
 
     public func exitGame(playerAddress : Principal) {
         let players = gameTable.getPlayers();
-        if (players.size() <= 1) {
+        if (players.size() == 1) {
             gameTable.removePlayer(playerAddress);
             gameStatus.masterPlayer := null;
+        }; 
 
-        }else if (players.size() > 1 and ?playerAddress == gameStatus.masterPlayer) {
-            // masterPlayer가 나가면 다음 사람 master 줘야 함
-            gameTable.removePlayer(playerAddress);
-            label temp for (player in players.vals()) {
-                gameStatus.masterPlayer := ?player.address;
-                break temp;
+        let exitPlayer = gameTable.getPlayer(playerAddress);
+        switch (exitPlayer) {
+            case null return;
+            case (?exitPlayer) {
+                for (player in players.vals()) {
+                    // masterPlayer가 나가면 다음 사람 master 줘야 함
+                    if (?playerAddress == gameStatus.masterPlayer and player.playerOrder == 1) {
+                        gameStatus.masterPlayer := ?player.address;
+                    };
+                    // 순서 뒤에 player들 playerOrder 하나씩 앞으로 땡기
+                    if (player.playerOrder > exitPlayer.playerOrder){
+                        gameTable.setPlayerOrder(player.address, player.playerOrder-1);
+                    };
+                };
             };
-        } else {
-            gameTable.removePlayer(playerAddress);
         };
+        gameTable.removePlayer(playerAddress);
 
-        // master player 주는 건 했고.. player Order 바꿔줘야 함... 이걸 update PlayingStatus에서 해줘야 하는 건가? 그럼 너무 복잡해질 수도....
         gameTable.updatePlayingStatus();
     };
 
@@ -562,6 +634,15 @@ actor {
 
     public func test_removeAllPlayer() {
         gameTable.removeAllPlayer();
+        Utils.cleanGameStatus(gameStatus);
     };
 
+    public shared ({caller}) func  test_message() {
+        D.print(Principal.toText(caller));
+    };
+
+    public func test_addPokerChip(playerAddress : Principal) {
+        gameTable.depositICPAddPokerChip(playerAddress, 100);
+        // gameTable.getPokerChipFromExchange(playerAddress, 10);
+    };
 }
