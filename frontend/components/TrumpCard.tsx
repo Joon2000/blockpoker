@@ -23,11 +23,13 @@ const TrumpCard = ({ cardNumber }) => {
 
   return (
     <div>
+      <p>{cardNumber.toString()}</p>
       <img
         src={`/frontend/assets/trumpCards/${number.toString()}_of_${shape}.png`}
         alt={`${number.toString()}_of_${shape}.png`}
         className="card--image"
       />
+      
     </div>
   )
 }

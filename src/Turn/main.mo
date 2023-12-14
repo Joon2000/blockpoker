@@ -1,4 +1,4 @@
-import random_number "canister:random_number";
+// import random_number "canister:random_number";
 import Array "mo:base/Array";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";

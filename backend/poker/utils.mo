@@ -8,6 +8,7 @@ import D "mo:base/Debug";
 import Nat "mo:base/Nat";
 import Random "mo:base/Random";
 import Array "mo:base/Array";
+import Principal "mo:base/Principal";
 
 
 
@@ -36,7 +37,7 @@ module Utils {
                     playingState = player.playingState;
                     playerOrder = player.playerOrder;
                     cards = List.toArray(player.cards);
-                    totalCardNumber = player.totalCardNumber;
+                    // totalCardNumber = player.totalCardNumber;
                     currentChips = player.currentChips;
                     totalBetAmount = player.totalBetAmount;
                     currentBetAmount = player.currentBetAmount;
@@ -104,6 +105,11 @@ module Utils {
     // ######################## BETTING CHIPS FUNCTIONS ###############################
     // ################################################################################
 
+    // public func betPokerChips(gameTable: GameTable, playerAddress : Principal, amount : Nat) {
+    //     gameTable.subPokerChip(playerAddress, amount);
+
+    // };
+
     // public func exchangePokerChips(gameTable : GameTable, playerAddress : Principal, amount : Nat) {
     //     // ICP -> Chip으로 변경하는 로직으로 변경해야 함
     //     let player : ?Player = gameTable.getPlayer( playerAddress);
@@ -141,22 +147,23 @@ module Utils {
         switch (shuffledNumberArray) {
             case null return;
             case (?shuffledNumberArray) {
-            suffledCardDeck := getNewShuffledCardDeck(shuffledNumberArray);
+            suffledCardDeck := getNewShuffledEncryptedCardDeck(shuffledNumberArray);
             };
         };
         
         gameTable.setWholeCardDeck(suffledCardDeck);
     };
 
-    func getNewShuffledCardDeck(shuffledNumberArray : [Nat]) :CardDeck {
+    func getNewShuffledEncryptedCardDeck(shuffledNumberArray : [Nat]) :CardDeck {
         var cardDeck : CardDeck = {
             var cards = List.nil<Card>();
             var numberOfCards = 0;
         };
 
         for (i in Iter.range(0, Array.size(shuffledNumberArray)-1 )) {
+            let encryptedCardNumber = encrypt_card_number(shuffledNumberArray[i], i);
             let card : Card = {
-                cardNumber = shuffledNumberArray[i];
+                cardNumber = encryptedCardNumber;
                 order = i;
             };
             let cards = List.push<Card>(card, cardDeck.cards);
@@ -177,9 +184,9 @@ module Utils {
         };
         numberList := List.reverse(numberList);
 
-        var randomNumber1 :?Nat = await generateRandomNumber();
-        var randomNumber2 :?Nat = await generateRandomNumber();
-        var randomNumber3 :?Nat = await generateRandomNumber();
+        var randomNumber1 :?Nat = await generateRandomNumberForCard();
+        var randomNumber2 :?Nat = await generateRandomNumberForCard();
+        var randomNumber3 :?Nat = await generateRandomNumberForCard();
         var shuffleNumbers : [var Nat] = Array.init<Nat>(6, 0);
 
         switch (randomNumber1) {
@@ -275,7 +282,7 @@ module Utils {
         shuffledNumberList
     };
 
-    func generateRandomNumber() : async ?Nat {
+    public func generateRandomNumberForCard() : async ?Nat {
         let entropy = await Random.blob(); // get initial entropy
         var f = Random.Finite(entropy);
         do ? {
@@ -284,31 +291,88 @@ module Utils {
         };
     };
 
+    public func generateRandomNumberForPlayer() : async ?Nat {
+        let entropy = await Random.blob(); // get initial entropy
+        var f = Random.Finite(entropy);
+        do ? {
+            var result =f.range(52)!;
+            result := result;
+            return ?result;
+        };
+    };
+
     // ################################################################################
     // ###################### ENCRYPTION FUNCTIONS ###################################
     // ################################################################################
 
-    // TODO : CardDeck 통째로 encrpyt
-    func encryptCardDeck(gameTable : GameTable) : async Card {
-        let cardNumber = Option.get((await random_number.generateRandomNumber(),0));
-        // encryptedCardNumber = getEncryptedCardNumber(cardNumber);
-        let cardDeck : CardDeck = gameTable.getCardDeck();
-        let cardOrder : Nat = cardDeck.numberOfCards + 1;
-        let card : Card = {
-                cardNumber = cardNumber;
-                // cardNumber = encryptedCardNumber;
-                order = cardOrder;
-        };
-        card
+    // let x : Nat, y : Nat
+    // y = 123 * x + 56789 
+    // x = (y - 56789)/123
+    func encrypt_card_number(card_number: Nat, order: Nat): Nat {
+        let encrypted_number = 12 * card_number * (order + 33) + 45 * card_number + 56789;
+        encrypted_number
     };
 
+    func decrypt_card_number(encrypted_number: Nat, order: Nat): Nat {
+        let decrypted_number = (encrypted_number - 56789) / (12 * (order + 33) + 45);
+        decrypted_number
+    };
+
+    func encrypt_card_number_for_player(card_number: Nat, order: Nat, playerCryptoNum : Nat): Nat {
+        let encrypted_number = 12 * card_number * (order + 3) + 45 * card_number + playerCryptoNum;
+        encrypted_number
+    };
+
+    func decrypt_card_number_for_player(encrypted_number: Nat, order: Nat, playerCryptoNum : Nat): Nat {
+        let decrypted_number = (encrypted_number - playerCryptoNum) / (12 * (order + 3) + 45);
+        decrypted_number
+    };
+
+    // // TODO : CardDeck 통째로 encrpyt
+    // func encryptCardDeck(gameTable : GameTable) : async Card {
+    //     let cardNumber = Option.get((await random_number.generateRandomNumber(),0));
+    //     // encryptedCardNumber = getEncryptedCardNumber(cardNumber);
+    //     let cardDeck : CardDeck = gameTable.getCardDeck();
+    //     let cardOrder : Nat = cardDeck.numberOfCards + 1;
+    //     let card : Card = {
+    //             cardNumber = cardNumber;
+    //             // cardNumber = encryptedCardNumber;
+    //             order = cardOrder;
+    //     };
+    //     card
+    // };
+
      // 여기에 encrypt card, decrypt card 가 필요하긴 함.....
-    public func drawCardToPlayer(gameTable : GameTable, playerAddress : Principal) {
+    public func drawDecryptedCardToPlayer(gameTable : GameTable, playerAddress : Principal) {
         let card = gameTable.drawCardFromDeck();
         switch (card) {
             case null return;
             case (?card) {
-                gameTable.addCardIntoPlayer(playerAddress, card);
+                let playerCryptoNum = gameTable.getPlayerCryptoNumber(playerAddress);
+                switch (playerCryptoNum) {
+                    case null return;
+                    case (?playerCryptoNum){
+                        var cardNumberDecryptedByDealer = decrypt_card_number(card.cardNumber, card.order);
+                        var cardNumberEncryptedByPlayer = encrypt_card_number_for_player(cardNumberDecryptedByDealer, card.order, playerCryptoNum);
+                        let newCard : Card = {
+                            cardNumber : Nat = cardNumberEncryptedByPlayer;
+                            order : Nat = card.order;
+                        };
+                        var test_decryptedByPlayer = decrypt_card_number_for_player(cardNumberEncryptedByPlayer, card.order, playerCryptoNum);
+                        D.print("before decrtypt cardNumber");
+                        D.print(Nat.toText(card.cardNumber));
+                        D.print("decrpyted cardNumber");
+                        D.print(Nat.toText(cardNumberDecryptedByDealer));
+                        D.print("player crypt Num");
+                        D.print(Nat.toText(playerCryptoNum));
+                        D.print("after encrpyt player cardNumber");
+                        D.print(Nat.toText(newCard.cardNumber));
+                        D.print("after decrpyt player cardNumber");
+                        D.print(Nat.toText(test_decryptedByPlayer));
+
+                        gameTable.addCardIntoPlayer(playerAddress, newCard);
+                    };
+                };
             };
         };
     };
@@ -316,7 +380,7 @@ module Utils {
     public func drawCardEveryPlayers(gameTable : GameTable) {
         var players = gameTable.getPlayers();
         for (player in players.vals()) { 
-            drawCardToPlayer(gameTable, player.address);
+            drawDecryptedCardToPlayer(gameTable, player.address);
         };
     };
 

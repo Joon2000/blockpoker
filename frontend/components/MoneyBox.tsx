@@ -3,16 +3,11 @@ import { grey } from "@mui/material/colors"
 import React from "react"
 import pokerChips from "../assets/poker-chips.png"
 
-const MoneyBox = ({ totalBettingAmount }) => {
+const MoneyBox = ({ 
+  totalBetAmount 
+}) => {
   return (
-    <div
-      style={{
-        position: "absolute",
-        right: "30px",
-        top: "30%",
-        textAlign: "center",
-      }}
-    >
+    <Box>
       <img src={pokerChips} alt="poker-chips" width={120} height={120} />
       <Box
         sx={{
@@ -22,9 +17,10 @@ const MoneyBox = ({ totalBettingAmount }) => {
           bgcolor: grey[400],
         }}
       >
-        total: {totalBettingAmount}
+        total: {totalBetAmount}
+        {/* total: 10 */}
       </Box>
-    </div>
+    </Box>
   )
 }
 

@@ -25,12 +25,17 @@ const MainPage = ({ wallet }) => {
   const [gameTurn, setGameTurn] = useState<string>("");
   const [isAllPlayerCall, setIsAllPlayerCall] = useState<boolean>(false);
 
+  // Money Box Informations
+  const [totalBetAmount, setTotalBetAmount] = useState<number>(0);
+
   // Player Informations
   const [playerInfo, setPlayerInfo] = useState<null|SharedPlayer>(null);
   const [playerInfoArray, setPlayerInfoArray] = useState<SharedPlayer[]>([]);
   const [playerNumber, setPlayerNumber] = useState<number>(0);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+
+  const [playerCrpytoNumber, setPlayerCrpytoNumber] = useState<number>(0);
 
   useInterval(async () => {
     updateState();
@@ -46,6 +51,13 @@ const MainPage = ({ wallet }) => {
     setMasterPlayer(gameStatus.masterPlayer.toString());
     setGameTurn(gameStatus.gameTurn.toString());
     setIsAllPlayerCall(gameStatus.isAllPlayerCall);
+
+    const totalBetAmount = await poker.getTotalBetAmount();
+    setTotalBetAmount(Number(totalBetAmount));
+
+    const playerCrpytoNumber = await poker.getPlayerCryptoNumber(Principal.fromText(wallet.principal));
+    setPlayerCrpytoNumber(Number(playerCrpytoNumber));
+    console.log("player crypto numb", playerCrpytoNumber);
 
     const playerInfoArray = await poker.getPlayerInfoArray();
     playerInfoArray.sort( compare );
@@ -140,6 +152,7 @@ const MainPage = ({ wallet }) => {
         {playingState === "PLAYING" || playingState === "GAME_END" 
         ? <PokerTable 
         wallet={wallet}
+        totalBetAmount={totalBetAmount}
         playerInfo={playerInfo}
         playerInfoArray={playerInfoArray}
         updateState={updateState}

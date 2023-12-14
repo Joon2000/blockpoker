@@ -14,7 +14,7 @@ module Types {
         var playerOrder: Nat;
         var cards : List.List<Card>;
         // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
-        var totalCardNumber : Nat;
+        // var totalCardNumber : Nat;
         var currentChips : Nat;
         var totalBetAmount : Nat;
         var currentBetAmount : Nat;
@@ -27,7 +27,7 @@ module Types {
         playerOrder: Nat;
         cards : [Card];
         // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
-        totalCardNumber : Nat;
+        // totalCardNumber : Nat;
         currentChips : Nat;
         totalBetAmount : Nat;
         currentBetAmount : Nat;
@@ -92,15 +92,18 @@ module Types {
         addCardIntoUsedDeck : (Card) -> ();
         drawCardFromDeck :() -> ?Card;
 
+        getPlayerCryptoNumber : (Principal) -> ?Nat;
+
+        getTotalBetAmount : () -> (Nat);
         setCurrentChips : (Principal, Nat) -> ();
-        setCurrentBetAmount : (Principal, Nat) -> ();
+        betChips : (Principal, Nat) -> ();
         setBettingAction : (Principal, BettingAction) -> ();
 
         getExchangeBalance : (Principal) ->(?Nat);
         depositICPAddPokerChip : (Principal, Nat) -> ();
         withdrawICPSubtractPokerChip : (Principal, Nat) -> ();
-        // getPokerChipFromExchange : (Principal, Nat) -> ();
-        // returnPokerChipToExchange : (Principal, Nat) -> ();
+        addPokerChip : (Principal, Nat) -> ();
+        subPokerChip : (Principal, Nat) -> ();
 
         cleanPlayerCards : Principal -> ();
         cleanPlayerBettingInfo : (Principal) -> ();
@@ -108,5 +111,6 @@ module Types {
         cleanPlayersInfo : () -> ();
 
         updatePlayingStatus : () -> ();
+        checkIsAllCall : () -> ();
     };
 };

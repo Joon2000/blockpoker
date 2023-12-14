@@ -6,25 +6,26 @@ import { Principal } from "@dfinity/principal"
 import { poker} from "../../src/declarations/poker"
 
 const PokerGameButton = ({
+  wallet,
   updateState,
 }) => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
-  async function bet(e: { preventDefault: any }) {
-    e.preventDefault
-    setIsButtonDisabled(true);
-    await poker.test_message()
-    // await poker.exitGame(Principal.fromText(wallet.principal));
-    setIsButtonDisabled(false);
-    updateState();
+  // async function bet(e: { preventDefault: any }) {
+  //   e.preventDefault
+  //   setIsButtonDisabled(true);
+  //   await poker.test_message()
+  //   // await poker.exitGame(Principal.fromText(wallet.principal));
+  //   setIsButtonDisabled(false);
+  //   updateState();
 
-    console.log("Call")
-  };
+  //   console.log("Call")
+  // };
   async function call(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
-    // await poker.exitGame(Principal.fromText(wallet.principal));
+    await poker.call(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
     updateState();
 
@@ -33,7 +34,7 @@ const PokerGameButton = ({
   async function raise(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
-    // await poker.exitGame(Principal.fromText(wallet.principal));
+    await poker.raise(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
     updateState();
 
@@ -42,7 +43,7 @@ const PokerGameButton = ({
   async function fold(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
-    // await poker.exitGame(Principal.fromText(wallet.principal));
+    await poker.fold(Principal.fromText(wallet.principal));
     setIsButtonDisabled(false);
     updateState();
 
@@ -51,34 +52,34 @@ const PokerGameButton = ({
 
   return (
     <Box>
+      {/* <Button
+        variant="contained"
+        onClick={bet}
+        size="large"
+        color="primary"
+        disabled={isButtonDisabled}
+      > Bet </Button> */}
       <Button
-            variant="contained"
-            onClick={bet}
-            size="large"
-            color="primary"
-            disabled={isButtonDisabled}
-          > Bet </Button>
-          <Button
-            variant="contained"
-            onClick={call}
-            size="large"
-            color="primary"
-            disabled={isButtonDisabled}
-          > Call </Button>
-          <Button
-            variant="contained"
-            onClick={raise}
-            size="large"
-            color="primary"
-            disabled={isButtonDisabled}
-          > Raise </Button>
-          <Button
-            variant="contained"
-            onClick={fold}
-            size="large"
-            color="primary"
-            disabled={isButtonDisabled}
-          > Fold </Button>
+        variant="contained"
+        onClick={call}
+        size="large"
+        color="primary"
+        disabled={isButtonDisabled}
+      > Call </Button>
+      <Button
+        variant="contained"
+        onClick={raise}
+        size="large"
+        color="primary"
+        disabled={isButtonDisabled}
+      > Raise </Button>
+      <Button
+        variant="contained"
+        onClick={fold}
+        size="large"
+        color="primary"
+        disabled={isButtonDisabled}
+      > Fold </Button>
         
     </Box>
   )
