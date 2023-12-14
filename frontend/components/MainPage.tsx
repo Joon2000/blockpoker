@@ -155,6 +155,7 @@ const MainPage = ({ wallet }) => {
         totalBetAmount={totalBetAmount}
         playerInfo={playerInfo}
         playerInfoArray={playerInfoArray}
+        playerCrpytoNumber={playerCrpytoNumber}
         updateState={updateState}
         />
         
