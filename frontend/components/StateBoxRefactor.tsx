@@ -1,8 +1,9 @@
-import { Box } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React from "react"
 
 const StateBoxRefactor = ({
+  playerInfo,
   // position,
   // playerTotalBettingAmount,
   // playerCurrentBettingAmount,
@@ -20,6 +21,14 @@ const StateBoxRefactor = ({
         bgcolor: grey[400],
       }}
     >
+      <Typography> Player Status</Typography>
+      <Typography>playerOrder : {playerInfo.playerOrder.toString()}</Typography>
+      {/* <Typography>totalCardNumber : {playerInfo.totalCardNumber.toString()}</Typography> */}
+      <Typography>currentChips : {playerInfo.currentChips.toString()}</Typography>
+      <Typography>currentBetAmount : {playerInfo.currentBetAmount.toString()}</Typography>
+      <Typography>totalBetAmount : {playerInfo.totalBetAmount.toString()}</Typography>
+      <Typography>playingState : {Object.keys(playerInfo.playingState)[0]}</Typography>
+      <Typography>bettingAction : {Object.keys(playerInfo.bettingAction)[0]}</Typography>
       {/* <div style={{ textAlign: "center" }}>
         {position === "OPPONENT" ? (
           <div style={{}}>

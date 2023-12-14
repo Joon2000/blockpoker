@@ -24,6 +24,7 @@
       "frontend": {}
     },
     "poker": {
+      "dependencies": ["random_number"],
       "main": "backend/poker/main.mo",
       "type": "motoko"
     },
