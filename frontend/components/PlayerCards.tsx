@@ -5,14 +5,15 @@ import { TrumpCard } from "./TrumpCard"
 import { Card } from "src/declarations/poker/poker.did"
 
 const PlayerCards = ({
-  playerInfo,
+  wallet,
+  player,
 }) => {
 
   return (
     <Box>
       <Grid container spacing={0}>
-        {playerInfo!=null &&
-        playerInfo.cards.map((card : Card, index: React.Key) => (
+        {player!=null &&
+        player.cards.map((card : Card, index: React.Key) => (
             <Grid item xs={4} key={index}>
               <TrumpCard cardNumber={ Number(card.cardNumber)} />
             </Grid>

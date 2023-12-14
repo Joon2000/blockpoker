@@ -49,6 +49,7 @@ const MainPage = ({ wallet }) => {
     setIsAllPlayerCall(gameStatus.isAllPlayerCall);
 
     const playerInfoArray = await poker.getPlayerInfoArray();
+    playerInfoArray.sort( compare );
     setPlayerInfoArray(playerInfoArray);
     setPlayerNumber(playerInfoArray.length);
     const playerInfo = await poker.getPlayerInfo(Principal.fromText(wallet.principal));
@@ -56,8 +57,24 @@ const MainPage = ({ wallet }) => {
 
     console.log("playerNumber", playerNumber);
     console.log("player Info", playerInfo);
-    console.log("wallet :", wallet.principal);
+    console.log("wallet :", wallet.principal.toString());
+    console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4])
+    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4])
+    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+2)%4])
+    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+3)%4])
   };
+
+  function compare( a, b ) {
+    if ( a.playerOrder < b.playerOrder ){
+      return -1;
+    }
+    if ( a.playerOrder > b.playerOrder ){
+      return 1;
+    }
+    return 0;
+  }
+  
+  
  
 
   async function exitGame(e: { preventDefault: any }) {

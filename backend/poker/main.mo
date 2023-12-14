@@ -120,6 +120,12 @@ actor {
             players.delete(playerAddress);
         };
 
+        public func removeAllPlayer() {
+            for (player in players.vals()){
+                removePlayer(player.address);
+            };
+        };
+
         public func setPlayerPlayingState(playerAddress : Principal, playingState : PlayerPlayingState) {
             var player : ?Player = getPlayer(playerAddress);
             switch (player){
@@ -484,6 +490,8 @@ actor {
         } else {
             gameTable.removePlayer(playerAddress);
         };
+
+        // master player 주는 건 했고.. player Order 바꿔줘야 함... 이걸 update PlayingStatus에서 해줘야 하는 건가? 그럼 너무 복잡해질 수도....
         gameTable.updatePlayingStatus();
     };
 
@@ -550,6 +558,10 @@ actor {
 
     public func test_52List() : async ?[Nat] {
         await Utils.getShuffled52NumberArray()
-    }
+    };
+
+    public func test_removeAllPlayer() {
+        gameTable.removeAllPlayer();
+    };
 
 }
