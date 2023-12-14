@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { PokerTable } from "./PokerTable"
-import { PlayerButton } from "./PlayerButton"
+import { PlayerButton } from "./PokerGameButton"
 import { Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"

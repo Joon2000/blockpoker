@@ -5,7 +5,6 @@ import { TrumpCard } from "./TrumpCard"
 import { Card } from "src/declarations/poker/poker.did"
 
 const PlayerCards = ({
-  wallet,
   player,
 }) => {
 
