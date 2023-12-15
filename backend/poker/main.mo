@@ -110,6 +110,15 @@ actor {
             player
         };
 
+        public func getPlayerWithPlayerOrder(playerOrder : Nat) : ?Player {
+            for (player in players.vals()) {
+                if (player.playerOrder == playerOrder) {
+                    return ?player;
+                };
+            };
+            null
+        };
+
         public func setPlayer(playerAddress : Principal, player : Player) {
             let player : ?Player = players.get(playerAddress);
             switch (player) {
@@ -412,7 +421,7 @@ actor {
         };
 
         public func updatePlayingStatus() {
-            if (gameStatus.playingStatus == #NOT_ALL_READY) {
+            if (gameStatus.playingStatus == #NOT_ALL_READY or gameStatus.playingStatus == #ALL_READY) {
                 checkIsAllReady();
             };
 
@@ -426,26 +435,80 @@ actor {
             switch (currentPlayer) {
                 case null return;
                 case (?currentPlayer) {
+                    // var nextPlayerOrder = currentPlayer.playerOrder;
                     if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder == (Nat.sub(players.size(),1))) {
                         gameStatus.gameTurn := 0;
+                        // nextPlayerOrder := 0;
                     } else if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder < (Nat.sub(players.size(),1))) {
                         gameStatus.gameTurn := currentPlayer.playerOrder + 1;
-                    }
+                        // nextPlayerOrder := currentPlayer.playerOrder + 1;
+                    };
+
+                    // let nextPlayer = getPlayerWithPlayerOrder(nextPlayerOrder);
+                    // switch (nextPlayer) {
+                    //     case null return;
+                    //     case (?nextPlayer) {
+                    //         if (nextPlayer.bettingAction == #FOLD){
+
+                    //         };
+                    //     };
+                    // };
                 };
             };
+            // var currentPlayerAddress = playerAddress;
+            
+            // label f for (i in Iter.range(1, players.size())) {
+            //     var nextTurn = getNextTurn(currentPlayerAddress);
+            //     let nextPlayer = getPlayerWithPlayerOrder(nextTurn);
+            //     switch (nextPlayer) {
+            //         case null return;
+            //         case (?nextPlayer) {
+            //             if (nextPlayer.bettingAction == #FOLD){
+            //                 currentPlayerAddress := nextPlayer.address;
+            //             } else {
+            //                 break f;
+            //             };
+            //         };
+            //     };
+            // };
+
+            // let nextTurnPlayer = getPlayer(currentPlayerAddress);
+            // switch (nextTurnPlayer) {
+            //     case null return;
+            //     case (?nextTurnPlayer) {
+            //         gameStatus.gameTurn := nextTurnPlayer.playerOrder;
+            //     };
+            // };
         };
 
-        // public func checkIsFold(playerAddress : Principal) {
-        //     let currentPlayer = getPlayer(playerAddress);
-        //     switch (currentPlayer) {
-        //         case null return;
-        //         case (?currentPlayer) {
-        //             if (currentPlayer.bettingAction == #FOLD) {
-        //                 nextGameTurn(playerAddress);
-        //             };
-        //         };
-        //     };
-        // };
+        func getNextTurn(playerAddress : Principal) : Nat{
+            let currentPlayer = getPlayer(playerAddress);
+            var nextPlayerOrder = 0;
+            switch (currentPlayer) {
+                case null return 0;
+                case (?currentPlayer) {
+                    if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder == (Nat.sub(players.size(),1))) {
+                        nextPlayerOrder := 0;
+                    } else if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder < (Nat.sub(players.size(),1))) {
+                        nextPlayerOrder := currentPlayer.playerOrder + 1;
+                    };
+                };
+            };
+            nextPlayerOrder
+        };
+
+        public func checkIsFold(playerAddress : Principal) : Bool {
+            let currentPlayer = getPlayer(playerAddress);
+            switch (currentPlayer) {
+                case null return true;
+                case (?currentPlayer) {
+                    if (currentPlayer.bettingAction == #FOLD) {
+                        return true;
+                    };
+                };
+            };
+            return false;
+        };
 
         public func checkIsAllCall() {
             if (gameStatus.playingStatus != #PLAYING) {
@@ -453,7 +516,7 @@ actor {
             };
             var callCount = 0;
             for (player in players.vals()) {
-                if (player.bettingAction == #CALL){
+                if (player.bettingAction == #CALL or player.bettingAction == #FOLD){
                     callCount += 1;
                 };
             };
@@ -508,6 +571,10 @@ actor {
 
     func drawCardEveryPlayers() {
         Utils.drawCardEveryPlayers(gameTable);
+    };
+
+    func cleanGameStatus() {
+        Utils.cleanGameStatus(gameStatus);
     };
 
     // ################################################################################
@@ -652,7 +719,7 @@ actor {
                     };
                     // 순서 뒤에 player들 playerOrder 하나씩 앞으로 땡기
                     if (player.playerOrder > exitPlayer.playerOrder){
-                        gameTable.setPlayerOrder(player.address, player.playerOrder-1);
+                        gameTable.setPlayerOrder(player.address, Nat.sub(player.playerOrder,1));
                     };
                 };
             };
@@ -693,29 +760,31 @@ actor {
 
     public func call(playerAddress : Principal) {
         assert(gameStatus.isAllPlayerCall == false);
-
-        var currentPlayer = gameTable.getPlayer(playerAddress);
-        let players = gameTable.getPlayers();
-        var previousTurnBetAmount = 0;
-        switch (currentPlayer) {
-            case null return;
-            case (?currentPlayer){
-                // 현재 turn이 아니면 불가
-                assert(gameStatus.gameTurn == currentPlayer.playerOrder);
-                for (player in players.vals()) {
-                    if (currentPlayer.playerOrder == 0 and player.playerOrder == (players.size()-1)) {
-                        previousTurnBetAmount := player.currentBetAmount;
-                    } else if (player.playerOrder == (currentPlayer.playerOrder+1)) {
-                        previousTurnBetAmount := player.currentBetAmount;
-                    }
+        if (gameTable.checkIsFold(playerAddress) == false ){
+            var currentPlayer = gameTable.getPlayer(playerAddress);
+            let players = gameTable.getPlayers();
+            var previousTurnBetAmount = 0;
+            switch (currentPlayer) {
+                case null return;
+                case (?currentPlayer){
+                    // 현재 turn이 아니면 불가
+                    assert(gameStatus.gameTurn == currentPlayer.playerOrder);
+                    for (player in players.vals()) {
+                        if (currentPlayer.playerOrder == 0 and player.playerOrder == Nat.sub(players.size(),1)) {
+                            previousTurnBetAmount := player.currentBetAmount;
+                        } else if (currentPlayer.playerOrder > 0 and player.playerOrder == Nat.sub(currentPlayer.playerOrder,1)) {
+                            previousTurnBetAmount := player.currentBetAmount;
+                        }
+                    };
+                    gameTable.betChips(playerAddress, previousTurnBetAmount);
+                    D.print("CALL previouse Turn Bet Amount");
+                    D.print(Nat.toText(previousTurnBetAmount));
+                    // gameTable.betChips(playerAddress, 1);
+                    currentPlayer.bettingAction := #CALL;
+                    gameTable.setPlayer(playerAddress, currentPlayer);
                 };
-                // gameTable.betChips(playerAddress, previousTurnBetAmount);
-                gameTable.betChips(playerAddress, 1);
-                currentPlayer.bettingAction := #CALL;
-                gameTable.setPlayer(playerAddress, currentPlayer);
             };
         };
-
         gameTable.checkIsAllCall();
         gameTable.nextGameTurn(playerAddress);
     };
@@ -723,24 +792,28 @@ actor {
     public func raise(playerAddress : Principal) {
         assert(gameStatus.isAllPlayerCall == false);
 
-        var currentPlayer = gameTable.getPlayer(playerAddress);
-        let players = gameTable.getPlayers();
-        var previousTurnBetAmount = 0;
-        switch (currentPlayer) {
-            case null return;
-            case (?currentPlayer){
-                assert(gameStatus.gameTurn == currentPlayer.playerOrder);
-                for (player in players.vals()) {
-                    if (currentPlayer.playerOrder == 0 and player.playerOrder == 3) {
-                        previousTurnBetAmount := player.currentBetAmount + 1;
-                    } else if (player.playerOrder == (currentPlayer.playerOrder+1)) {
-                        previousTurnBetAmount := player.currentBetAmount + 1;
-                    }
+        if (gameTable.checkIsFold(playerAddress) == false ){
+            var currentPlayer = gameTable.getPlayer(playerAddress);
+            let players = gameTable.getPlayers();
+            var previousTurnBetAmount = 0;
+            switch (currentPlayer) {
+                case null return;
+                case (?currentPlayer){
+                    assert(gameStatus.gameTurn == currentPlayer.playerOrder);
+                   for (player in players.vals()) {
+                        if (currentPlayer.playerOrder == 0 and player.playerOrder == Nat.sub(players.size(),1)) {
+                            previousTurnBetAmount := player.currentBetAmount +1;
+                        } else if (currentPlayer.playerOrder > 0 and player.playerOrder == Nat.sub(currentPlayer.playerOrder,1)) {
+                            previousTurnBetAmount := player.currentBetAmount +1;
+                        }
+                    };
+                    gameTable.betChips(playerAddress, previousTurnBetAmount);
+                    D.print("RAISE");
+                    D.print(Nat.toText(previousTurnBetAmount));
+                    // gameTable.betChips(playerAddress, 2);
+                    currentPlayer.bettingAction := #RAISE;
+                    gameTable.setPlayer(playerAddress, currentPlayer);
                 };
-                // gameTable.betChips(playerAddress, previousTurnBetAmount);
-                gameTable.betChips(playerAddress, 2);
-                currentPlayer.bettingAction := #RAISE;
-                gameTable.setPlayer(playerAddress, currentPlayer);
             };
         };
 
@@ -752,38 +825,57 @@ actor {
 
         var currentPlayer = gameTable.getPlayer(playerAddress);
         let players = gameTable.getPlayers();
-
+        var previousTurnBetAmount = 0;
         switch (currentPlayer) {
             case null return;
             case (?currentPlayer){
                 assert(gameStatus.gameTurn == currentPlayer.playerOrder);
+                // gameTable.betChips(playerAddress, 0);
+                gameTable.setBettingAction(playerAddress, #FOLD);
             };
         };
-        gameTable.setBettingAction(playerAddress, #FOLD);
-        
 
-        // gameTable.updatePlayingStatus();
-        // gameTable.checkIsAllCall();
         gameTable.nextGameTurn(playerAddress);
-        
-        // exitGame(playerAddress);
     };
 
-    public func endGame() {
-        gameStatus.playingStatus := #GAME_END;
-        gameStatus.masterPlayer := null; //winner 로 배정
-        gameStatus.gameTurn := 0;
-        gameStatus.isAllPlayerCall := false;
+    public func getMoreCard(playerAddress : Principal) {
+        assert(gameStatus.isAllPlayerCall == true);
 
-        var players = gameTable.getPlayers();
+        drawCardEveryPlayers();
+        let players = gameTable.getPlayers();
         for (player in players.vals()) {
-            gameTable.setPlayerPlayingState(player.address, #END);
+            gameTable.setBettingAction(player.address, #NONE);
         };
+        gameTable.checkIsAllCall();
+    };
 
-        settleupGame();
+    public func stopGame(playerAddress : Principal) {
+        assert(gameStatus.isAllPlayerCall == true);
+
+        if (gameTable.checkIsFold(playerAddress) == false ){
+            var currentPlayer = gameTable.getPlayer(playerAddress);
+            let players = gameTable.getPlayers();
+            for (player in players.vals()) {
+            gameTable.setPlayerPlayingState(player.address, #END);
+            };
+            switch (currentPlayer) {
+                case null return;
+                case (?currentPlayer){
+                    // 현재 turn이 아니면 불가
+                    assert(gameStatus.gameTurn == currentPlayer.playerOrder);
+                    gameStatus.playingStatus := #GAME_END;
+                };
+            };
+        }; 
+        checkWhoIsWinner();
+    };
+
+    func checkWhoIsWinner() {
+
     };
 
     public func settleupGame() {
+        assert(gameStatus.playingStatus == #GAME_END);
         gameStatus.playingStatus := #NOT_ALL_READY;
         gameStatus.masterPlayer := null; //winner 로 배정
         gameStatus.gameTurn := 0;
@@ -814,7 +906,7 @@ actor {
 
     public func test_removeAllPlayer() {
         gameTable.removeAllPlayer();
-        Utils.cleanGameStatus(gameStatus);
+        cleanGameStatus();
     };
 
     public shared ({caller}) func  test_message() {
