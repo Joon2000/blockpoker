@@ -82,7 +82,7 @@ const TrumpCard = ({
     // notyet decrypted
     let decrypted_number = decrypt_card_number_for_player(Number(cardNumber), Number(order), currentPlayerCrpytoNumber);
     shapeNumber = Math.floor(decrypted_number / 13);
-    number = decrypted_number % 13 + 1;
+    number = decrypted_number % 13;
   } else if (cardNumber <= 52) {
     shapeNumber = Math.floor(cardNumber / 13);
     number = cardNumber % 13;
