@@ -344,37 +344,31 @@ module Utils {
 
      // 여기에 encrypt card, decrypt card 가 필요하긴 함.....
     public func drawDecryptedCardToPlayer(gameTable : GameTable, playerAddress : Principal) {
-        let card = gameTable.drawCardFromDeck();
-        switch (card) {
-            case null return;
-            case (?card) {
-                let playerCryptoNum = gameTable.getPlayerCryptoNumber(playerAddress);
-                switch (playerCryptoNum) {
-                    case null return;
-                    case (?playerCryptoNum){
-                        var cardNumberDecryptedByDealer = decrypt_card_number(card.cardNumber, card.order);
-                        var cardNumberEncryptedByPlayer = encrypt_card_number_for_player(cardNumberDecryptedByDealer, card.order, playerCryptoNum);
-                        let newCard : Card = {
-                            cardNumber : Nat = cardNumberEncryptedByPlayer;
-                            order : Nat = card.order;
+        let playerBettingAction = gameTable.getPlayerBettingAction(playerAddress);
+        if (playerBettingAction != #FOLD) {
+            let card = gameTable.drawCardFromDeck();
+            switch (card) {
+                case null return;
+                case (?card) {
+                    let playerCryptoNum = gameTable.getPlayerCryptoNumber(playerAddress);
+                    switch (playerCryptoNum) {
+                        case null return;
+                        case (?playerCryptoNum){
+                            var cardNumberDecryptedByDealer = decrypt_card_number(card.cardNumber, card.order);
+                            var cardNumberEncryptedByPlayer = encrypt_card_number_for_player(cardNumberDecryptedByDealer, card.order, playerCryptoNum);
+                            let newCard : Card = {
+                                cardNumber : Nat = cardNumberEncryptedByPlayer;
+                                order : Nat = card.order;
+                            };
+                            var test_decryptedByPlayer = decrypt_card_number_for_player(cardNumberEncryptedByPlayer, card.order, playerCryptoNum);
+                            gameTable.addCardIntoPlayer(playerAddress, newCard);
                         };
-                        var test_decryptedByPlayer = decrypt_card_number_for_player(cardNumberEncryptedByPlayer, card.order, playerCryptoNum);
-                        D.print("before decrtypt cardNumber");
-                        D.print(Nat.toText(card.cardNumber));
-                        D.print("decrpyted cardNumber");
-                        D.print(Nat.toText(cardNumberDecryptedByDealer));
-                        D.print("player crypt Num");
-                        D.print(Nat.toText(playerCryptoNum));
-                        D.print("after encrpyt player cardNumber");
-                        D.print(Nat.toText(newCard.cardNumber));
-                        D.print("after decrpyt player cardNumber");
-                        D.print(Nat.toText(test_decryptedByPlayer));
-
-                        gameTable.addCardIntoPlayer(playerAddress, newCard);
                     };
                 };
             };
+
         };
+        
     };
 
     public func drawCardEveryPlayers(gameTable : GameTable) {

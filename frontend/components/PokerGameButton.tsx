@@ -60,7 +60,7 @@ const PokerGameButton = ({
     setIsButtonDisabled(false);
     updateState();
 
-    console.log("fold")
+    console.log("draw card")
   };
 
   async function stopGame(e: { preventDefault: any }) {
@@ -70,40 +70,72 @@ const PokerGameButton = ({
     setIsButtonDisabled(false);
     updateState();
 
-    console.log("fold")
+    console.log("stop game")
   };
 
 
   return (
     <Box>
-      {/* <Button
-        variant="contained"
-        onClick={bet}
-        size="large"
-        color="primary"
-        disabled={isButtonDisabled}
-      > Bet </Button> */}
+      {playerInfo!=null ?
+      Object.keys(playerInfo.bettingAction)[0] == "FOLD" ?
       <Button
-        variant="contained"
-        onClick={call}
-        size="large"
-        color="primary"
-        disabled={isButtonDisabled}
-      > Call </Button>
-      <Button
-        variant="contained"
-        onClick={raise}
-        size="large"
-        color="primary"
-        disabled={isButtonDisabled}
-      > Raise </Button>
-      <Button
-        variant="contained"
-        onClick={fold}
-        size="large"
-        color="primary"
-        disabled={isButtonDisabled}
-      > Fold </Button>
+          variant="contained"
+          onClick={fold}
+          size="large"
+          color="primary"
+          disabled={isButtonDisabled}
+        > Fold </Button>
+      :
+        <Box>
+          <Button
+            variant="contained"
+            onClick={call}
+            size="large"
+            color="primary"
+            disabled={isButtonDisabled}
+          > Call </Button>
+          <Button
+            variant="contained"
+            onClick={raise}
+            size="large"
+            color="primary"
+            disabled={isButtonDisabled}
+          > Raise </Button>
+          <Button
+            variant="contained"
+            onClick={fold}
+            size="large"
+            color="primary"
+            disabled={isButtonDisabled}
+          > Fold </Button>
+        </Box>
+      :
+      <Box></Box>
+      }
+      {/* <Box>
+        <Button
+          variant="contained"
+          onClick={call}
+          size="large"
+          color="primary"
+          disabled={isButtonDisabled}
+        > Call </Button>
+        <Button
+          variant="contained"
+          onClick={raise}
+          size="large"
+          color="primary"
+          disabled={isButtonDisabled}
+        > Raise </Button>
+        <Button
+          variant="contained"
+          onClick={fold}
+          size="large"
+          color="primary"
+          disabled={isButtonDisabled}
+        > Fold </Button>
+      </Box> */}
+      
       {
       playerInfo!=null && gameTurn.toString() == playerInfo.playerOrder.toString() && isAllPlayerCall &&
       <Button
