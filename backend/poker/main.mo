@@ -287,6 +287,10 @@ actor {
         public func getTotalBetAmountInMoneybox() : Nat {
             moneyBox.totalBetAmount
         };
+        
+        public func clearBetAmountInMoneyBox() {
+            moneyBox.totalBetAmount := 0;
+        };
 
         public func setCurrentChips(playerAddress : Principal, chipAmount : Nat) {
             var player : ?Player = getPlayer(playerAddress);
@@ -950,9 +954,10 @@ actor {
 
         //winner player를 master player 로 배정
         gameStatus.masterPlayer := gameStatus.winner;
-        gameStatus.winner := null;
         let totalBetAmount = gameTable.getTotalBetAmountInMoneybox();
         gameTable.addPokerChip(Option.unwrap(gameStatus.winner), totalBetAmount);
+        gameTable.clearBetAmountInMoneyBox();
+        gameStatus.winner := null;
 
         // player들 정보 초기화
         gameTable.initalizePlayersInfo();
