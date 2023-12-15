@@ -1,6 +1,5 @@
 import { Grid, Box, Typography } from "@mui/material"
 import React, { useEffect } from "react"
-import { CardBack } from "./CardBack"
 import { TrumpCard } from "./TrumpCard"
 import { Card } from "src/declarations/poker/poker.did"
 import { blue, brown, pink } from "@mui/material/colors"

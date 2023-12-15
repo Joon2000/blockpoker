@@ -943,19 +943,19 @@ actor {
 
 
     public func settleUpGame() {
-        // assert(gameStatus.playingStatus == #GAME_END);
+        assert(gameStatus.playingStatus == #GAME_END);
 
-        // // gameStatus 초기화
-        // cleanGameStatus();
+        // gameStatus 초기화
+        cleanGameStatus();
 
-        // //winner player를 master player 로 배정
-        // gameStatus.masterPlayer := gameStatus.winner;
-        // gameStatus.winner := null;
-        // let totalBetAmount = gameTable.getTotalBetAmountInMoneybox();
-        // gameTable.addPokerChip(Option.unwrap(gameStatus.winner), totalBetAmount);
+        //winner player를 master player 로 배정
+        gameStatus.masterPlayer := gameStatus.winner;
+        gameStatus.winner := null;
+        let totalBetAmount = gameTable.getTotalBetAmountInMoneybox();
+        gameTable.addPokerChip(Option.unwrap(gameStatus.winner), totalBetAmount);
 
-        // // player들 정보 초기화
-        // gameTable.initalizePlayersInfo();
+        // player들 정보 초기화
+        gameTable.initalizePlayersInfo();
     };
 
     // ################################################################################

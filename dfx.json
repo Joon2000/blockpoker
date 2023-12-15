@@ -10,7 +10,7 @@
       "type": "motoko"
     },
     "assets": {
-      "dependencies": ["poker", "random_number", "Turn"],
+      "dependencies": ["poker", "random_number"],
       "frontend": {
         "entrypoint": "dist/index.html"
       },

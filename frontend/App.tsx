@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import logo from "./assets/dfinity.svg"
 /*
  * Connect2ic provides essential utilities for IC app development
  */
@@ -19,12 +18,9 @@ import "@connect2ic/core/style.css"
  * Some examples to get you started
  */
 
-import { Transfer } from "./components/Transfer"
-import { Profile } from "./components/Profile"
 
 import { useWallet } from "@connect2ic/react"
 import { ConnectWallet } from "./components/ConnectWallet"
-import { PlayerPage } from "./components/PlayerPage"
 import { MainPage } from "./components/MainPage"
 import { Container } from "@mui/material"
 
