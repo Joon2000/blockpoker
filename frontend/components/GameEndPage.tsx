@@ -9,6 +9,7 @@ import { PokerGameButton } from "./PokerGameButton"
 import * as vetkd from "ic-vetkd-utils";
 import { vet_key} from "../../src/declarations/vet_key"
 import { HttpAgent, Actor } from "@dfinity/agent";
+import { poker} from "../../src/declarations/poker"
 
 const GameEndPage = ({
   wallet,
@@ -19,6 +20,18 @@ const GameEndPage = ({
   playerCrpytoNumber,
   updateState,
 }) => { 
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+
+  async function settleUp(e: { preventDefault: any }) {
+    e.preventDefault
+    setIsButtonDisabled(true);
+    await poker.settleupGame();
+    setIsButtonDisabled(false);
+    updateState();
+
+    console.log("settle up game")
+  };
+
 
   return (
     <Box
@@ -84,14 +97,13 @@ const GameEndPage = ({
           }
         </Grid>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-        {/* <PokerGameButton 
-         wallet={wallet} 
-         updateState={updateState}
-         gameTurn={gameTurn}
-         playerInfo={playerInfo}
-         isAllPlayerCall={isAllPlayerCall}
-         /> 
-         <PokerGameButton wallet={wallet} updateState={updateState}/>  */}
+         <Button
+            variant="contained"
+            onClick={settleUp}
+            size="large"
+            color="primary"
+            disabled={isButtonDisabled}
+          > Setlle Up </Button>
         </Grid>
       </Grid>
     </Box>

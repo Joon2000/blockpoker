@@ -42,6 +42,7 @@ actor {
         var masterPlayer = null;
         var gameTurn = 0;
         var isAllPlayerCall = false;
+        var winner = null;
     };
 
     object gameTable = {
@@ -125,6 +126,33 @@ actor {
                 case null return #NONE;
                 case (?player) {
                     return player.bettingAction;
+                };
+            };
+        };
+
+        // TODO : getPlayerCardCombination 으로 바꿔야함. poker로 만들고 싶으면...
+        public func getPlayerTotalCardNumber(playerAddress : Principal) : Nat{
+            let cards = getPlayerCardArray(playerAddress);
+            var totalCardNumber = 0;
+            for (card in cards.vals()) {
+                let playerCryptoNum = getPlayerCryptoNumber(playerAddress);
+                switch (playerCryptoNum) {
+                    case null return 0;
+                    case (?playerCryptoNum) {
+                        let decryptedCardNumber = Utils.decrypt_card_number_for_player(card.cardNumber, card.order, playerCryptoNum);
+                        totalCardNumber += decryptedCardNumber % 13 + 1;
+                    };
+                };
+            };
+            totalCardNumber
+        };
+
+        func getPlayerCardArray(playerAddress : Principal) : [Card] {
+            var player : ?Player = players.get(playerAddress);
+            switch (player) {
+                case null return [];
+                case (?player) {
+                    return List.toArray(player.cards);
                 };
             };
         };
@@ -230,7 +258,7 @@ actor {
         // ########################
         // ####### Betting ########
         // ########################
-        public func getTotalBetAmount() : Nat {
+        public func getTotalBetAmountInMoneybox() : Nat {
             moneyBox.totalBetAmount
         };
 
@@ -377,7 +405,7 @@ actor {
 
         };
 
-        public func cleanPlayerInfo(playerAddress : Principal) {
+        public func initalizePlayerInfo(playerAddress : Principal) {
             let player = getPlayer(playerAddress);
             switch (player) {
                 case null return;
@@ -386,13 +414,15 @@ actor {
                     cleanPlayerCards(playerAddress);
                     cleanPlayerBettingInfo(playerAddress);
                     setPlayer(playerAddress, player);
+                    var balance = gameTable.getExchangeBalance(playerAddress);
+                    setCurrentChips(playerAddress, Option.unwrap(balance));
                 };
             };
         };
 
-        public func cleanPlayersInfo() {
+        public func initalizePlayersInfo() {
             for (player in players.vals()) {
-                cleanPlayerInfo(player.address);
+                initalizePlayerInfo(player.address);
             };
         };
 
@@ -491,21 +521,21 @@ actor {
             // };
         };
 
-        func getNextTurn(playerAddress : Principal) : Nat{
-            let currentPlayer = getPlayer(playerAddress);
-            var nextPlayerOrder = 0;
-            switch (currentPlayer) {
-                case null return 0;
-                case (?currentPlayer) {
-                    if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder == (Nat.sub(players.size(),1))) {
-                        nextPlayerOrder := 0;
-                    } else if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder < (Nat.sub(players.size(),1))) {
-                        nextPlayerOrder := currentPlayer.playerOrder + 1;
-                    };
-                };
-            };
-            nextPlayerOrder
-        };
+        // func getNextTurn(playerAddress : Principal) : Nat{
+        //     let currentPlayer = getPlayer(playerAddress);
+        //     var nextPlayerOrder = 0;
+        //     switch (currentPlayer) {
+        //         case null return 0;
+        //         case (?currentPlayer) {
+        //             if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder == (Nat.sub(players.size(),1))) {
+        //                 nextPlayerOrder := 0;
+        //             } else if (currentPlayer.playerOrder == gameStatus.gameTurn and currentPlayer.playerOrder < (Nat.sub(players.size(),1))) {
+        //                 nextPlayerOrder := currentPlayer.playerOrder + 1;
+        //             };
+        //         };
+        //     };
+        //     nextPlayerOrder
+        // };
 
         public func checkIsFold(playerAddress : Principal) : Bool {
             let currentPlayer = getPlayer(playerAddress);
@@ -587,6 +617,10 @@ actor {
         Utils.cleanGameStatus(gameStatus);
     };
 
+    func getWinnerPlayer() : Principal{
+        Utils.getWinnerPlayer(gameTable)
+    };
+
     // ################################################################################
     // ########################### QUERY FUNCTIONS ####################################
     // ################################################################################
@@ -622,7 +656,7 @@ actor {
     };
 
     public query func getTotalBetAmount() : async Nat {
-        gameTable.getTotalBetAmount()
+        gameTable.getTotalBetAmountInMoneybox()
     };
 
     public query func getCardDeck() : async SharedCardDeck {
@@ -787,9 +821,6 @@ actor {
                         }
                     };
                     gameTable.betChips(playerAddress, previousTurnBetAmount);
-                    D.print("CALL previouse Turn Bet Amount");
-                    D.print(Nat.toText(previousTurnBetAmount));
-                    // gameTable.betChips(playerAddress, 1);
                     currentPlayer.bettingAction := #CALL;
                     gameTable.setPlayer(playerAddress, currentPlayer);
                 };
@@ -818,9 +849,6 @@ actor {
                         }
                     };
                     gameTable.betChips(playerAddress, previousTurnBetAmount);
-                    D.print("RAISE");
-                    D.print(Nat.toText(previousTurnBetAmount));
-                    // gameTable.betChips(playerAddress, 2);
                     currentPlayer.bettingAction := #RAISE;
                     gameTable.setPlayer(playerAddress, currentPlayer);
                 };
@@ -880,25 +908,24 @@ actor {
                 };
             };
         }; 
-        checkWhoIsWinner();
+        let winner = getWinnerPlayer();
+        gameStatus.winner := ?winner;
     };
 
-    func checkWhoIsWinner() {
-
-    };
 
     public func settleupGame() {
         assert(gameStatus.playingStatus == #GAME_END);
-        gameStatus.playingStatus := #NOT_ALL_READY;
-        gameStatus.masterPlayer := null; //winner 로 배정
-        gameStatus.gameTurn := 0;
-        gameStatus.isAllPlayerCall := false; 
 
-        var players = gameTable.getPlayers();
-        for (player in players.vals()) {
-            gameTable.setPlayerPlayingState(player.address, #ENTER);
-        };
+        // gameStatus 초기화
+        cleanGameStatus();
 
+        //winner player를 master player 로 배정
+        gameStatus.masterPlayer := gameStatus.winner;
+        let totalBetAmount = gameTable.getTotalBetAmountInMoneybox();
+        gameTable.addPokerChip(Option.unwrap(gameStatus.winner), totalBetAmount);
+
+        // player들 정보 초기화
+        gameTable.initalizePlayersInfo();
     };
 
     // ################################################################################

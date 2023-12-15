@@ -15,16 +15,6 @@ const PokerGameButton = ({
 
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
-  // async function bet(e: { preventDefault: any }) {
-  //   e.preventDefault
-  //   setIsButtonDisabled(true);
-  //   await poker.test_message()
-  //   // await poker.exitGame(Principal.fromText(wallet.principal));
-  //   setIsButtonDisabled(false);
-  //   updateState();
-
-  //   console.log("Call")
-  // };
   async function call(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
@@ -112,30 +102,6 @@ const PokerGameButton = ({
       :
       <Box></Box>
       }
-      {/* <Box>
-        <Button
-          variant="contained"
-          onClick={call}
-          size="large"
-          color="primary"
-          disabled={isButtonDisabled}
-        > Call </Button>
-        <Button
-          variant="contained"
-          onClick={raise}
-          size="large"
-          color="primary"
-          disabled={isButtonDisabled}
-        > Raise </Button>
-        <Button
-          variant="contained"
-          onClick={fold}
-          size="large"
-          color="primary"
-          disabled={isButtonDisabled}
-        > Fold </Button>
-      </Box> */}
-      
       {
       playerInfo!=null && gameTurn.toString() == playerInfo.playerOrder.toString() && isAllPlayerCall &&
       <Button
