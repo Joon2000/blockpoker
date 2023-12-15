@@ -25,7 +25,7 @@ const GameEndPage = ({
   async function settleUp(e: { preventDefault: any }) {
     e.preventDefault
     setIsButtonDisabled(true);
-    await poker.settleupGame();
+    await poker.settleUpGame();
     setIsButtonDisabled(false);
     updateState();
 
