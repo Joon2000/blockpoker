@@ -119,6 +119,16 @@ actor {
             null
         };
 
+        public func getPlayerBettingAction(playerAddress : Principal) : BettingAction {
+            var player : ?Player = players.get(playerAddress);
+            switch (player) {
+                case null return #NONE;
+                case (?player) {
+                    return player.bettingAction;
+                };
+            };
+        };
+
         public func setPlayer(playerAddress : Principal, player : Player) {
             let player : ?Player = players.get(playerAddress);
             switch (player) {
@@ -830,7 +840,6 @@ actor {
             case null return;
             case (?currentPlayer){
                 assert(gameStatus.gameTurn == currentPlayer.playerOrder);
-                // gameTable.betChips(playerAddress, 0);
                 gameTable.setBettingAction(playerAddress, #FOLD);
             };
         };
@@ -844,7 +853,11 @@ actor {
         drawCardEveryPlayers();
         let players = gameTable.getPlayers();
         for (player in players.vals()) {
-            gameTable.setBettingAction(player.address, #NONE);
+            if (player.bettingAction != #FOLD) {
+                gameTable.setBettingAction(player.address, #NONE);
+            };
+            player.currentBetAmount := 1;
+            gameTable.setPlayer(player.address, player);
         };
         gameTable.checkIsAllCall();
     };
@@ -916,5 +929,9 @@ actor {
     public func test_addPokerChip(playerAddress : Principal) {
         gameTable.depositICPAddPokerChip(playerAddress, 100);
         // gameTable.getPokerChipFromExchange(playerAddress, 10);
+    };
+    
+    public func test() {
+
     };
 }

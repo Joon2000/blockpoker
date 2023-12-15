@@ -80,6 +80,7 @@ module Types {
 
         getPlayer : Principal -> ?Player;
         setPlayer : (Principal, Player) -> ();
+        getPlayerBettingAction : (Principal) -> (BettingAction);
         createNewPlayer : (Principal) -> ();
         removePlayer : (Principal) -> ();
         removeAllPlayer : () -> ();
