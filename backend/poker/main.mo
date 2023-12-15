@@ -942,20 +942,20 @@ actor {
     };
 
 
-    public func settleupGame() {
-        assert(gameStatus.playingStatus == #GAME_END);
+    public func settleUpGame() {
+        // assert(gameStatus.playingStatus == #GAME_END);
 
-        // gameStatus 초기화
-        cleanGameStatus();
+        // // gameStatus 초기화
+        // cleanGameStatus();
 
-        //winner player를 master player 로 배정
-        gameStatus.masterPlayer := gameStatus.winner;
-        gameStatus.winner := null;
-        let totalBetAmount = gameTable.getTotalBetAmountInMoneybox();
-        gameTable.addPokerChip(Option.unwrap(gameStatus.winner), totalBetAmount);
+        // //winner player를 master player 로 배정
+        // gameStatus.masterPlayer := gameStatus.winner;
+        // gameStatus.winner := null;
+        // let totalBetAmount = gameTable.getTotalBetAmountInMoneybox();
+        // gameTable.addPokerChip(Option.unwrap(gameStatus.winner), totalBetAmount);
 
-        // player들 정보 초기화
-        gameTable.initalizePlayersInfo();
+        // // player들 정보 초기화
+        // gameTable.initalizePlayersInfo();
     };
 
     // ################################################################################
@@ -986,6 +986,10 @@ actor {
     public func test_addPokerChip(playerAddress : Principal) {
         gameTable.depositICPAddPokerChip(playerAddress, 100);
         // gameTable.getPokerChipFromExchange(playerAddress, 10);
+    };
+
+    public func testtest() {
+
     };
     
 }
