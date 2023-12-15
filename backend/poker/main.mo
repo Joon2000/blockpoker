@@ -132,27 +132,53 @@ actor {
 
         // TODO : getPlayerCardCombination 으로 바꿔야함. poker로 만들고 싶으면...
         public func getPlayerTotalCardNumber(playerAddress : Principal) : Nat{
-            let cards = getPlayerCardArray(playerAddress);
+            let cards = getPlayerDecryptedCardArray(playerAddress);
             var totalCardNumber = 0;
+            // D.print("getPlayerTotalCardNumber");
+            // D.print(Principal.toText(playerAddress));
             for (card in cards.vals()) {
-                let playerCryptoNum = getPlayerCryptoNumber(playerAddress);
-                switch (playerCryptoNum) {
-                    case null return 0;
-                    case (?playerCryptoNum) {
-                        let decryptedCardNumber = Utils.decrypt_card_number_for_player(card.cardNumber, card.order, playerCryptoNum);
-                        totalCardNumber += decryptedCardNumber % 13 + 1;
-                    };
-                };
+                totalCardNumber += card.cardNumber % 13 + 1;
+                // D.print(Nat.toText(card.cardNumber));
+                // let playerCryptoNum = getPlayerCryptoNumber(playerAddress);
+                // switch (playerCryptoNum) {
+                //     case null return 0;
+                //     case (?playerCryptoNum) {
+                //         // let decryptedCardNumber = Utils.decrypt_card_number_for_player(card.cardNumber, card.order, playerCryptoNum);
+                //         totalCardNumber += decryptedCardNumber % 13 + 1;
+                //     };
+                // };
             };
             totalCardNumber
         };
 
-        func getPlayerCardArray(playerAddress : Principal) : [Card] {
+        func getPlayerDecryptedCardArray(playerAddress : Principal) : [Card] {
+            decryptPlayerWholeCards(playerAddress);
             var player : ?Player = players.get(playerAddress);
             switch (player) {
                 case null return [];
                 case (?player) {
                     return List.toArray(player.cards);
+                };
+            };
+        };
+
+        func decryptPlayerWholeCards(playerAddress : Principal){
+            var player : ?Player = players.get(playerAddress);
+            var decryptedCardList = List.nil<Card>();
+            switch (player) {
+                case null return;
+                case (?player) {
+                    let playerCryptoNum = getPlayerCryptoNumber(playerAddress);
+                    for (card in List.toIter<Card>(player.cards)){
+                        let decryptedCardNumber = Utils.decrypt_card_number_for_player(card.cardNumber, card.order, Option.unwrap(playerCryptoNum));
+                        let newCard : Card = {
+                            cardNumber = decryptedCardNumber;
+                            order = card.order;
+                        };
+                        decryptedCardList := List.push<Card>(newCard, decryptedCardList);
+                    };
+                    player.cards := List.reverse(decryptedCardList);
+                    setPlayer(playerAddress, player);
                 };
             };
         };
@@ -606,7 +632,7 @@ actor {
     };
 
     func drawCardToPlayer(playerAddress : Principal) {
-        Utils.drawDecryptedCardToPlayer(gameTable, playerAddress);
+        Utils.drawEncryptedCardToPlayer(gameTable, playerAddress);
     };
 
     func drawCardEveryPlayers() {
@@ -908,6 +934,9 @@ actor {
                 };
             };
         }; 
+
+        // card 모두 decrypt 하기
+
         let winner = getWinnerPlayer();
         gameStatus.winner := ?winner;
     };
@@ -921,6 +950,7 @@ actor {
 
         //winner player를 master player 로 배정
         gameStatus.masterPlayer := gameStatus.winner;
+        gameStatus.winner := null;
         let totalBetAmount = gameTable.getTotalBetAmountInMoneybox();
         gameTable.addPokerChip(Option.unwrap(gameStatus.winner), totalBetAmount);
 
@@ -958,7 +988,4 @@ actor {
         // gameTable.getPokerChipFromExchange(playerAddress, 10);
     };
     
-    public func test() {
-
-    };
 }

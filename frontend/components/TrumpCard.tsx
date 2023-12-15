@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from "react"
 import { Box } from "@mui/material"
 
-const TrumpCard = ({ cardNumber, order, playerCrpytoNumber }) => {
-
+const TrumpCard = ({ 
+  cardNumber, 
+  order, 
+  currentPlayerCrpytoNumber,
+ }) => {
+  // console.log("cardNumber", cardNumber);
+  // console.log("currentPlayerCrpytoNumber", currentPlayerCrpytoNumber);
+  // console.log("");
 
   function decrypt_card_number_for_player(encrypted_number : number, order : number , playerCryptoNum : number) {
     let decrypted_number = (encrypted_number - playerCryptoNum) / (12 * (order + 3) + 45);
     return decrypted_number;
-};
+  };
+
   let shapeNumber : number ;
   let number : number;
 
-  if(playerCrpytoNumber == 0) {
+  if (cardNumber > 52 && Number(currentPlayerCrpytoNumber) == 0) {
     shapeNumber = 100;
     number = 100;
-  } else {
-    let decrypted_number = decrypt_card_number_for_player(Number(cardNumber), Number(order), playerCrpytoNumber);
+  } else if (cardNumber > 52 && Number(currentPlayerCrpytoNumber) != 0 ) {
+    // notyet decrypted
+    let decrypted_number = decrypt_card_number_for_player(Number(cardNumber), Number(order), currentPlayerCrpytoNumber);
     shapeNumber = Math.floor(decrypted_number / 13);
     number = decrypted_number % 13 + 1;
-  }
+  } else if (cardNumber <= 52) {
+    shapeNumber = Math.floor(cardNumber / 13);
+    number = cardNumber % 13 + 1;
+  };
+
 
   let shape = "spades";
   switch (shapeNumber) {

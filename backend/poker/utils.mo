@@ -312,8 +312,8 @@ module Utils {
     //     card
     // };
 
-     // 여기에 encrypt card, decrypt card 가 필요하긴 함.....
-    public func drawDecryptedCardToPlayer(gameTable : GameTable, playerAddress : Principal) {
+
+    public func drawEncryptedCardToPlayer(gameTable : GameTable, playerAddress : Principal) {
         let playerBettingAction = gameTable.getPlayerBettingAction(playerAddress);
         if (playerBettingAction != #FOLD) {
             let card = gameTable.drawCardFromDeck();
@@ -344,7 +344,7 @@ module Utils {
     public func drawCardEveryPlayers(gameTable : GameTable) {
         var players = gameTable.getPlayers();
         for (player in players.vals()) { 
-            drawDecryptedCardToPlayer(gameTable, player.address);
+            drawEncryptedCardToPlayer(gameTable, player.address);
         };
     };
 

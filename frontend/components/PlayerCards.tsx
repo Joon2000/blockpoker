@@ -8,7 +8,7 @@ import { blue, brown, pink } from "@mui/material/colors"
 const PlayerCards = ({
   player,
   gameTurn,
-  playerCrpytoNumber,
+  currentPlayerCrpytoNumber,
 }) => {
 
   return (
@@ -24,7 +24,9 @@ const PlayerCards = ({
               <TrumpCard 
               cardNumber={ Number(card.cardNumber)}
               order={card.order}
-              playerCrpytoNumber={playerCrpytoNumber}/>
+              currentPlayerCrpytoNumber={currentPlayerCrpytoNumber}
+              />
+              
             </Grid>
         ))}
       </Grid>
