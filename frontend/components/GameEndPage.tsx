@@ -1,14 +1,10 @@
 import { Grid, Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import React , { useState } from "react"
-import { StateBoxRefactor } from "./StateBoxRefactor"
+import { StateBox } from "./StateBox"
 import { MoneyBox } from "./MoneyBox"
 import { PlayerCards } from "./PlayerCards"
 import { CardDeck } from "./CardDeck"
-import { PokerGameButton } from "./PokerGameButton"
-import * as vetkd from "ic-vetkd-utils";
-import { vet_key} from "../../src/declarations/vet_key"
-import { HttpAgent, Actor } from "@dfinity/agent";
 import { poker} from "../../src/declarations/poker"
 
 const GameEndPage = ({
@@ -85,7 +81,7 @@ const GameEndPage = ({
       </Grid>
       <Grid container spacing={5} id={"Bottom Line"}>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
-          {playerInfo!=null && <StateBoxRefactor playerInfo={playerInfo}/>}
+          {playerInfo!=null && <StateBox playerInfo={playerInfo}/>}
         </Grid>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+0)%4]!=null &&

@@ -4,20 +4,12 @@ import { GameEndPage } from "./GameEndPage"
 import { Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"
-import { Turn } from "../../src/declarations/Turn"
-import { Choice } from "frontend/Type"
-import { BiCommentDots } from "react-icons/bi"
-import { BiMehBlank } from "react-icons/bi"
-import { ibe_decrypt, ibe_encrypt } from "../utils/vetKeys"
 import { poker} from "../../src/declarations/poker"
 import { Typography } from '@mui/material';
-import { SharedGameStatus, GamePlayingState, SharedPlayer } from "src/declarations/poker/poker.did"
+import { SharedPlayer } from "src/declarations/poker/poker.did"
 import { Principal } from "@dfinity/principal"
 import {GameLobby} from "./GameLobby"
 // import { Principal } from "@dfinity/candid/lib/cjs/idl"
-import { AuthClient } from "@dfinity/auth-client"
-import { HttpAgent, Actor } from "@dfinity/agent";
-import {createActor, vet_key} from "../../src/declarations/vet_key"
 
 const MainPage = ({ wallet }) => {
   // Game Status
@@ -41,7 +33,7 @@ const MainPage = ({ wallet }) => {
 
   useInterval(async () => {
     updateState();
-  }, 3000)
+  }, 1000)
 
   useEffect(()=>{
     updateState();
@@ -69,8 +61,8 @@ const MainPage = ({ wallet }) => {
     const playerInfo = await poker.getPlayerInfo(Principal.fromText(wallet.principal));
     setPlayerInfo(playerInfo[0]);
 
-    console.log("playerNumber", playerNumber);
-    console.log("player Info", playerInfo);
+    // console.log("playerNumber", playerNumber);
+    // console.log("player Info", playerInfo);
     console.log("wallet :", wallet.principal.toString());
     // console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4].playerOrder)
     // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4].playerOrder)
