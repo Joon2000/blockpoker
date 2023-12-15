@@ -62,6 +62,7 @@ module Types {
         var masterPlayer : ?Principal;
         var gameTurn : Nat;
         var isAllPlayerCall : Bool;
+        var winner : ?Principal;
     };
 
     public type SharedGameStatus = {
@@ -69,6 +70,7 @@ module Types {
         masterPlayer : ?Principal;
         gameTurn : Nat;
         isAllPlayerCall : Bool;
+        winner : ?Principal;
     };
 
     public type GameTable = {
@@ -81,6 +83,7 @@ module Types {
         getPlayer : Principal -> ?Player;
         setPlayer : (Principal, Player) -> ();
         getPlayerBettingAction : (Principal) -> (BettingAction);
+        getPlayerTotalCardNumber : (Principal) -> (Nat);
         createNewPlayer : (Principal) -> ();
         removePlayer : (Principal) -> ();
         removeAllPlayer : () -> ();
@@ -95,7 +98,7 @@ module Types {
 
         getPlayerCryptoNumber : (Principal) -> ?Nat;
 
-        getTotalBetAmount : () -> (Nat);
+        getTotalBetAmountInMoneybox : () -> (Nat);
         setCurrentChips : (Principal, Nat) -> ();
         betChips : (Principal, Nat) -> ();
         setBettingAction : (Principal, BettingAction) -> ();
@@ -108,8 +111,8 @@ module Types {
 
         cleanPlayerCards : Principal -> ();
         cleanPlayerBettingInfo : (Principal) -> ();
-        cleanPlayerInfo : (Principal) -> ();
-        cleanPlayersInfo : () -> ();
+        initalizePlayerInfo : (Principal) -> ();
+        initalizePlayersInfo : () -> ();
 
         updatePlayingStatus : () -> ();
         checkIsAllCall : () -> ();

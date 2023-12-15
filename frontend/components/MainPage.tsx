@@ -22,9 +22,10 @@ import {createActor, vet_key} from "../../src/declarations/vet_key"
 const MainPage = ({ wallet }) => {
   // Game Status
   const [playingState, setPlayingState] = useState<string>("");
-  const [masterPlayer, setMasterPlayer] = useState<string>();
+  const [masterPlayer, setMasterPlayer] = useState<string>("");
   const [gameTurn, setGameTurn] = useState<string>("");
   const [isAllPlayerCall, setIsAllPlayerCall] = useState<boolean>(false);
+  const [winner, setWinner] = useState<string>("");
 
   // Money Box Informations
   const [totalBetAmount, setTotalBetAmount] = useState<number>(0);
@@ -52,6 +53,7 @@ const MainPage = ({ wallet }) => {
     setMasterPlayer(gameStatus.masterPlayer.toString());
     setGameTurn(gameStatus.gameTurn.toString());
     setIsAllPlayerCall(gameStatus.isAllPlayerCall);
+    setWinner(gameStatus.winner.toString());
 
     const totalBetAmount = await poker.getTotalBetAmount();
     setTotalBetAmount(Number(totalBetAmount));
@@ -70,10 +72,10 @@ const MainPage = ({ wallet }) => {
     console.log("playerNumber", playerNumber);
     console.log("player Info", playerInfo);
     console.log("wallet :", wallet.principal.toString());
-    console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4].playerOrder)
-    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4].playerOrder)
-    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+2)%4].playerOrder)
-    console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+3)%4].playerOrder)
+    // console.log("playerOrderNumber :", playerInfoArray[Number(playerInfo[0].playerOrder)%4].playerOrder)
+    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+1)%4].playerOrder)
+    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+2)%4].playerOrder)
+    // console.log("playerOrderNumber :", playerInfoArray[(Number(playerInfo[0].playerOrder)+3)%4].playerOrder)
   };
 
   function compare( a, b ) {
@@ -149,6 +151,7 @@ const MainPage = ({ wallet }) => {
         <Typography>masterPlayer : {masterPlayer}</Typography>
         <Typography>gameTurn : {gameTurn}</Typography>
         <Typography>isAllPlayerCall : {isAllPlayerCall.toString()}</Typography>
+        <Typography>winner : {winner}</Typography>
 
         {
         playingState === "NOT_ALL_READY" || playingState === "ALL_READY" ? 

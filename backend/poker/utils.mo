@@ -9,6 +9,7 @@ import Nat "mo:base/Nat";
 import Random "mo:base/Random";
 import Array "mo:base/Array";
 import Principal "mo:base/Principal";
+import HashMap "mo:base/HashMap";
 
 
 
@@ -54,6 +55,7 @@ module Utils {
             masterPlayer = gameStatus.masterPlayer;
             gameTurn = gameStatus.gameTurn;
             isAllPlayerCall = gameStatus.isAllPlayerCall;
+            winner = gameStatus.winner;
         };
         sharedGameStatus
     };
@@ -100,39 +102,6 @@ module Utils {
     public func setMasterPlayer(gameStatus : GameStatus, player : ?Principal) {
         gameStatus.masterPlayer := player;
     };
-
-    // ################################################################################
-    // ######################## BETTING CHIPS FUNCTIONS ###############################
-    // ################################################################################
-
-    // public func betPokerChips(gameTable: GameTable, playerAddress : Principal, amount : Nat) {
-    //     gameTable.subPokerChip(playerAddress, amount);
-
-    // };
-
-    // public func exchangePokerChips(gameTable : GameTable, playerAddress : Principal, amount : Nat) {
-    //     // ICP -> Chip으로 변경하는 로직으로 변경해야 함
-    //     let player : ?Player = gameTable.getPlayer( playerAddress);
-    //     switch (player) {
-    //         case null return;
-    //         case (?player){
-    //             let updatedPlayer : Player = {
-    //                 var address = player.address;
-    //                 var playingState = player.playingState;
-    //                 var playerOrder = player.playerOrder;
-    //                 var cards = player.cards;
-    //                 // TODO : card number가 아니라 card combination이 뭔지로 바꿔야 함 나중에는
-    //                 var totalCardNumber = player.totalCardNumber;
-    //                 var currentChips = player.currentChips + amount;
-    //                 var totalBetAmount = player.totalBetAmount;
-    //                 var betAmount = player.betAmount;
-    //                 var bettingAction = player.bettingAction;
-
-    //             };
-    //             gameTable.setPlayer(playerAddress, updatedPlayer); 
-    //         }
-    //     }
-    // };
 
     // ################################################################################
     // ######################## CARD DECK FUNCTIONS ###################################
@@ -305,6 +274,7 @@ module Utils {
     // ###################### ENCRYPTION FUNCTIONS ###################################
     // ################################################################################
 
+    // TODO : vet key 사용해서 encrypt 진행하기
     // let x : Nat, y : Nat
     // y = 123 * x + 56789 
     // x = (y - 56789)/123
@@ -323,7 +293,7 @@ module Utils {
         encrypted_number
     };
 
-    func decrypt_card_number_for_player(encrypted_number: Nat, order: Nat, playerCryptoNum : Nat): Nat {
+    public func decrypt_card_number_for_player(encrypted_number: Nat, order: Nat, playerCryptoNum : Nat): Nat {
         let decrypted_number = (encrypted_number - playerCryptoNum) / (12 * (order + 3) + 45);
         decrypted_number
     };
@@ -378,4 +348,26 @@ module Utils {
         };
     };
 
+    // ################################################################################
+    // ######################## Settle Up FUNCTIONS ###################################
+    // ################################################################################
+
+    public func getWinnerPlayer(gameTable : GameTable) : Principal {
+        let players = gameTable.getPlayers();
+        var biggestCardNumber = 0;
+        var winnerPlayer : ?Principal = null;
+        for (player in players.vals()) {
+            if (player.bettingAction != #FOLD) {
+                let totalCardNumber = gameTable.getPlayerTotalCardNumber(player.address);
+                if (totalCardNumber > biggestCardNumber){
+                    biggestCardNumber := totalCardNumber;
+                    winnerPlayer := ?player.address;
+                };
+            };
+        };
+        D.print("getWinnerPlayer");
+        D.print(Nat.toText(biggestCardNumber));
+        D.print(Principal.toText(Option.unwrap(winnerPlayer)));
+        Option.unwrap(winnerPlayer);
+    };
 }
