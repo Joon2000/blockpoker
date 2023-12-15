@@ -15,7 +15,10 @@ const PlayerCards = ({
     <Box 
     sx={{bgcolor: player!=null && player.playerOrder.toString() == gameTurn.toString() ? blue[200] : pink[200]}}
     >
+      
       <Grid container spacing={0}>
+        {player!=null &&<Typography>{player.address.toString()}</Typography>}
+        {player!=null &&<Typography>{Object.keys(player.bettingAction)[0].toString()}</Typography>}
         {player!=null &&
         player.cards.map((card : Card, index: React.Key) => (
             <Grid item xs={4} key={index}>

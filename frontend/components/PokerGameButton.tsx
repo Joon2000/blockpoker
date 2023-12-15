@@ -7,6 +7,9 @@ import { poker} from "../../src/declarations/poker"
 
 const PokerGameButton = ({
   wallet,
+  gameTurn,
+  playerInfo,
+  isAllPlayerCall,
   updateState,
 }) => {
 
@@ -50,6 +53,27 @@ const PokerGameButton = ({
     console.log("fold")
   };
 
+  async function drawCard(e: { preventDefault: any }) {
+    e.preventDefault
+    setIsButtonDisabled(true);
+    await poker.getMoreCard(Principal.fromText(wallet.principal));
+    setIsButtonDisabled(false);
+    updateState();
+
+    console.log("fold")
+  };
+
+  async function stopGame(e: { preventDefault: any }) {
+    e.preventDefault
+    setIsButtonDisabled(true);
+    await poker.stopGame(Principal.fromText(wallet.principal));
+    setIsButtonDisabled(false);
+    updateState();
+
+    console.log("fold")
+  };
+
+
   return (
     <Box>
       {/* <Button
@@ -80,6 +104,26 @@ const PokerGameButton = ({
         color="primary"
         disabled={isButtonDisabled}
       > Fold </Button>
+      {
+      playerInfo!=null && gameTurn.toString() == playerInfo.playerOrder.toString() && isAllPlayerCall &&
+      <Button
+        variant="contained"
+        onClick={drawCard}
+        size="large"
+        color="primary"
+        disabled={isButtonDisabled}
+      > Draw Card </Button> 
+      }
+      {
+      playerInfo!=null && gameTurn.toString() == playerInfo.playerOrder.toString() && isAllPlayerCall &&
+      <Button
+        variant="contained"
+        onClick={stopGame}
+        size="large"
+        color="primary"
+        disabled={isButtonDisabled}
+      > Stop Game </Button> 
+      }
         
     </Box>
   )

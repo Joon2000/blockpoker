@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { PokerTable } from "./PokerTable"
+import { GameEndPage } from "./GameEndPage"
 import { Box, Button } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"
@@ -130,7 +131,7 @@ const MainPage = ({ wallet }) => {
           color="primary"
           disabled={isButtonDisabled}
         >
-          Get Poker Chips
+          {"Exchange ICP ->Poker Chips"}
         </Button>
         
       </Box>
@@ -149,8 +150,29 @@ const MainPage = ({ wallet }) => {
         <Typography>gameTurn : {gameTurn}</Typography>
         <Typography>isAllPlayerCall : {isAllPlayerCall.toString()}</Typography>
 
-        {playingState === "PLAYING" || playingState === "GAME_END" 
-        ? <PokerTable 
+        {
+        playingState === "NOT_ALL_READY" || playingState === "ALL_READY" ? 
+        <GameLobby 
+        wallet={wallet} 
+        playerInfo={playerInfo} 
+        playerInfoArray={playerInfoArray} 
+        masterPlayer={masterPlayer} 
+        playingState={playingState}
+        updateState={updateState}
+        /> 
+        : playingState === "PLAYING" ? 
+        <PokerTable 
+        wallet={wallet}
+        gameTurn={gameTurn}
+        totalBetAmount={totalBetAmount}
+        playerInfo={playerInfo}
+        playerInfoArray={playerInfoArray}
+        playerCrpytoNumber={playerCrpytoNumber}
+        isAllPlayerCall={isAllPlayerCall}
+        updateState={updateState}
+        />
+        : playingState === "GAME_END" ?
+        <GameEndPage 
         wallet={wallet}
         gameTurn={gameTurn}
         totalBetAmount={totalBetAmount}
@@ -159,15 +181,8 @@ const MainPage = ({ wallet }) => {
         playerCrpytoNumber={playerCrpytoNumber}
         updateState={updateState}
         />
-        
-        :  <GameLobby 
-        wallet={wallet} 
-        playerInfo={playerInfo} 
-        playerInfoArray={playerInfoArray} 
-        masterPlayer={masterPlayer} 
-        playingState={playingState}
-        updateState={updateState}
-        /> }
+        : <Box/>
+        }
       </Box>
    
       
