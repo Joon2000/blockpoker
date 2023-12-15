@@ -98,7 +98,7 @@ const PokerTable = ({
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]}
             gameTurn={gameTurn}
-            playerCrpytoNumber={0}
+            currentPlayerCrpytoNumber={0}
           />}
         </Grid>
         <Grid item xs={4}>
@@ -111,7 +111,7 @@ const PokerTable = ({
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]}
             gameTurn={gameTurn}
-            playerCrpytoNumber={0}
+            currentPlayerCrpytoNumber={0}
           />}
         </Grid>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
@@ -126,7 +126,7 @@ const PokerTable = ({
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]}
             gameTurn={gameTurn}
-            playerCrpytoNumber={0}
+            currentPlayerCrpytoNumber={0}
           />}
         </Grid>
       </Grid>
@@ -139,7 +139,7 @@ const PokerTable = ({
             <PlayerCards 
             player={playerInfoArray[Number(playerInfo.playerOrder)%4]}
             gameTurn={gameTurn}
-            playerCrpytoNumber={playerCrpytoNumber}
+            currentPlayerCrpytoNumber={playerCrpytoNumber}
             />
           }
         </Grid>
