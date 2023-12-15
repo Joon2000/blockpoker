@@ -1,28 +1,5 @@
 {
   "canisters": {
-    "system_api": {
-      "candid": "backend/system_api/vetkd_system_api.did",
-      "package": "vetkd_system_api",
-      "type": "rust"
-    },
-    "vet_key": {
-      "dependencies": [
-        "system_api"
-      ],
-      "main": "backend/vet_key/Main.mo",
-      "type": "motoko"
-    },
-    "internet_identity": {
-      "type": "custom",
-      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
-      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
-      "remote": {
-        "id": {
-          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
-        }
-      },
-      "frontend": {}
-    },
     "poker": {
       "dependencies": ["random_number"],
       "main": "backend/poker/main.mo",
@@ -30,11 +7,6 @@
     },
     "random_number": {
       "main": "backend/random_number/main.mo",
-      "type": "motoko"
-    },
-    "Turn": {
-      "dependencies": ["random_number"],
-      "main": "src/Turn/main.mo",
       "type": "motoko"
     },
     "assets": {
