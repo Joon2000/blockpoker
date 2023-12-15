@@ -33,7 +33,7 @@ const MainPage = ({ wallet }) => {
 
   useInterval(async () => {
     updateState();
-  }, 1000)
+  }, 2000)
 
   useEffect(()=>{
     updateState();

@@ -14,7 +14,7 @@
       "frontend": {
         "entrypoint": "dist/index.html"
       },
-      "source": ["dist/"],
+      "source": ["dist/", "frontend/assets/trumpCards/"],
       "type": "assets"
     }
   },

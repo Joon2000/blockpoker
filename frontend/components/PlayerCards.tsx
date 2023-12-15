@@ -19,7 +19,7 @@ const PlayerCards = ({
         {player!=null &&<Typography>{Object.keys(player.bettingAction)[0].toString()}</Typography>}
         {player!=null &&
         player.cards.map((card : Card, index: React.Key) => (
-            <Grid item xs={1} key={index}>
+            <Grid item xs={3} key={index}>
               <TrumpCard 
               cardNumber={ Number(card.cardNumber)}
               order={card.order}
