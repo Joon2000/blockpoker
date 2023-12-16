@@ -80,6 +80,7 @@ Currently, poker game logic is not applied, and the game proceeds based on the r
 - [x]  develop blockpoker asset canister
 - [x]  develop blockpoker backend canister
 - [x]  develop random shuffle card function
+- [x]  develop card encryption & decryption function
 - [x]  develop betting function
 - [ ]  upgrade asset css
 - [ ]  devleop poker game logic
