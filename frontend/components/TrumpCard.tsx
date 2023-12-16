@@ -79,7 +79,7 @@ const TrumpCard = ({
     shapeNumber = 100;
     number = 0;
   } else if (cardNumber > 52 && Number(currentPlayerCrpytoNumber) != 0 ) {
-    // notyet decrypted
+    // not yet decrypted
     let decrypted_number = decrypt_card_number_for_player(Number(cardNumber), Number(order), currentPlayerCrpytoNumber);
     shapeNumber = Math.floor(decrypted_number / 13);
     number = decrypted_number % 13;
@@ -123,7 +123,7 @@ const TrumpCard = ({
       {shapeNumber == 100 ? 
       <img src={cardBack} alt="card_back" className="card--image" />
       :
-      <img
+      cardArray && <img
         src={cardArray[shapeNumber][number]}
         alt={cardArray[shapeNumber][number]}
         className="card--image"
