@@ -5,6 +5,7 @@ import React from "react"
 const LobbyPlayerCard = ({
   player,
   isMe,
+  isMaster,
   // playerPrinciple,
   // playinState,
   }) => {
@@ -43,6 +44,23 @@ const LobbyPlayerCard = ({
           {/* <Typography>playerOrder : {player.playerOrder.toString()}</Typography> */}
           <Typography>currentChips : {player.currentChips.toString()}</Typography>
           {/* <Typography>bettingAction : {Object.keys(player.bettingAction)[0]}</Typography> */}
+          {isMaster == true && 
+          <Button
+            disabled
+            variant="contained"
+            sx={{
+              "&.Mui-disabled": {
+                background: red[500],
+                color: "#000000"
+              },
+              border : 2,
+              width : "30%",
+              height : 20
+            }}
+          >
+            master
+          </Button>
+        }
           
         </Box>
         <Button
