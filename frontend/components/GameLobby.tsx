@@ -80,10 +80,15 @@ const GameLobby = ({
               var isMe = false;
               if (wallet.principal.toString() == player.address.toString()) {
                 isMe = true;
-              }
+              };
+              
+              var isMaster = false;
+              if (player.address.toString() == masterPlayer.toString()) {
+                isMaster = true;
+              };
               return(
                 <Grid item xs={6} md={3} key={player.address.toString()}>
-                  <LobbyPlayerCard player={player} isMe={isMe} />
+                  <LobbyPlayerCard player={player} isMe={isMe} isMaster={isMaster}/>
                 </Grid>
               )
             })}
