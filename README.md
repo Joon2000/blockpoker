@@ -82,7 +82,7 @@ Currently, poker game logic is not applied, and the game proceeds based on the r
 - [x]  develop random shuffle card function
 - [x]  develop card encryption & decryption function
 - [x]  develop betting function
-- [ ]  upgrade asset css
+- [x]  upgrade asset css
 - [ ]  devleop poker game logic
 - [ ]  apply vet-key or identity based encryption
 - [ ]  apply ICP transfer to exchange whit poker chips
