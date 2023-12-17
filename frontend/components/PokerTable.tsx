@@ -1,4 +1,4 @@
-import { Grid, Box, Button } from "@mui/material"
+import { Grid, Box, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import React , { useState } from "react"
 import { StateBox } from "./StateBox"
@@ -20,6 +20,8 @@ const PokerTable = ({
   isAllPlayerCall,
   updateState,
 }) => { 
+
+  
 
   // const hex_decode = (hexString) =>
   //   Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
@@ -77,9 +79,10 @@ const PokerTable = ({
     <Box
       sx={{
         // width: 950,
-        minHeight: 550,
+        minHeight: 600,
         borderRadius: 1,
         bgcolor: brown[200],
+        pt : 5,
       }}
     >
       <Grid container spacing={5} id={"Top Line"}>
@@ -97,6 +100,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+2)%4]}
+            wallet={wallet}
             gameTurn={gameTurn}
             currentPlayerCrpytoNumber={0}
           />}
@@ -110,6 +114,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+3)%4]}
+            wallet={wallet}
             gameTurn={gameTurn}
             currentPlayerCrpytoNumber={0}
           />}
@@ -125,6 +130,7 @@ const PokerTable = ({
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]!=null &&
           <PlayerCards 
             player={playerInfoArray[(Number(playerInfo.playerOrder)+1)%4]}
+            wallet={wallet}
             gameTurn={gameTurn}
             currentPlayerCrpytoNumber={0}
           />}
@@ -133,11 +139,13 @@ const PokerTable = ({
       <Grid container spacing={5} id={"Bottom Line"}>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
           {playerInfo!=null && <StateBox playerInfo={playerInfo}/>}
+         
         </Grid>
         <Grid item xs={4} display={"flex"} justifyContent={"center"} alignItems={"center"}>
           {playerInfo!=null && playerInfoArray[(Number(playerInfo.playerOrder)+0)%4]!=null &&
             <PlayerCards 
             player={playerInfoArray[Number(playerInfo.playerOrder)%4]}
+            wallet={wallet}
             gameTurn={gameTurn}
             currentPlayerCrpytoNumber={playerCrpytoNumber}
             />

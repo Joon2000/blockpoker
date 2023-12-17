@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { PokerTable } from "./PokerTable"
 import { GameEndPage } from "./GameEndPage"
-import { Box, Button } from "@mui/material"
+import { Box, Button, Card } from "@mui/material"
 import { brown } from "@mui/material/colors"
 import { useInterval } from "../hook/useInterval"
 import { poker} from "../../src/declarations/poker"
@@ -101,50 +101,54 @@ const MainPage = ({ wallet }) => {
 
   return (
     <Box>
-      
       <Box display={"flex"} justifyContent={"space-between"}>
         <Box>
-          <Typography> Here Is MainPage</Typography>
-          <Typography>player's wallet principal : {wallet.principal}</Typography>
+          <Typography>Player Wallet Address</Typography>
+          <Typography variant="button"> : {wallet.principal}</Typography>
         </Box>
-        {playerInfo!=null &&
+        <Box>
+          {playerInfo!=null &&
+            <Button
+              variant="contained"
+              onClick={exitGame}
+              size="large"
+              color="inherit"
+              disabled={isButtonDisabled}
+              sx={{mx:2}}
+            >
+              Exit Game
+            </Button>
+          }
           <Button
             variant="contained"
-            onClick={exitGame}
+            onClick={getPokerChips}
             size="large"
-            color="primary"
+            color="secondary"
             disabled={isButtonDisabled}
           >
-            Exit Game
+            {"Exchange ICP ->Poker Chips"}
           </Button>
-        }
-        <Button
-          variant="contained"
-          onClick={getPokerChips}
-          size="large"
-          color="primary"
-          disabled={isButtonDisabled}
-        >
-          {"Exchange ICP ->Poker Chips"}
-        </Button>
-        
+        </Box>
       </Box>
       
       <Box
         sx={{
-          minHeight : 700,
+          // minHeight : 700,
           borderRadius: 1,
           bgcolor: brown[100],
+          mt: 2,
         }}
       >
-        <Typography> Here Is an Box in the MainPage</Typography>
-        <Typography> Game Status</Typography>
-        <Typography>playingStatus : {playingState}</Typography>
-        <Typography>masterPlayer : {masterPlayer}</Typography>
-        <Typography>gameTurn : {gameTurn}</Typography>
-        <Typography>isAllPlayerCall : {isAllPlayerCall.toString()}</Typography>
-        <Typography>winner : {winner}</Typography>
-
+        
+        {/* <Card> */}
+          {/* <Typography> Here Is an Box in the MainPage</Typography> */}
+          {/* <Typography variant="button"> Game Status<br/></Typography>
+          <Typography variant="button">master player <br/>: {masterPlayer}<br/></Typography> */}
+          {/* <Typography variant="button">playing status : {playingState}<br/></Typography> */}
+          {/* <Typography variant="button">gameTurn : {gameTurn}<br/></Typography> */}
+          {/* <Typography variant="button">isAllPlayerCall : {isAllPlayerCall.toString()}<br/></Typography> */}
+          {/* <Typography variant="button">winner : {winner}<br/></Typography> */}
+        {/* </Card> */}
         {
         playingState === "NOT_ALL_READY" || playingState === "ALL_READY" ? 
         <GameLobby 
@@ -174,6 +178,7 @@ const MainPage = ({ wallet }) => {
         playerInfo={playerInfo}
         playerInfoArray={playerInfoArray}
         playerCrpytoNumber={playerCrpytoNumber}
+        winner={winner}
         updateState={updateState}
         />
         : <Box/>

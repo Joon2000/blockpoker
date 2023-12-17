@@ -74,7 +74,11 @@ const PokerGameButton = ({
           disabled={isButtonDisabled}
         > Fold </Button>
       :
-        <Box>
+        <Box sx={{
+          // display : "flex",
+          // alignItems : "baseline",
+          // justifyContent : "space-around",
+        }}>
           <Button
             variant="contained"
             onClick={call}

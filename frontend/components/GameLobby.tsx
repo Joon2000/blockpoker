@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Box, Button, Grid } from "@mui/material"
-import { brown } from "@mui/material/colors"
+import { brown, green, yellow } from "@mui/material/colors"
 import { LobbyPlayerCard } from "./LobbyPlayerCard"
 import { poker} from "../../src/declarations/poker"
 import { Principal } from "@dfinity/principal"
@@ -66,17 +66,14 @@ const GameLobby = ({
   return (
       <Box
         sx={{
-          // width: 950,
-          // height: 500,
-          // borderRadius: 1,
-          bgcolor: brown[200],
-          pb: 5,
+          minHeight: 600,
+          borderRadius: 1,
+          bgcolor: brown[300],
+          // pb: 5,
+          pt : 5,
         }}
       >
-        <Box sx={{}}>
-          <Typography> Here Is GameLobby</Typography>
-          {playerInfo == null ? <p>not yet enter game</p> : <p>player address : {playerInfo.address.toString()}</p>}
-
+        <Box sx={{minHeight: 500}}>
           <Grid container spacing={2}>
             {playerInfoArray!=null && 
             playerInfoArray.map((player)=>{
@@ -92,7 +89,7 @@ const GameLobby = ({
             })}
           </Grid>
         </Box>
-        <Box sx={{ml:2, mt: 5}}>
+        <Box sx={{ml:2, mt: 5, display : "flex", justifyContent : "space-around"}}>
           {playerInfo == null ? 
           <Button
               variant="contained"
@@ -106,7 +103,7 @@ const GameLobby = ({
               variant="contained"
               onClick={cancelReadyGame}
               size="large"
-              color="error"
+              color="inherit"
               disabled={isButtonDisabled}
             > Cancel Ready </Button>
             :
@@ -114,7 +111,7 @@ const GameLobby = ({
               variant="contained"
               onClick={readyGame}
               size="large"
-              color="error"
+              color="warning"            
               disabled={isButtonDisabled}
             > Ready Game </Button>
           }
